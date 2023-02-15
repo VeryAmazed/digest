@@ -16,6 +16,19 @@ target_include_directories(ntHash
         ${PROJECT_SOURCE_DIR}/include/ntHash
 )
 
+############################################################
+# Catch2 Stuff
+############################################################
+
+Include(FetchContent)
+
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.0.1 # or a later release
+)
+
+FetchContent_MakeAvailable(Catch2)
 
 ############################################################
 # Create an executable
@@ -30,4 +43,6 @@ add_executable(test
 target_link_libraries( test
     PRIVATE 
         ntHash
+    PRIVATE
+        Catch2::Catch2WithMain
 )
