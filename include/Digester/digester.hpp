@@ -15,27 +15,29 @@ typedef long long ll;
 
 class Digester{
     public:
-        
-        Digester(const std::string& seq, unsigned k, size_t pos = 0){
+        /*
+        Only supports std::string for now
+        */
+        Digester(const std::string& seq, unsigned k, size_t pos = 0, bool canonicalized){
             hasher = new nthash::NtHash(seq, 1, k, pos);
+            this->canonicalized = canonicalized;
         }
 
         virtual bool roll() = 0;
 
-        virtual uint64_t get_canonical_m() = 0;
-
-        virtual uint64_t get_forward_m() = 0;
-
-        virtual uint64_t get_reverse_m() = 0;
+        virtual uint64_t get_minimizer() = 0;
 
         virtual void change_seq(const std::string& new_seq, size_t new_pos = 0) =0;
-    
+
+        virtual ~Digester(){
+            delete hasher;
+        }
+        
     protected:
         nthash::NtHash* hasher;
 
-        ~Digester(){
-            delete hasher;
-        }
+    private:
+        bool canonicalized;
 };
 
 }
