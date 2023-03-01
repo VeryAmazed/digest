@@ -16,6 +16,15 @@ target_include_directories(ntHash
         ${PROJECT_SOURCE_DIR}/include/ntHash
 )
 
+add_library(Digester STATIC 
+    src/Digester/uni_mini.cpp
+)
+
+target_include_directories(Digester
+    PUBLIC 
+        ${PROJECT_SOURCE_DIR}/include/Digester ${PROJECT_SOURCE_DIR}/include/ntHash
+)
+
 ############################################################
 # Catch2 Stuff
 ############################################################
@@ -40,9 +49,16 @@ add_executable(test
 )
 
 # link the new hello_library target with the hello_binary target
+target_link_libraries(Digester 
+    PRIVATE
+        ntHash
+)
+
 target_link_libraries( test
     PRIVATE 
         ntHash
+    PRIVATE
+        Digester
     PRIVATE
         Catch2::Catch2WithMain
 )
