@@ -6,8 +6,8 @@ namespace digest{
             throw NotRolledException();
         }
         size_t ind = end;
-        while(c_outs.size() < k){
-            c_outs.push_front(this->seq[ind]);
+        while(c_outs->size() < k){
+            c_outs->push_front(this->seq[ind]);
             ind--;
         }
 
@@ -21,8 +21,8 @@ namespace digest{
             throw NotRolledException();
         }
         size_t ind = end;
-        while(c_outs.size() < k){
-            c_outs.push_front(this->seq[ind]);
+        while(c_outs->size() < k){
+            c_outs->push_front(this->seq[ind]);
             ind--;
         }
 
@@ -32,19 +32,23 @@ namespace digest{
     }
 
     void Digester::roll_one(){
-        if(end == len){
-            throw std::out_of_range("End of sequence.");
-        }
+        
         if(!rolled){
+            if(end-1 == len){
+                throw std::out_of_range("End of sequence.");
+            }
             fhash = nthash::ntf64(seq, k);
             rhash = nthash::ntr64(seq, k);
             rolled = true;
         }else{
-            if(c_outs.size() > 0){
-                fhash = nthash::ntf64(fhash, k, seq[c_outs.front()], seq[end]);
-                rhash = nthash::ntr64(rhash, k, seq[c_outs.front()], seq[end]);
-                c_outs.pop_front();
-                if(c_outs.size() == 0){
+            if(end == len){
+                throw std::out_of_range("End of sequence.");
+            }
+            if(c_outs->size() > 0){
+                fhash = nthash::ntf64(fhash, k, seq[c_outs->front()], seq[end]);
+                rhash = nthash::ntr64(rhash, k, seq[c_outs->front()], seq[end]);
+                c_outs->pop_front();
+                if(c_outs->size() == 0){
                     start = 0;
                 }
             }else{
