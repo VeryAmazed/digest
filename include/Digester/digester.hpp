@@ -38,6 +38,16 @@ class Digester{
 
     private:
         bool canonicalized;
+        bool rolled = false;
+};
+
+// add not_rolled_exception here
+class NotRolledException : public std::exception
+{
+	const char * what () const throw ()
+    {
+    	return "Roll must be called first.";
+    }
 };
 
 }
