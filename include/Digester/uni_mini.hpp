@@ -7,18 +7,15 @@ namespace digest{
 
 class UM_Digester : public Digester{
     public:
-        UM_Digester(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence, size_t pos = 0, bool canonicalized = true) :  Digester(seq, k, pos, canonicalized){
-           this->mod = mod;
-           this->congruence = congruence;
-        }
+        UM_Digester(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence, size_t pos = 0, uint8_t minimized_h = 0)
+        :  Digester(seq, k, pos, minimized_h), mod(mod), congruence(congruence)
+        {}
 
-        std::pair<bool, size_t> roll() override;
+        UM_Digester(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence, size_t pos = 0, uint8_t minimized_h = 0)
+        :  Digester(seq, len, k, pos, minimized_h), mod(mod), congruence(congruence)
+        {}
 
-        std::string get_min_string() override;
-
-        uint64_t get_min_hash() = 0;
-
-        void change_seq(const std::string& new_seq, size_t new_pos) override;
+    void roll_next_minimizer() override;     
     
     private:
         uint64_t mod;
