@@ -24,6 +24,8 @@ class NotRolledException : public std::exception
     }
 };
 
+// add more exceptions, seq.len >= k, minimized_h = 1, 2, or 3
+
 // Only supports characters in DNA, upper or lower case
 class Digester{
     public:
@@ -58,6 +60,8 @@ class Digester{
          */
         void roll_one();
 
+        // Possibly write another function that returns a group of minimizers instead of just rolling to the next one
+
         /**
          * roll hash until we get to a minimizer or reach the end of the sequence
          * 
@@ -90,7 +94,11 @@ class Digester{
             return rhash;
         }
         
+        /*
+            clear the deque
+        */
         void new_seq(const std::string& seq, size_t pos){
+            c_outs->clear();
             this->seq = seq.data();
             this->len = len;
             this->pos = pos;
@@ -100,6 +108,7 @@ class Digester{
         }
 
         void new_seq(const char* seq, size_t len, size_t pos){
+            c_outs->clear();
             this->seq = seq;
             this->len = len;
             this->pos = pos;
@@ -131,6 +140,10 @@ class Digester{
         }
 
         // to be added
+        /*
+            if deque size is 0, then just read from start to end
+            if deque size is not 0, read from left to right everything in deque, and then from 0 to end everything in seq
+        */
         std::string get_string();
 
     protected:
