@@ -53,6 +53,10 @@ class Digester{
             : seq(seq), len(len), pos(start), start(start), end(start+k), k(k), minimized_h(minimized_h) {
                 this->c_outs = new std::deque<char>;
             }
+
+        virtual ~Digester(){
+            delete c_outs;
+        }
         
         /**
          * roll the hash 1 position to the right or construcuts the initial hash on first call 
@@ -60,7 +64,6 @@ class Digester{
          */
         void roll_one();
 
-        // Possibly write another function that returns a group of minimizers instead of just rolling to the next one
 
         /**
          * roll hash until we get to a minimizer or reach the end of the sequence
@@ -68,6 +71,10 @@ class Digester{
          * @return bool if a minimizer is found or exists, false if we reach end of seq before there is a minimizer
          */
         virtual bool roll_next_minimizer() = 0;
+
+        // Possibly write another function that returns a group of minimizers instead of just rolling to the next one
+        // TODO
+        std::vector<size_t> roll_next_n_minis();
 
         size_t get_pos(){
             return pos;
@@ -145,6 +152,8 @@ class Digester{
             if deque size is not 0, read from left to right everything in deque, and then from 0 to end everything in seq
         */
         std::string get_string();
+
+        
 
     protected:
         // sequence to be digested

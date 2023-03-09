@@ -1,15 +1,9 @@
 #include "nthash.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include "uni_mini.hpp"
-/*
-int main(){
-	std::string str = "TGACGCATTTGGCGAGATGATG";
-	nthash::NtHash* test_hash = new nthash::NtHash(str, 1, 4);
-	std::cout << test_hash->roll() << std::endl;
-	
-	return 0;
-}
-*/
+
+// Try to see if you can use the Assertion Macros in things that aren't strictly TEST_CASE, should be possible since everything is just a macro
+// this should let us parametise stuff
 
 TEST_CASE("Testing: ntHash can roll()"){
 	std::string str = "tcagcgaacgtaactg";

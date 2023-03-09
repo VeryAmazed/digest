@@ -10,7 +10,7 @@ namespace digest{
             c_outs->push_front(this->seq[ind]);
             ind--;
         }
-
+        start = 0;
         end =0;
         this->seq = seq.data();
         this->len = seq.size();
@@ -25,7 +25,7 @@ namespace digest{
             c_outs->push_front(this->seq[ind]);
             ind--;
         }
-
+        start = 0;
         end =0;
         this->seq = seq;
         this->len = len;
@@ -48,9 +48,11 @@ namespace digest{
                 fhash = nthash::ntf64(fhash, k, seq[c_outs->front()], seq[end]);
                 rhash = nthash::ntr64(rhash, k, seq[c_outs->front()], seq[end]);
                 c_outs->pop_front();
+                /*
                 if(c_outs->size() == 0){
                     start = 0;
                 }
+                */
             }else{
                 fhash = nthash::ntf64(fhash, k, seq[start], seq[end]);
                 rhash = nthash::ntr64(rhash, k, seq[start], seq[end]);
@@ -61,5 +63,19 @@ namespace digest{
         }
         chash = nthash::canonical(fhash,rhash);
         
+    }
+
+    std::string Digester::get_string(){
+        std::string str;
+        if(c_outs->size() > 0){
+            std::deque<char>::iterator it = c_outs->begin();
+            while(it != c_outs->end()){
+                str.push_back(*it);
+            }
+        }
+        for(int i = start; i < end; i++){
+            str.push_back(seq[i]);
+        }
+        return str;
     }
 } 
