@@ -4,7 +4,12 @@ namespace digest{
     void Digester::append_seq(const std::string& seq){
         if(!rolled){
             throw NotRolledException();
+        }else if(seq.size() == 0){
+            throw BadSequenceLengthException();
+        }else if(end != len){
+            throw NotRolledTillEndException();
         }
+
         size_t ind = end;
         while(c_outs->size() < k){
             c_outs->push_front(this->seq[ind]);
@@ -19,6 +24,10 @@ namespace digest{
     void Digester::append_seq(const char* seq, size_t len){
         if(!rolled){
             throw NotRolledException();
+        }else if(len == 0){
+            throw BadSequenceLengthException();
+        }else if(end != len){
+            throw NotRolledTillEndException();
         }
         size_t ind = end;
         while(c_outs->size() < k){
