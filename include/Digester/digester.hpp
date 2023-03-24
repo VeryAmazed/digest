@@ -7,7 +7,7 @@
 
 namespace digest{
 
-// Only supports characters in DNA
+// Only supports characters in DNA and N
 
 class NotRolledException : public std::exception
 {
@@ -41,17 +41,18 @@ class NotRolledTillEndException : public std::exception
     }
 };
 
-// add more exceptions, seq.len >= k, minimized_h = 1, 2, or 3
-
 // Only supports characters in DNA and N, upper or lower case
 class Digester{
     public:
         /**
          * Constructor.
          * @param seq std string of DNA sequence to be hashed.
-         * @param k K-mer size.
-         * @param pos 0-indexed position in seq to start hashing from.
+         * @param k K-mer size. 
+         * @param pos 0-indexed position in seq to start hashing from. 
          * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
+         * 
+         * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
+         *      or if the starting position is not at least k-1 from the end of the string
          */
         Digester(const std::string& seq, unsigned k, size_t pos = 0, unsigned minimized_h = 0) 
             : seq(seq.data()), len(seq.size()), pos(pos), start(pos), end(pos+k), k(k), minimized_h(minimized_h) {
@@ -66,8 +67,11 @@ class Digester{
          * @param seq C string of DNA sequence to be hashed.
          * @param len Length of seq.
          * @param k K-mer size.
-         * @param start Position in seq to start hashing from.
+         * @param start 0-indexed position in seq to start hashing from. 
          * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
+         * 
+         * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
+         *      or if the starting position is not at least k-1 from the end of the string
          */
         Digester(const char* seq, size_t len, unsigned k, size_t pos = 0, unsigned minimized_h = 0) 
             : seq(seq), len(len), pos(pos), start(pos), end(pos+k), k(k), minimized_h(minimized_h) {
@@ -84,6 +88,7 @@ class Digester{
         /**
          * roll the hash 1 position to the right or construcuts the initial hash on first call 
          * 
+         * @throws std::out_of_range if the end of the string has already been reached
          */
         void roll_one();
 
@@ -103,6 +108,12 @@ class Digester{
             return pos;
         }
 
+        /**
+         * 
+         * @return the canonicalized hash of the current k-mer
+         * 
+         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
+         */
         uint64_t get_chash(){
             if(!rolled){
                 throw NotRolledException();
@@ -110,6 +121,12 @@ class Digester{
             return chash;
         }
 
+        /**
+         * 
+         * @return the forward hash of the current k-mer
+         * 
+         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
+         */
         uint64_t get_fhash(){
             if(!rolled){
                 throw NotRolledException();
@@ -117,6 +134,12 @@ class Digester{
             return fhash;
         }
 
+        /**
+         * 
+         * @return the reverse hash of the current k-mer
+         * 
+         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
+         */
         uint64_t get_rhash(){
             if(!rolled){
                 throw NotRolledException();
@@ -124,9 +147,14 @@ class Digester{
             return rhash;
         }
         
-        /*
-            clear the deque
-        */
+        /**
+         * 
+         * @param seq new sequence to be hashed
+         * @param pos new position to start from
+         * 
+         * @throws BadConstructionException Thrown if k is greater than the length of the sequence,
+         *      or if the starting position is not at least k-1 from the end of the string
+         */
         void new_seq(const std::string& seq, size_t pos){
             c_outs->clear();
             this->seq = seq.data();
@@ -141,6 +169,15 @@ class Digester{
             }
         }
 
+        /**
+         * 
+         * @param seq new sequence to be hashed
+         * @param len length of the new sequence
+         * @param pos new position to start from
+         * 
+         * @throws BadConstructionException Thrown if k is greater than the length of the sequence,
+         *      or if the starting position is not at least k-1 from the end of the string
+         */
         void new_seq(const char* seq, size_t len, size_t pos){
             c_outs->clear();
             this->seq = seq;
@@ -155,20 +192,27 @@ class Digester{
         }
 
         /**
-         * @param seq std string of DNA sequence to be appended
-         * 
          * Simulates the appending of a new sequence to the end of the old sequence
          * The old string will no longer be stored, but the rolling hashes will be able to preceed as if the strings were appended
-         * Cannot be called if roll_one hasn't been called at least once
+         * 
+         * @param seq std string of DNA sequence to be appended
+         * 
+         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
+         * @throws BadSequenceLengthException Thrown when the length of the sequence is 0
+         * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
          */
         void append_seq(const std::string& seq);
 
         /**
-         * @param seq C string of DNA sequence to be appended
-         * 
          * Simulates the appending of a new sequence to the end of the old sequence
          * The old string will no longer be stored, but the rolling hashes will be able to preceed as if the strings were appended
-         * Cannot be called if roll_one hasn't been called at least once
+         * 
+         * @param seq C string of DNA sequence to be appended
+         * @param len length of the sequence
+         * 
+         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
+         * @throws BadSequenceLengthException Thrown when the length of the sequence is 0
+         * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
          */
         void append_seq(const char* seq, size_t len);
 
@@ -176,12 +220,10 @@ class Digester{
             return minimized_h;
         }
 
-        
-        /*
-            if deque size is 0, then just read from start to end
-            if deque size is not 0, read from left to right everything in deque, and then from 0 to end everything in seq
-            assumes start is 0 after change string, even if it is irrelevant while the deque size isnt 0
-        */
+        /**
+         * 
+         * @return std::string of the current k-mer
+         */
         std::string get_string();
 
         
