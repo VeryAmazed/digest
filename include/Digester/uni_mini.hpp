@@ -27,7 +27,7 @@ class UM_Digester : public Digester{
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        UM_Digester(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence, size_t pos = 0, unsigned minimized_h = 0)
+        UM_Digester(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t pos = 0, unsigned minimized_h = 0)
         :  Digester(seq, k, pos, minimized_h), mod(mod), congruence(congruence)
         {
             if(congruence >= mod){
@@ -47,7 +47,7 @@ class UM_Digester : public Digester{
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        UM_Digester(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence, size_t pos = 0, unsigned minimized_h = 0)
+        UM_Digester(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t pos = 0, unsigned minimized_h = 0)
         :  Digester(seq, len, k, pos, minimized_h), mod(mod), congruence(congruence)
         {
             if(congruence >= mod){

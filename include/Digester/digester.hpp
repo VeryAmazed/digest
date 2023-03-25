@@ -86,6 +86,14 @@ class Digester{
         }
         
         /**
+         * @return bool, true if roll_one(), roll_next_minimizer() or roll_next_n_minis() has been called at least once, false otherwise
+         * 
+         */
+        bool get_rolled(){
+            return rolled;
+        }
+        
+        /**
          * roll the hash 1 position to the right or construcuts the initial hash on first call 
          * 
          * @throws std::out_of_range if the end of the string has already been reached
@@ -158,7 +166,7 @@ class Digester{
         void new_seq(const std::string& seq, size_t pos){
             c_outs->clear();
             this->seq = seq.data();
-            this->len = len;
+            this->len = seq.size();
             this->pos = pos;
             this->start = pos;
             this->end = pos+this->k;
@@ -226,7 +234,13 @@ class Digester{
          */
         std::string get_string();
 
-        
+        /**
+         * 
+         * @return const char* representation of the sequence
+         */
+        const char* get_sequence(){
+            return seq;
+        }
 
     protected:
         // sequence to be digested
