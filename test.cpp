@@ -1,10 +1,115 @@
 #include "nthash.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include "uni_mini.hpp"
+#include <fstream>
 
-// Try to see if you can use the Assertion Macros in things that aren't strictly TEST_CASE, should be possible since everything is just a macro
-// this should let us parametise stuff
+std::vector<std::string> strs;
+unsigned ks[] = {1, 4, 9, 89, 128};
 
+void setupStrings(){
+	std::string str;
+	std::fstream fs;
+
+	fs.open("../test_strings/A.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/N.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+	
+	fs.open("../test_strings/G.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/T.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/C.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/a_lowercase.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/coronavirus.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/random.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/random_lowercase.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/salmonella_enterica.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/salmonella_lowercase.txt", std::fstream::in);
+	fs >> str;
+	strs.push_back(str);
+	fs.close();
+}
+
+void base_constructor_stdstr(digest::Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h){
+	CHECK(strcmp(str.c_str(), dig.get_sequence()) == 0);
+	CHECK(dig.get_k() == k);
+	CHECK(dig.get_pos() == pos);
+	CHECK(dig.get_minimized_h() == minimized_h);
+	CHECK(dig.get_rolled() == false);
+	CHECK_THROWS_AS(dig.get_chash(), digest::NotRolledException);
+	CHECK_THROWS_AS(dig.get_fhash(), digest::NotRolledException);
+	CHECK_THROWS_AS(dig.get_rhash(), digest::NotRolledException);
+}
+
+void UM_constructor_stdstr(digest::UM_Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h, uint64_t mod, uint64_t congruence){
+	base_constructor_stdstr(dig, str, k, pos, minimized_h);
+	CHECK(dig.get_mod() ==  mod);
+	CHECK(dig.get_congruence() == congruence);
+}
+
+TEST_CASE("UM_Digester Testing"){
+	setupStrings();
+	/*
+	for(unsigned i =0; i < strs.size(); i++){
+		std::cout << strs[i] << std::endl;
+	}
+	*/
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 TEST_CASE("Testing: ntHash can roll()"){
 	std::string str = "tcagcgaacgtaactg";
 	std::cout << str << std::endl;
@@ -83,3 +188,4 @@ TEST_CASE("Quick Testing of Appending Strings"){
 	
 
 }
+*/

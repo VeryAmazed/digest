@@ -55,7 +55,23 @@ class UM_Digester : public Digester{
             }
         }
 
-        bool roll_next_minimizer() override;     
+        bool roll_next_minimizer() override;    
+
+        /**
+         * 
+         * @return uint64_t, the mod space being used
+         */
+        uint64_t get_mod(){
+            return mod;
+        }
+
+        /**
+         * 
+         * @return uint64_t, the value the minimized hash must be congruent to
+         */
+        uint64_t get_congruence(){
+            return congruence;
+        } 
     
     private:
         uint64_t mod;

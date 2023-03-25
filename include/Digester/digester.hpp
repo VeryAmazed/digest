@@ -94,6 +94,14 @@ class Digester{
         }
         
         /**
+         * 
+         * @return unsigned value of k
+         */
+        unsigned get_k(){
+            return k;
+        }
+
+        /**
          * roll the hash 1 position to the right or construcuts the initial hash on first call 
          * 
          * @throws std::out_of_range if the end of the string has already been reached
