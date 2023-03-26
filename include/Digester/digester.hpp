@@ -80,6 +80,47 @@ class Digester{
                     throw BadConstructionException();
                 }
             }
+        /**
+         * Copy Constructor
+         * 
+         * @param copy, Digester object you want to copy from 
+         */
+        Digester(const Digester& copy){
+            this->seq = copy.seq;
+            this->len = copy.len;
+            this->k = copy.k;
+            this->pos = copy.pos;
+            this->start = copy.start;
+            this->end = copy.end;
+            this->rolled = copy.rolled;
+            this->minimized_h = copy.minimized_h;
+            if(this->rolled){
+                this->chash = copy.chash;
+                this->rhash = copy.rhash;
+                this->fhash = copy.fhash;
+            }
+            this->c_outs = new std::deque<char>(*(copy.c_outs));
+
+        }
+        
+        Digester& operator=(const Digester& copy){
+            delete c_outs;
+            this->seq = copy.seq;
+            this->len = copy.len;
+            this->k = copy.k;
+            this->pos = copy.pos;
+            this->start = copy.start;
+            this->end = copy.end;
+            this->rolled = copy.rolled;
+            this->minimized_h = copy.minimized_h;
+            if(this->rolled){
+                this->chash = copy.chash;
+                this->rhash = copy.rhash;
+                this->fhash = copy.fhash;
+            }
+            this->c_outs = new std::deque<char>(*(copy.c_outs));
+            return *this;
+        }
 
         virtual ~Digester(){
             delete c_outs;

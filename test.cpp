@@ -90,7 +90,31 @@ TEST_CASE("UM_Digester Testing"){
 		std::cout << strs[i] << std::endl;
 	}
 	*/
-	
+	SECTION("Testing Constructors"){
+		// k = 1, str_len = 1
+		// normal
+		// start at len-k
+		// all the errors
+		unsigned k, minimized_h;
+		uint64_t mod, congruence;
+		size_t pos;
+		std::string str;
+		// string is length 1, k = 1
+		str = "A";
+		k = 1;
+		pos = 0;
+		for(int i =0; i < 3; i++){
+			minimized_h = i;
+			mod = 2;
+			congruence = 1;
+			
+		}
+		// Using all A's
+		for(int i =0; i < 3; i++){
+
+		}
+		// Using all a's
+	}
 }
 
 

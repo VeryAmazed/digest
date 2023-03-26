@@ -55,6 +55,21 @@ class UM_Digester : public Digester{
             }
         }
 
+        /**
+         * Copy Constructor
+         * 
+         * @param copy, UM_Digester object you want to copy from 
+         */
+        UM_Digester(const UM_Digester& copy) : Digester(copy), mod(copy.mod), congruence(copy.congruence)
+        {}
+
+        UM_Digester& operator=(const UM_Digester& copy){
+            this->mod = copy.mod;
+            this->congruence = copy.congruence;
+            Digester::operator=(copy);
+            return *this;
+        }
+
         bool roll_next_minimizer() override;    
 
         /**
