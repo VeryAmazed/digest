@@ -56,10 +56,11 @@ class Digester{
          */
         Digester(const std::string& seq, unsigned k, size_t pos = 0, unsigned minimized_h = 0) 
             : seq(seq.data()), len(seq.size()), pos(pos), start(pos), end(pos+k), k(k), minimized_h(minimized_h) {
-                this->c_outs = new std::deque<char>;
+                
                 if(k == 0 || pos > seq.size()-k || minimized_h > 2){
                     throw BadConstructionException();
                 }
+                this->c_outs = new std::deque<char>;
             }
 
         /**
@@ -75,10 +76,11 @@ class Digester{
          */
         Digester(const char* seq, size_t len, unsigned k, size_t pos = 0, unsigned minimized_h = 0) 
             : seq(seq), len(len), pos(pos), start(pos), end(pos+k), k(k), minimized_h(minimized_h) {
-                this->c_outs = new std::deque<char>;
+                
                 if(k == 0 || pos > len-k || minimized_h > 2){
                     throw BadConstructionException();
                 }
+                this->c_outs = new std::deque<char>;
             }
         /**
          * Copy Constructor
@@ -140,6 +142,14 @@ class Digester{
          */
         unsigned get_k(){
             return k;
+        }
+
+        /**
+         * 
+         * @return size_t, length of the sequence
+         */
+        size_t get_len(){
+            return len;
         }
 
         /**

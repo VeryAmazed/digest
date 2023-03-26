@@ -3,7 +3,7 @@
 #include "uni_mini.hpp"
 #include <fstream>
 
-std::vector<std::string> strs;
+std::vector<std::string> test_strs;
 unsigned ks[] = {1, 4, 9, 89, 128};
 
 void setupStrings(){
@@ -12,62 +12,63 @@ void setupStrings(){
 
 	fs.open("../test_strings/A.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/N.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 	
 	fs.open("../test_strings/G.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/T.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/C.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/a_lowercase.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/coronavirus.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/random.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/random_lowercase.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/salmonella_enterica.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 
 	fs.open("../test_strings/salmonella_lowercase.txt", std::fstream::in);
 	fs >> str;
-	strs.push_back(str);
+	test_strs.push_back(str);
 	fs.close();
 }
 
 void base_constructor_stdstr(digest::Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h){
 	CHECK(strcmp(str.c_str(), dig.get_sequence()) == 0);
+	CHECK(str.size() == dig.get_len());
 	CHECK(dig.get_k() == k);
 	CHECK(dig.get_pos() == pos);
 	CHECK(dig.get_minimized_h() == minimized_h);
@@ -83,6 +84,24 @@ void UM_constructor_stdstr(digest::UM_Digester& dig, std::string& str, unsigned 
 	CHECK(dig.get_congruence() == congruence);
 }
 
+void base_constructor_cstr(digest::Digester& dig, const char* str, size_t len, unsigned k, size_t pos, unsigned minimized_h){
+	CHECK(strcmp(str, dig.get_sequence()) == 0);
+	CHECK(len == dig.get_len());
+	CHECK(dig.get_k() == k);
+	CHECK(dig.get_pos() == pos);
+	CHECK(dig.get_minimized_h() == minimized_h);
+	CHECK(dig.get_rolled() == false);
+	CHECK_THROWS_AS(dig.get_chash(), digest::NotRolledException);
+	CHECK_THROWS_AS(dig.get_fhash(), digest::NotRolledException);
+	CHECK_THROWS_AS(dig.get_rhash(), digest::NotRolledException);
+}
+
+void UM_constructor_cstr(digest::UM_Digester& dig, const char* str, size_t len, unsigned k, size_t pos, unsigned minimized_h, uint64_t mod, uint64_t congruence){
+	base_constructor_cstr(dig, str, len, k, pos, minimized_h);
+	CHECK(dig.get_mod() ==  mod);
+	CHECK(dig.get_congruence() == congruence);
+}
+
 TEST_CASE("UM_Digester Testing"){
 	setupStrings();
 	/*
@@ -90,30 +109,178 @@ TEST_CASE("UM_Digester Testing"){
 		std::cout << strs[i] << std::endl;
 	}
 	*/
-	SECTION("Testing Constructors"){
-		// k = 1, str_len = 1
-		// normal
-		// start at len-k
-		// all the errors
+	SECTION("Testing std::string Constructors"){
 		unsigned k, minimized_h;
 		uint64_t mod, congruence;
 		size_t pos;
 		std::string str;
 		// string is length 1, k = 1
 		str = "A";
-		k = 1;
+		k = ks[0];
 		pos = 0;
 		for(int i =0; i < 3; i++){
 			minimized_h = i;
 			mod = 2;
 			congruence = 1;
-			
+			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
+			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
+			delete dig;
 		}
-		// Using all A's
+		// Using string in random.txt
+		k = ks[4];
+		pos = 0;
 		for(int i =0; i < 3; i++){
-
+			minimized_h = i;
+			mod = 1e9+7;
+			congruence = 0;
+			digest::UM_Digester* dig = new digest::UM_Digester(test_strs[7], k, mod, congruence, pos, minimized_h);
+			UM_constructor_stdstr(*dig, test_strs[7], k, pos, minimized_h, mod, congruence);
+			delete dig;
 		}
-		// Using all a's
+
+		// pos = len-k
+		str = "ACTGACTG";
+		k = ks[1];
+		pos = 4;
+		for(int i =0; i < 3; i++){
+			minimized_h = i;
+			mod = 1e9+7;
+			congruence = 0;
+			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
+			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
+			delete dig;
+		}
+
+		// Throwing Exceptions
+		// Shouldn't/Doesn't leak any memory
+		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
+		str = "ACTGACTG";
+		k = 2;
+		pos = 0;
+		minimized_h = 0;
+		mod = 1e9+7;
+		congruence = 0;
+		// k = 0
+		k = 0;
+		digest::UM_Digester* dig1;
+		CHECK_THROWS_AS(dig1 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		
+		k = 2;
+		// pos > seq.size()
+		pos = 9;
+		digest::UM_Digester* dig2;
+		CHECK_THROWS_AS(dig2 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		
+		pos = 0;
+		// pos + k > seq.size()
+		pos = 7;
+		digest::UM_Digester* dig3;
+		CHECK_THROWS_AS(dig3 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		
+		pos = 0;
+		// minimized_h > 2
+		minimized_h = 3;
+		digest::UM_Digester* dig4;
+		CHECK_THROWS_AS(dig4 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		
+		minimized_h = 0;
+		// mod >= congruence
+		mod = 2;
+		congruence = 2;
+		digest::UM_Digester* dig5;
+		CHECK_THROWS_AS(dig5 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
+		
+		mod = 1e9+7;
+		congruence = 0;
+	}
+
+	SECTION("Testing c string Constructors"){
+		unsigned k, minimized_h;
+		uint64_t mod, congruence;
+		size_t len, pos;
+		std::string str;
+		// string is length 1, k = 1
+		str = "A";
+		len = str.size();
+		k = ks[0];
+		pos = 0;
+		for(int i =0; i < 3; i++){
+			minimized_h = i;
+			mod = 2;
+			congruence = 1;
+			digest::UM_Digester* dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h);
+			UM_constructor_cstr(*dig, str.c_str(), len, k, pos, minimized_h, mod, congruence);
+			delete dig;
+		}
+		// Using string in random.txt
+		len = test_strs[7].size();
+		k = ks[4];
+		pos = 0;
+		for(int i =0; i < 3; i++){
+			minimized_h = i;
+			mod = 1e9+7;
+			congruence = 0;
+			digest::UM_Digester* dig = new digest::UM_Digester(test_strs[7].c_str(), len, k, mod, congruence, pos, minimized_h);
+			UM_constructor_cstr(*dig, test_strs[7].c_str(), len, k, pos, minimized_h, mod, congruence);
+			delete dig;
+		}
+
+		// pos = len-k
+		str = "ACTGACTG";
+		len = 8;
+		k = ks[1];
+		pos = 4;
+		for(int i =0; i < 3; i++){
+			minimized_h = i;
+			mod = 1e9+7;
+			congruence = 0;
+			digest::UM_Digester* dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h);
+			UM_constructor_cstr(*dig, str.c_str(), len, k, pos, minimized_h, mod, congruence);
+			delete dig;
+		}
+
+		// Throwing Exceptions
+		// Shouldn't/Doesn't leak any memory
+		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
+		str = "ACTGACTG";
+		len = 8;
+		k = 2;
+		pos = 0;
+		minimized_h = 0;
+		mod = 1e9+7;
+		congruence = 0;
+		// k = 0
+		k = 0;
+		digest::UM_Digester* dig1;
+		CHECK_THROWS_AS(dig1 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		
+		k = 2;
+		// pos > seq.size()
+		pos = 9;
+		digest::UM_Digester* dig2;
+		CHECK_THROWS_AS(dig2 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		
+		pos = 0;
+		// pos + k > seq.size()
+		pos = 7;
+		digest::UM_Digester* dig3;
+		CHECK_THROWS_AS(dig3 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		
+		pos = 0;
+		// minimized_h > 2
+		minimized_h = 3;
+		digest::UM_Digester* dig4;
+		CHECK_THROWS_AS(dig4 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		
+		minimized_h = 0;
+		// mod >= congruence
+		mod = 2;
+		congruence = 2;
+		digest::UM_Digester* dig5;
+		CHECK_THROWS_AS(dig5 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadModException);
+		
+		mod = 1e9+7;
+		congruence = 0;
 	}
 }
 
