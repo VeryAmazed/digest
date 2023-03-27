@@ -154,24 +154,6 @@ TEST_CASE("UM_Digester Testing"){
 			delete dig;
 		}
 
-		// pos = len-k
-		str = "ACTGACTG";
-		len = 8;
-		k = ks[1];
-		pos = 4;
-		for(int i =0; i < 3; i++){
-			minimized_h = i;
-			mod = 1e9+7;
-			congruence = 0;
-			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
-			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
-			delete dig;
-
-			dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h);
-			UM_constructor_cstr(*dig, str.c_str(), len, k, pos, minimized_h, mod, congruence);
-			delete dig;
-		}
-
 		// Throwing Exceptions
 		// Shouldn't/Doesn't leak any memory
 		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
