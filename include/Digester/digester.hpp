@@ -106,7 +106,6 @@ class Digester{
         }
         
         Digester& operator=(const Digester& copy){
-            delete c_outs;
             this->seq = copy.seq;
             this->len = copy.len;
             this->k = copy.k;
@@ -120,7 +119,7 @@ class Digester{
                 this->rhash = copy.rhash;
                 this->fhash = copy.fhash;
             }
-            this->c_outs = new std::deque<char>(*(copy.c_outs));
+            (this->c_outs)->assign((copy.c_outs)->begin(), (copy.c_outs)->end());
             return *this;
         }
 

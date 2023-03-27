@@ -19,28 +19,8 @@ void setupStrings(){
 	fs >> str;
 	test_strs.push_back(str);
 	fs.close();
-	
-	fs.open("../test_strings/G.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/T.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/C.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
 
 	fs.open("../test_strings/a_lowercase.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/coronavirus.txt", std::fstream::in);
 	fs >> str;
 	test_strs.push_back(str);
 	fs.close();
@@ -102,6 +82,32 @@ void UM_constructor_cstr(digest::UM_Digester& dig, const char* str, size_t len, 
 	CHECK(dig.get_congruence() == congruence);
 }
 
+void fhash_roll_one(digest::Digester& dig, std::string& str, unsigned k){
+	nthash::NtHash tHash(str, 1, k, 0);
+	uint64_t trueHash;
+	uint64_t digHash;
+	for(size_t i =0; i+k <= str.size(); i++){
+		tHash.roll();
+		trueHash = tHash.get_forward_hash();
+		/*
+		if(i == 0){
+			trueHash= nthash::ntf64(str2.c_str(), k);
+		}else{
+			trueHash = nthash::ntf64(trueHash, k, str2[i-1], str2[i+k-1]);
+		}
+		*/
+		dig.roll_one();
+		digHash = dig.get_fhash();
+		CHECK(dig.get_pos() == i);
+		//std::cout << trueHash << " " << digHash << std::endl;
+		//std::cout << i << " " << tHash.get_pos() << std::endl;
+		CHECK(trueHash == digHash);
+		CHECK(dig.get_rolled() == true);
+	}
+
+	CHECK_THROWS_AS(dig.roll_one(), std::out_of_range);
+}
+
 TEST_CASE("UM_Digester Testing"){
 	setupStrings();
 	/*
@@ -109,13 +115,14 @@ TEST_CASE("UM_Digester Testing"){
 		std::cout << strs[i] << std::endl;
 	}
 	*/
-	SECTION("Testing std::string Constructors"){
+	SECTION("Testing Constructors"){
 		unsigned k, minimized_h;
 		uint64_t mod, congruence;
-		size_t pos;
+		size_t pos, len;
 		std::string str;
 		// string is length 1, k = 1
 		str = "A";
+		len = 1;
 		k = ks[0];
 		pos = 0;
 		for(int i =0; i < 3; i++){
@@ -125,21 +132,31 @@ TEST_CASE("UM_Digester Testing"){
 			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
 			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
+
+			dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h);
+			UM_constructor_cstr(*dig, str.c_str(), len, k, pos, minimized_h, mod, congruence);
+			delete dig;
 		}
 		// Using string in random.txt
+		len = test_strs[4].size();
 		k = ks[4];
 		pos = 0;
 		for(int i =0; i < 3; i++){
 			minimized_h = i;
 			mod = 1e9+7;
 			congruence = 0;
-			digest::UM_Digester* dig = new digest::UM_Digester(test_strs[7], k, mod, congruence, pos, minimized_h);
-			UM_constructor_stdstr(*dig, test_strs[7], k, pos, minimized_h, mod, congruence);
+			digest::UM_Digester* dig = new digest::UM_Digester(test_strs[4], k, mod, congruence, pos, minimized_h);
+			UM_constructor_stdstr(*dig, test_strs[4], k, pos, minimized_h, mod, congruence);
+			delete dig;
+
+			dig = new digest::UM_Digester(test_strs[4].c_str(), len, k, mod, congruence, pos, minimized_h);
+			UM_constructor_cstr(*dig, test_strs[4].c_str(), len, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
 
 		// pos = len-k
 		str = "ACTGACTG";
+		len = 8;
 		k = ks[1];
 		pos = 4;
 		for(int i =0; i < 3; i++){
@@ -148,6 +165,10 @@ TEST_CASE("UM_Digester Testing"){
 			congruence = 0;
 			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
 			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
+			delete dig;
+
+			dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h);
+			UM_constructor_cstr(*dig, str.c_str(), len, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
 
@@ -162,125 +183,52 @@ TEST_CASE("UM_Digester Testing"){
 		congruence = 0;
 		// k = 0
 		k = 0;
-		digest::UM_Digester* dig1;
-		CHECK_THROWS_AS(dig1 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		
+		digest::UM_Digester* dig;
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+
 		k = 2;
 		// pos > seq.size()
 		pos = 9;
-		digest::UM_Digester* dig2;
-		CHECK_THROWS_AS(dig2 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+
 		pos = 0;
 		// pos + k > seq.size()
 		pos = 7;
-		digest::UM_Digester* dig3;
-		CHECK_THROWS_AS(dig3 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+
 		pos = 0;
 		// minimized_h > 2
 		minimized_h = 3;
-		digest::UM_Digester* dig4;
-		CHECK_THROWS_AS(dig4 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+
 		minimized_h = 0;
 		// mod >= congruence
 		mod = 2;
 		congruence = 2;
-		digest::UM_Digester* dig5;
-		CHECK_THROWS_AS(dig5 = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
-		
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadModException);
+
 		mod = 1e9+7;
 		congruence = 0;
 	}
 
-	SECTION("Testing c string Constructors"){
-		unsigned k, minimized_h;
-		uint64_t mod, congruence;
-		size_t len, pos;
-		std::string str;
-		// string is length 1, k = 1
-		str = "A";
-		len = str.size();
-		k = ks[0];
-		pos = 0;
-		for(int i =0; i < 3; i++){
-			minimized_h = i;
-			mod = 2;
-			congruence = 1;
-			digest::UM_Digester* dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h);
-			UM_constructor_cstr(*dig, str.c_str(), len, k, pos, minimized_h, mod, congruence);
-			delete dig;
+	SECTION("Testing roll_one"){
+		
+		for(int i =0; i < test_strs.size(); i++){
+			for(int j =0; j < 5; j++){
+				//std::cout << i << " " << j << std::endl;
+				digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], ks[j], 1e9+7, 0, 0, 1);
+				fhash_roll_one(*dig, test_strs[i], ks[j]);
+			}
 		}
-		// Using string in random.txt
-		len = test_strs[7].size();
-		k = ks[4];
-		pos = 0;
-		for(int i =0; i < 3; i++){
-			minimized_h = i;
-			mod = 1e9+7;
-			congruence = 0;
-			digest::UM_Digester* dig = new digest::UM_Digester(test_strs[7].c_str(), len, k, mod, congruence, pos, minimized_h);
-			UM_constructor_cstr(*dig, test_strs[7].c_str(), len, k, pos, minimized_h, mod, congruence);
-			delete dig;
-		}
+		
+		
 
-		// pos = len-k
-		str = "ACTGACTG";
-		len = 8;
-		k = ks[1];
-		pos = 4;
-		for(int i =0; i < 3; i++){
-			minimized_h = i;
-			mod = 1e9+7;
-			congruence = 0;
-			digest::UM_Digester* dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h);
-			UM_constructor_cstr(*dig, str.c_str(), len, k, pos, minimized_h, mod, congruence);
-			delete dig;
-		}
-
-		// Throwing Exceptions
-		// Shouldn't/Doesn't leak any memory
-		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
-		str = "ACTGACTG";
-		len = 8;
-		k = 2;
-		pos = 0;
-		minimized_h = 0;
-		mod = 1e9+7;
-		congruence = 0;
-		// k = 0
-		k = 0;
-		digest::UM_Digester* dig1;
-		CHECK_THROWS_AS(dig1 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 		
-		k = 2;
-		// pos > seq.size()
-		pos = 9;
-		digest::UM_Digester* dig2;
-		CHECK_THROWS_AS(dig2 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		
-		pos = 0;
-		// pos + k > seq.size()
-		pos = 7;
-		digest::UM_Digester* dig3;
-		CHECK_THROWS_AS(dig3 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		
-		pos = 0;
-		// minimized_h > 2
-		minimized_h = 3;
-		digest::UM_Digester* dig4;
-		CHECK_THROWS_AS(dig4 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		
-		minimized_h = 0;
-		// mod >= congruence
-		mod = 2;
-		congruence = 2;
-		digest::UM_Digester* dig5;
-		CHECK_THROWS_AS(dig5 = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadModException);
-		
-		mod = 1e9+7;
-		congruence = 0;
 	}
 }
 
