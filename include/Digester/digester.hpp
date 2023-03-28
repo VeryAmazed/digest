@@ -44,24 +44,6 @@ class NotRolledTillEndException : public std::exception
 // Only supports characters in DNA and N, upper or lower case
 class Digester{
     public:
-        /**
-         * Constructor.
-         * @param seq std string of DNA sequence to be hashed.
-         * @param k K-mer size. 
-         * @param pos 0-indexed position in seq to start hashing from. 
-         * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
-         * 
-         * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
-         *      or if the starting position is not at least k-1 from the end of the string
-         */
-        Digester(const std::string& seq, unsigned k, size_t pos = 0, unsigned minimized_h = 0) 
-            : seq(seq.data()), len(seq.size()), pos(pos), start(pos), end(pos+k), k(k), minimized_h(minimized_h) {
-                
-                if(k == 0 || pos > seq.size()-k || minimized_h > 2){
-                    throw BadConstructionException();
-                }
-                this->c_outs = new std::deque<char>;
-            }
 
         /**
          * Constructor.
@@ -82,43 +64,56 @@ class Digester{
                 }
                 this->c_outs = new std::deque<char>;
             }
+        
+        /**
+         * Constructor.
+         * @param seq std string of DNA sequence to be hashed.
+         * @param k K-mer size. 
+         * @param pos 0-indexed position in seq to start hashing from. 
+         * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
+         * 
+         * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
+         *      or if the starting position is not at least k-1 from the end of the string
+         */
+        Digester(const std::string& seq, unsigned k, size_t pos = 0, unsigned minimized_h = 0) :
+            Digester(seq.c_str(), seq.size(), k, pos, minimized_h) {}
+
+        /**
+         * Helper function
+         * 
+         * @param copy, Digester object you want to copy from 
+         */
+        void copyOver(const Digester& copy){
+            this->seq = copy.seq;
+            this->len = copy.len;
+            this->k = copy.k;
+            this->pos = copy.pos;
+            this->start = copy.start;
+            this->end = copy.end;
+            this->rolled = copy.rolled;
+            this->minimized_h = copy.minimized_h;
+            if(this->rolled){
+                this->chash = copy.chash;
+                this->rhash = copy.rhash;
+                this->fhash = copy.fhash;
+            }
+        }
         /**
          * Copy Constructor
          * 
          * @param copy, Digester object you want to copy from 
          */
         Digester(const Digester& copy){
-            this->seq = copy.seq;
-            this->len = copy.len;
-            this->k = copy.k;
-            this->pos = copy.pos;
-            this->start = copy.start;
-            this->end = copy.end;
-            this->rolled = copy.rolled;
-            this->minimized_h = copy.minimized_h;
-            if(this->rolled){
-                this->chash = copy.chash;
-                this->rhash = copy.rhash;
-                this->fhash = copy.fhash;
-            }
+            copyOver(copy);
             this->c_outs = new std::deque<char>(*(copy.c_outs));
-
         }
-        
+        /**
+         * assignment operator override
+         * 
+         * @param copy, Digester object you want to copy from 
+         */
         Digester& operator=(const Digester& copy){
-            this->seq = copy.seq;
-            this->len = copy.len;
-            this->k = copy.k;
-            this->pos = copy.pos;
-            this->start = copy.start;
-            this->end = copy.end;
-            this->rolled = copy.rolled;
-            this->minimized_h = copy.minimized_h;
-            if(this->rolled){
-                this->chash = copy.chash;
-                this->rhash = copy.rhash;
-                this->fhash = copy.fhash;
-            }
+            copyOver(copy);
             (this->c_outs)->assign((copy.c_outs)->begin(), (copy.c_outs)->end());
             return *this;
         }
@@ -212,28 +207,6 @@ class Digester{
             }
             return rhash;
         }
-        
-        /**
-         * 
-         * @param seq new sequence to be hashed
-         * @param pos new position to start from
-         * 
-         * @throws BadConstructionException Thrown if k is greater than the length of the sequence,
-         *      or if the starting position is not at least k-1 from the end of the string
-         */
-        void new_seq(const std::string& seq, size_t pos){
-            c_outs->clear();
-            this->seq = seq.data();
-            this->len = seq.size();
-            this->pos = pos;
-            this->start = pos;
-            this->end = pos+this->k;
-            rolled = false;
-
-            if(pos > seq.size()-k || minimized_h > 2){
-                throw BadConstructionException();
-            }
-        }
 
         /**
          * 
@@ -258,16 +231,16 @@ class Digester{
         }
 
         /**
-         * Simulates the appending of a new sequence to the end of the old sequence
-         * The old string will no longer be stored, but the rolling hashes will be able to preceed as if the strings were appended
          * 
-         * @param seq std string of DNA sequence to be appended
+         * @param seq new sequence to be hashed
+         * @param pos new position to start from
          * 
-         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
-         * @throws BadSequenceLengthException Thrown when the length of the sequence is 0
-         * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
+         * @throws BadConstructionException Thrown if k is greater than the length of the sequence,
+         *      or if the starting position is not at least k-1 from the end of the string
          */
-        void append_seq(const std::string& seq);
+        void new_seq(const std::string& seq, size_t pos){
+            new_seq(seq.c_str(), seq.size(), pos);
+        }
 
         /**
          * Simulates the appending of a new sequence to the end of the old sequence
@@ -281,6 +254,18 @@ class Digester{
          * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
          */
         void append_seq(const char* seq, size_t len);
+
+        /**
+         * Simulates the appending of a new sequence to the end of the old sequence
+         * The old string will no longer be stored, but the rolling hashes will be able to preceed as if the strings were appended
+         * 
+         * @param seq std string of DNA sequence to be appended
+         * 
+         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
+         * @throws BadSequenceLengthException Thrown when the length of the sequence is 0
+         * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
+         */
+        void append_seq(const std::string& seq);
 
         unsigned get_minimized_h(){
             return minimized_h;

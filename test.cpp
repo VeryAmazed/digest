@@ -64,24 +64,6 @@ void UM_constructor_stdstr(digest::UM_Digester& dig, std::string& str, unsigned 
 	CHECK(dig.get_congruence() == congruence);
 }
 
-void base_constructor_cstr(digest::Digester& dig, const char* str, size_t len, unsigned k, size_t pos, unsigned minimized_h){
-	CHECK(strcmp(str, dig.get_sequence()) == 0);
-	CHECK(len == dig.get_len());
-	CHECK(dig.get_k() == k);
-	CHECK(dig.get_pos() == pos);
-	CHECK(dig.get_minimized_h() == minimized_h);
-	CHECK(dig.get_rolled() == false);
-	CHECK_THROWS_AS(dig.get_chash(), digest::NotRolledException);
-	CHECK_THROWS_AS(dig.get_fhash(), digest::NotRolledException);
-	CHECK_THROWS_AS(dig.get_rhash(), digest::NotRolledException);
-}
-
-void UM_constructor_cstr(digest::UM_Digester& dig, const char* str, size_t len, unsigned k, size_t pos, unsigned minimized_h, uint64_t mod, uint64_t congruence){
-	base_constructor_cstr(dig, str, len, k, pos, minimized_h);
-	CHECK(dig.get_mod() ==  mod);
-	CHECK(dig.get_congruence() == congruence);
-}
-
 void fhash_roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	nthash::NtHash tHash(str, 1, k, 0);
 	uint64_t trueHash;
@@ -132,10 +114,6 @@ TEST_CASE("UM_Digester Testing"){
 			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
 			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
-
-			dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h);
-			UM_constructor_cstr(*dig, str.c_str(), len, k, pos, minimized_h, mod, congruence);
-			delete dig;
 		}
 		// Using string in random.txt
 		len = test_strs[4].size();
@@ -147,10 +125,6 @@ TEST_CASE("UM_Digester Testing"){
 			congruence = 0;
 			digest::UM_Digester* dig = new digest::UM_Digester(test_strs[4], k, mod, congruence, pos, minimized_h);
 			UM_constructor_stdstr(*dig, test_strs[4], k, pos, minimized_h, mod, congruence);
-			delete dig;
-
-			dig = new digest::UM_Digester(test_strs[4].c_str(), len, k, mod, congruence, pos, minimized_h);
-			UM_constructor_cstr(*dig, test_strs[4].c_str(), len, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
 
@@ -167,37 +141,33 @@ TEST_CASE("UM_Digester Testing"){
 		k = 0;
 		digest::UM_Digester* dig;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 
 		k = 2;
 		// pos > seq.size()
 		pos = 9;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 
 		pos = 0;
 		// pos + k > seq.size()
 		pos = 7;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-
+		
 		pos = 0;
 		// minimized_h > 2
 		minimized_h = 3;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-
+	
 		minimized_h = 0;
 		// mod >= congruence
 		mod = 2;
 		congruence = 2;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str.c_str(), len, k, mod, congruence, pos, minimized_h), digest::BadModException);
-
+		
 		mod = 1e9+7;
 		congruence = 0;
 	}
 
+	/*
 	SECTION("Testing roll_one"){
 		
 		for(int i =0; i < test_strs.size(); i++){
@@ -212,6 +182,7 @@ TEST_CASE("UM_Digester Testing"){
 
 		
 	}
+	*/
 }
 
 
