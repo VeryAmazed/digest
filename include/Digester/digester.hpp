@@ -4,32 +4,17 @@
 #include "../ntHash/nthash.hpp"
 #include <stdexcept>
 #include <deque>
+#include <cctype>
 
 namespace digest{
 
 // Only supports characters in DNA and N
 
-class NotRolledException : public std::exception
-{
-	const char * what () const throw ()
-    {
-    	return "Must call roll_one() or roll_next_minimizer() first.";
-    }
-};
-
 class BadConstructionException : public std::exception
 {
 	const char * what () const throw ()
     {
-    	return "minimized_h must be either 0, 1, or 2, k cannot be 0 or be greater than the length of the sequence, and pos can't be greater than the length of the sequence minus k";
-    }
-};
-
-class BadSequenceLengthException : public std::exception
-{
-	const char * what () const throw ()
-    {
-    	return "Sequence length must be greater than 0.";
+    	return "minimized_h must be either 0, 1, or 2, k cannot be 0, pos must be less than len";
     }
 };
 
@@ -58,10 +43,13 @@ class Digester{
          */
         Digester(const char* seq, size_t len, unsigned k, size_t pos = 0, unsigned minimized_h = 0) 
             : seq(seq), len(len), pos(pos), start(pos), end(pos+k), k(k), minimized_h(minimized_h) {
-                
-                if(k == 0 || pos > len-k || minimized_h > 2){
+                fhash = 0;
+                chash = 0;
+                rhash = 0;
+                if(k == 0 || pos >= len || minimized_h > 2){
                     throw BadConstructionException();
                 }
+                init_hash();
                 this->c_outs = new std::deque<char>;
             }
         
@@ -90,9 +78,9 @@ class Digester{
             this->pos = copy.pos;
             this->start = copy.start;
             this->end = copy.end;
-            this->rolled = copy.rolled;
+            this->is_valid_hash = copy.is_valid_hash;
             this->minimized_h = copy.minimized_h;
-            if(this->rolled){
+            if(this->is_valid_hash){
                 this->chash = copy.chash;
                 this->rhash = copy.rhash;
                 this->fhash = copy.fhash;
@@ -126,8 +114,8 @@ class Digester{
          * @return bool, true if roll_one(), roll_next_minimizer() or roll_next_n_minis() has been called at least once, false otherwise
          * 
          */
-        bool get_rolled(){
-            return rolled;
+        bool get_is_valid_hash(){
+            return is_valid_hash;
         }
         
         /**
@@ -151,7 +139,7 @@ class Digester{
          * 
          * @throws std::out_of_range if the end of the string has already been reached
          */
-        void roll_one();
+        bool roll_one();
 
 
         /**
@@ -172,39 +160,24 @@ class Digester{
         /**
          * 
          * @return the canonicalized hash of the current k-mer
-         * 
-         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
          */
         uint64_t get_chash(){
-            if(!rolled){
-                throw NotRolledException();
-            }
             return chash;
         }
 
         /**
          * 
          * @return the forward hash of the current k-mer
-         * 
-         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
          */
         uint64_t get_fhash(){
-            if(!rolled){
-                throw NotRolledException();
-            }
             return fhash;
         }
 
         /**
          * 
          * @return the reverse hash of the current k-mer
-         * 
-         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
          */
         uint64_t get_rhash(){
-            if(!rolled){
-                throw NotRolledException();
-            }
             return rhash;
         }
 
@@ -224,10 +197,11 @@ class Digester{
             this->pos = pos;
             this->start = pos;
             this->end = pos+this->k;
-            rolled = false;
-            if(pos > len-k || minimized_h > 2){
+            is_valid_hash = false;
+            if(pos >= len || minimized_h > 2){
                 throw BadConstructionException();
             }
+            init_hash();
         }
 
         /**
@@ -249,8 +223,6 @@ class Digester{
          * @param seq C string of DNA sequence to be appended
          * @param len length of the sequence
          * 
-         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
-         * @throws BadSequenceLengthException Thrown when the length of the sequence is 0
          * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
          */
         void append_seq(const char* seq, size_t len);
@@ -261,8 +233,6 @@ class Digester{
          * 
          * @param seq std string of DNA sequence to be appended
          * 
-         * @throws NotRolledException Thrown when called before roll_one() or roll_next_minimizer() has been called at least once
-         * @throws BadSequenceLengthException Thrown when the length of the sequence is 0
          * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
          */
         void append_seq(const std::string& seq);
@@ -271,11 +241,38 @@ class Digester{
             return minimized_h;
         }
 
-        /**
-         * 
-         * @return std::string of the current k-mer
-         */
-        std::string get_string();
+        bool is_ACTG(char in){
+            in = toupper(in);
+            if(in == 'A' || in == 'C' || in == 'T' || in == 'G'){
+                return true;
+            }
+            return false;
+        }
+
+        bool init_hash(){
+            while(end-1 < len){
+                bool works = true;
+                for(size_t i = start; i < end; i++){
+                    if(!is_ACTG(seq[i])){
+                        pos += (i+1) - start;
+                        start = i+1;
+                        end = start + k;
+                        works = false;
+                        break;
+                    }
+                }
+                if(!works){
+                    continue;
+                }
+                fhash = nthash::ntf64(seq + start, k);
+                rhash = nthash::ntr64(seq + start, k);
+                chash = nthash::canonical(fhash, rhash);
+                is_valid_hash = true;
+                return true;
+            }
+            is_valid_hash = false;
+            return false;
+        }
 
         /**
          * 
@@ -285,6 +282,13 @@ class Digester{
             return seq;
         }
 
+        
+        /**
+         * 
+         * @return std::string of the current k-mer
+         */
+        // std::string get_string();
+        
     protected:
         // sequence to be digested
         const char* seq;
@@ -324,7 +328,7 @@ class Digester{
         unsigned minimized_h;
 
         // internal bool to track if rolled was called at least once
-        bool rolled = false;
+        bool is_valid_hash = false;
 };
 
 }

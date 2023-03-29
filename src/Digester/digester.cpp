@@ -4,20 +4,45 @@ namespace digest{
     
 
     void Digester::append_seq(const char* seq, size_t len){
-        if(!rolled){
-            throw NotRolledException();
-        }else if(len == 0){
-            throw BadSequenceLengthException();
-        }else if(end != len){
+        if(end >= this->len){
             throw NotRolledTillEndException();
         }
-        size_t ind = end;
-        while(c_outs->size() < k){
-            c_outs->push_front(this->seq[ind]);
-            ind--;
+        size_t ind = end-1;
+        if(is_valid_hash){
+            while(c_outs->size() <= k && ind >= 0){
+                c_outs->push_front(this->seq[ind]);
+                ind--;
+            }
+            start = 0;
+            end =0;
+        }else{
+            while(c_outs->size() <= k && ind >= 0){
+                if(!is_ACTG(this->seq[ind])){
+                    break;
+                }
+                c_outs->push_front(this->seq[ind]);
+                ind--;
+            }
+            ind = 0;
+            while(c_outs->size() <= k && ind < len){
+                if(!is_ACTG(this->seq[ind])){
+                    pos += c_outs->size() + 2;
+                    start = ind+1;
+                    end = start + k;
+                    init_hash();
+                    c_outs->clear();
+                    break;
+                }
+                c_outs->push_back(seq[ind]);
+                ind++;
+                end++;
+            }
+            if(c_outs->size() == k){
+                std::string temp(c_outs->begin(), c_outs->end());
+                fhash = nthash::ntf64(temp.c_str(), k);
+                rhash = nthash::ntr64(temp.c_str(), k);
+            }
         }
-        start = 0;
-        end =0;
         this->seq = seq;
         this->len = len;
     }
@@ -26,40 +51,50 @@ namespace digest{
         append_seq(seq.c_str(), seq.size());
     }
 
-    void Digester::roll_one(){
+    bool Digester::roll_one(){
         
-        if(!rolled){
-            if(end-1 == len){
-                throw std::out_of_range("End of sequence.");
-            }
-            fhash = nthash::ntf64(seq, k);
-            rhash = nthash::ntr64(seq, k);
-            rolled = true;
+        if(!is_valid_hash){
+            return false;
         }else{
             if(end == len){
-                throw std::out_of_range("End of sequence.");
+                is_valid_hash = false;
+                return false;
             }
             if(c_outs->size() > 0){
-                fhash = nthash::ntf64(fhash, k, seq[c_outs->front()], seq[end]);
-                rhash = nthash::ntr64(rhash, k, seq[c_outs->front()], seq[end]);
-                c_outs->pop_front();
-                /*
-                if(c_outs->size() == 0){
-                    start = 0;
+                if(is_ACTG(seq[end])){
+                    fhash = nthash::ntf64(fhash, k, seq[c_outs->front()], seq[end]);
+                    rhash = nthash::ntr64(rhash, k, seq[c_outs->front()], seq[end]);
+                    c_outs->pop_front();
+                    pos++;
+                    end++;
+                    return true;
+                }else{
+                    pos += k+1;
+                    c_outs->clear();
+                    start = end+1;
+                    end = start + k;
+                    return init_hash();
                 }
-                */
             }else{
-                fhash = nthash::ntf64(fhash, k, seq[start], seq[end]);
-                rhash = nthash::ntr64(rhash, k, seq[start], seq[end]);
-                start++;
+                if(is_ACTG(seq[end])){
+                    fhash = nthash::ntf64(fhash, k, seq[start], seq[end]);
+                    rhash = nthash::ntr64(rhash, k, seq[start], seq[end]);
+                    start++;
+                    pos++;
+                    end++;
+                    return true;
+                }else{
+                    pos += k+1;
+                    start = end+1;
+                    end = start + k;
+                    return init_hash();
+                }
+                
             }
-            end++;
-            pos++;
+            chash = nthash::canonical(fhash,rhash);
         }
-        chash = nthash::canonical(fhash,rhash);
-        
     }
-
+    /*
     std::string Digester::get_string(){
         std::string str;
         if(c_outs->size() > 0){
@@ -73,4 +108,5 @@ namespace digest{
         }
         return str;
     }
+    */
 } 

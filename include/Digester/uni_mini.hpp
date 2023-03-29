@@ -15,9 +15,6 @@ class BadModException : public std::exception
 
 class UM_Digester : public Digester{
     public:
-
-        
-
         /**
          * 
          * @param seq 
