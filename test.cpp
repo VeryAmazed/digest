@@ -4,7 +4,7 @@
 #include <fstream>
 
 std::vector<std::string> test_strs;
-unsigned ks[] = {1, 4, 9, 89, 128};
+unsigned ks[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ,12, 16, 89};
 
 void setupStrings(){
 	std::string str;
@@ -15,12 +15,17 @@ void setupStrings(){
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test_strings/N.txt", std::fstream::in);
+	fs.open("../test_strings/a_lowercase.txt", std::fstream::in);
 	fs >> str;
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test_strings/a_lowercase.txt", std::fstream::in);
+	fs.open("../test_strings/salmonella_enterica.txt", std::fstream::in);
+	fs >> str;
+	test_strs.push_back(str);
+	fs.close();
+
+	fs.open("../test_strings/salmonella_lowercase.txt", std::fstream::in);
 	fs >> str;
 	test_strs.push_back(str);
 	fs.close();
@@ -35,27 +40,33 @@ void setupStrings(){
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test_strings/salmonella_enterica.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/salmonella_lowercase.txt", std::fstream::in);
+	fs.open("../test_strings/N.txt", std::fstream::in);
 	fs >> str;
 	test_strs.push_back(str);
 	fs.close();
 }
 
 void base_constructor_stdstr(digest::Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h){
+	INFO("String is: " << str);
+	INFO("K is: " << k);
+	INFO("Pos is: " << dig.get_pos());
+	
 	CHECK(strcmp(str.c_str(), dig.get_sequence()) == 0);
 	CHECK(str.size() == dig.get_len());
 	CHECK(dig.get_k() == k);
-	CHECK(dig.get_pos() == pos);
 	CHECK(dig.get_minimized_h() == minimized_h);
-	CHECK(dig.get_rolled() == false);
-	CHECK_THROWS_AS(dig.get_chash(), digest::NotRolledException);
-	CHECK_THROWS_AS(dig.get_fhash(), digest::NotRolledException);
-	CHECK_THROWS_AS(dig.get_rhash(), digest::NotRolledException);
+	if(k <= str.size()){
+		nthash::NtHash tHash(str, 1, k, 0);
+		CHECK(dig.get_is_valid_hash() == tHash.roll());
+		CHECK(dig.get_pos() == tHash.get_pos());
+		if(dig.get_is_valid_hash()){
+			INFO("ntHash pos is: " << tHash.get_pos());
+			INFO("ntHash k is: " << tHash.get_k());
+			INFO("function hash is: " << nthash::ntf64(str.c_str(), k));
+			CHECK(dig.get_fhash() == tHash.get_forward_hash());
+			CHECK(dig.get_rhash() == tHash.get_reverse_hash());
+		}
+	}
 }
 
 void UM_constructor_stdstr(digest::UM_Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h, uint64_t mod, uint64_t congruence){
@@ -63,7 +74,7 @@ void UM_constructor_stdstr(digest::UM_Digester& dig, std::string& str, unsigned 
 	CHECK(dig.get_mod() ==  mod);
 	CHECK(dig.get_congruence() == congruence);
 }
-
+/*
 void fhash_roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	nthash::NtHash tHash(str, 1, k, 0);
 	uint64_t trueHash;
@@ -71,25 +82,19 @@ void fhash_roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	for(size_t i =0; i+k <= str.size(); i++){
 		tHash.roll();
 		trueHash = tHash.get_forward_hash();
-		/*
-		if(i == 0){
-			trueHash= nthash::ntf64(str2.c_str(), k);
-		}else{
-			trueHash = nthash::ntf64(trueHash, k, str2[i-1], str2[i+k-1]);
-		}
-		*/
+		
 		dig.roll_one();
 		digHash = dig.get_fhash();
 		CHECK(dig.get_pos() == i);
 		//std::cout << trueHash << " " << digHash << std::endl;
 		//std::cout << i << " " << tHash.get_pos() << std::endl;
 		CHECK(trueHash == digHash);
-		CHECK(dig.get_rolled() == true);
+		CHECK(dig.get_is_valid_hash() == true);
 	}
 
 	CHECK_THROWS_AS(dig.roll_one(), std::out_of_range);
 }
-
+*/
 TEST_CASE("UM_Digester Testing"){
 	setupStrings();
 	/*
@@ -115,18 +120,41 @@ TEST_CASE("UM_Digester Testing"){
 			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
-		// Using string in random.txt
-		len = test_strs[4].size();
-		k = ks[4];
+
+		// string is length 1, k = 4
+		str = "A";
+		len = 1;
+		k = ks[1];
 		pos = 0;
 		for(int i =0; i < 3; i++){
 			minimized_h = i;
-			mod = 1e9+7;
-			congruence = 0;
-			digest::UM_Digester* dig = new digest::UM_Digester(test_strs[4], k, mod, congruence, pos, minimized_h);
-			UM_constructor_stdstr(*dig, test_strs[4], k, pos, minimized_h, mod, congruence);
+			mod = 2;
+			congruence = 1;
+			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
+			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
+
+		// Using string in random.txt
+		
+		pos = 0;
+		for(int i =0; i < 4; i++){
+			len = test_strs[i].size();
+			for(int j =0; j < 13; j++){
+				k = ks[j];
+				std::cout << k << std::endl;
+				for(int p =0; p < 3; p++){
+					minimized_h = p;
+					mod = 1e9+7;
+					congruence = 0;
+					digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], k, mod, congruence, pos, minimized_h);
+					UM_constructor_stdstr(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
+					delete dig;
+				}
+			}
+			
+		}
+		
 
 		// Throwing Exceptions
 		// Shouldn't/Doesn't leak any memory
@@ -141,28 +169,22 @@ TEST_CASE("UM_Digester Testing"){
 		k = 0;
 		digest::UM_Digester* dig;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-
 		k = 2;
-		// pos > seq.size()
-		pos = 9;
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 
-		pos = 0;
-		// pos + k > seq.size()
-		pos = 7;
+		// pos >= seq.size()
+		pos = 8;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		
 		pos = 0;
+
 		// minimized_h > 2
 		minimized_h = 3;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-	
 		minimized_h = 0;
+
 		// mod >= congruence
 		mod = 2;
 		congruence = 2;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
-		
 		mod = 1e9+7;
 		congruence = 0;
 	}
