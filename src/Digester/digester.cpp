@@ -81,11 +81,10 @@ namespace digest{
     }
 
     bool Digester::roll_one(){
-        
         if(!is_valid_hash){
             return false;
         }else{
-            if(end == len){
+            if(end >= len){
                 is_valid_hash = false;
                 return false;
             }
