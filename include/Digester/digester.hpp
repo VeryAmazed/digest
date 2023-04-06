@@ -249,30 +249,8 @@ class Digester{
             return false;
         }
 
-        bool init_hash(){
-            while(end-1 < len){
-                bool works = true;
-                for(size_t i = start; i < end; i++){
-                    if(!is_ACTG(seq[i])){
-                        pos += (i+1) - start;
-                        start = i+1;
-                        end = start + k;
-                        works = false;
-                        break;
-                    }
-                }
-                if(!works){
-                    continue;
-                }
-                fhash = nthash::ntf64(seq + start, k);
-                rhash = nthash::ntr64(seq + start, k);
-                chash = nthash::canonical(fhash, rhash);
-                is_valid_hash = true;
-                return true;
-            }
-            is_valid_hash = false;
-            return false;
-        }
+        // Helper function that initializes the hash values
+        bool init_hash();
 
         /**
          * 

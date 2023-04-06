@@ -44,6 +44,7 @@ FetchContent_MakeAvailable(Catch2)
 ############################################################
 
 # Add an executable with the above sources
+
 add_executable(test 
     test.cpp
 )

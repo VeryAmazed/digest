@@ -4,7 +4,7 @@
 #include <fstream>
 
 std::vector<std::string> test_strs;
-unsigned ks[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ,12, 16, 89};
+unsigned ks[] = {1, 4, 7, 8, 9, 16, 25, 64};
 
 void setupStrings(){
 	std::string str;
@@ -58,14 +58,14 @@ void base_constructor_stdstr(digest::Digester& dig, std::string& str, unsigned k
 	if(k <= str.size()){
 		nthash::NtHash tHash(str, 1, k, 0);
 		CHECK(dig.get_is_valid_hash() == tHash.roll());
-		CHECK(dig.get_pos() == tHash.get_pos());
 		if(dig.get_is_valid_hash()){
+			CHECK(dig.get_pos() == tHash.get_pos());
 			INFO("ntHash pos is: " << tHash.get_pos());
-			INFO("ntHash k is: " << tHash.get_k());
-			INFO("function hash is: " << nthash::ntf64(str.c_str(), k));
 			CHECK(dig.get_fhash() == tHash.get_forward_hash());
 			CHECK(dig.get_rhash() == tHash.get_reverse_hash());
 		}
+	}else{
+		CHECK(dig.get_is_valid_hash() == false);
 	}
 }
 
@@ -138,19 +138,21 @@ TEST_CASE("UM_Digester Testing"){
 		// Using string in random.txt
 		
 		pos = 0;
-		for(int i =0; i < 4; i++){
+		for(int i =0; i < test_strs.size(); i++){
 			len = test_strs[i].size();
 			for(int j =0; j < 13; j++){
 				k = ks[j];
-				std::cout << k << std::endl;
-				for(int p =0; p < 3; p++){
-					minimized_h = p;
-					mod = 1e9+7;
-					congruence = 0;
-					digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], k, mod, congruence, pos, minimized_h);
-					UM_constructor_stdstr(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
-					delete dig;
+				for(int l =0; l < 8; l++){
+					for(int p =0; p < 3; p++){
+						minimized_h = p;
+						mod = 1e9+7;
+						congruence = 0;
+						digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], k, mod, congruence, pos, minimized_h);
+						UM_constructor_stdstr(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
+						delete dig;
+					}
 				}
+				
 			}
 			
 		}

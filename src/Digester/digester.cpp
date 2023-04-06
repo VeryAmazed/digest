@@ -51,6 +51,35 @@ namespace digest{
         append_seq(seq.c_str(), seq.size());
     }
 
+    bool Digester::init_hash(){
+        unsigned locn_useless;
+        while(end-1 < len){
+            bool works = true;
+            for(size_t i = start; i < end; i++){
+                if(!is_ACTG(seq[i])){
+                    pos += (i+1) - start;
+                    start = i+1;
+                    end = start + k;
+                    works = false;
+                    break;
+                }
+            }
+            if(!works){
+                continue;
+            }
+            /*
+            fhash = nthash::ntf64(seq + start, k);
+            rhash = nthash::ntr64(seq + start, k);
+            chash = nthash::canonical(fhash, rhash);
+            */
+            nthash::ntc64(seq + start, k, fhash, rhash, chash, locn_useless);
+            is_valid_hash = true;
+            return true;
+        }
+        is_valid_hash = false;
+        return false;
+    }
+
     bool Digester::roll_one(){
         
         if(!is_valid_hash){
