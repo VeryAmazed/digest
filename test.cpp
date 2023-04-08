@@ -101,6 +101,32 @@ void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	CHECK(dig.get_is_valid_hash() == worked);
 }
 
+void um_roll_minimizer(digest::UM_Digester& dig, std::string& str, unsigned k, unsigned minimized_h, uint64_t prime){
+	nthash::NtHash tHash(str, 1, k, 0);
+	std::vector<size_t> positions;
+	std::vector<uint64_t> hashes;
+	while(tHash.roll()){
+		uint64_t temp;
+		if(minimized_h == 0){
+			temp = *(tHash.hashes());
+		}else if(minimized_h == 1){
+			temp = tHash.get_forward_hash();
+		}else{
+			temp = tHash.get_reverse_hash();
+		}
+		if(temp % prime == 0){
+			positions.push_back(tHash.get_pos());
+			hashes.push_back(temp%prime);
+		}
+		
+	}
+	std::vector<size_t> dig_positions = dig.roll_minimizer(400);
+	REQUIRE(positions.size() == dig_positions.size());
+	for(size_t i = 0; i < positions.size(); i++){
+		CHECK(dig_positions[i] == positions[i]);
+	}
+}
+
 TEST_CASE("UM_Digester Testing"){
 	setupStrings();
 	/*
@@ -139,10 +165,7 @@ TEST_CASE("UM_Digester Testing"){
 			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
 			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
-		}
-
-		// Using string in random.txt
-		
+		}	
 		
 		for(int i =0; i < test_strs.size(); i++){
 			len = test_strs[i].size();
@@ -204,6 +227,21 @@ TEST_CASE("UM_Digester Testing"){
 			for(int j =0; j < 8; j++){
 				digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], ks[j], 1e9+7, 0, 0, 1);
 				roll_one(*dig, test_strs[i], ks[j]);
+				delete dig;
+			}
+		}
+	}
+	
+	SECTION("Testing roll_minimizer(). The one that takes no parameters"){
+		uint64_t prime = 17;
+		for(int i =0; i < 7; i += 2){
+			for(int j =0; j < 8; j++){
+				for(int l = 0; l < 3; l++){
+					digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], ks[j], prime, 0, 0, l);
+					um_roll_minimizer(*dig, test_strs[i], ks[j], l, prime);
+					delete dig;
+				}
+				
 			}
 		}
 	}

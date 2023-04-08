@@ -141,17 +141,9 @@ class Digester{
          */
         bool roll_one();
 
-
-        /**
-         * roll hash until we get to a minimizer or reach the end of the sequence
-         * 
-         * @return bool if a minimizer is found or exists, false if we reach end of seq before there is a minimizer
-         */
-        virtual bool roll_next_minimizer() = 0;
-
         // Possibly write another function that returns a group of minimizers instead of just rolling to the next one, 
         // TODO
-        std::vector<size_t> roll_next_n_minis();
+        virtual std::vector<size_t> roll_minimizer(unsigned amount) = 0;
 
         size_t get_pos(){
             return pos;
@@ -297,8 +289,7 @@ class Digester{
         
         // deque of characters to be thrown out from left to right
         std::deque<char>* c_outs;
-
-    private:
+        
         /*
             Hash value to be minimized
             0 for canonical, 1 for forward, 2 for reverse

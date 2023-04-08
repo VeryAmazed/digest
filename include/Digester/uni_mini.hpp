@@ -66,7 +66,7 @@ class UM_Digester : public Digester{
             return *this;
         }
 
-        bool roll_next_minimizer() override;    
+        std::vector<size_t> roll_minimizer(unsigned amount) override;    
 
         /**
          * 

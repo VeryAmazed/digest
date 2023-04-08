@@ -95,6 +95,7 @@ namespace digest{
                     c_outs->pop_front();
                     pos++;
                     end++;
+                    chash = nthash::canonical(fhash,rhash);
                     return true;
                 }else{
                     pos += k+1;
@@ -110,6 +111,7 @@ namespace digest{
                     start++;
                     pos++;
                     end++;
+                    chash = nthash::canonical(fhash,rhash);
                     return true;
                 }else{
                     pos += k+1;
@@ -119,7 +121,6 @@ namespace digest{
                 }
                 
             }
-            chash = nthash::canonical(fhash,rhash);
         }
     }
     /*
