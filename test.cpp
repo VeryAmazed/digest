@@ -101,7 +101,7 @@ void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	CHECK(dig.get_is_valid_hash() == worked);
 }
 
-void um_roll_minimizer(digest::UM_Digester& dig, std::string& str, unsigned k, unsigned minimized_h, uint64_t prime){
+void um_roll_minimizer(digest::Digester& dig, std::string& str, unsigned k, unsigned minimized_h, uint64_t prime){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<size_t> positions;
 	std::vector<uint64_t> hashes;
@@ -125,6 +125,76 @@ void um_roll_minimizer(digest::UM_Digester& dig, std::string& str, unsigned k, u
 	for(size_t i = 0; i < positions.size(); i++){
 		CHECK(dig_positions[i] == positions[i]);
 	}
+}
+
+void append_seq_compare(std::string& str1, std::string& str2, digest::Digester& dig, unsigned  k){
+	INFO(str1);
+	INFO(str2);
+	INFO(str1.size());
+	INFO(str2.size());
+	INFO(k);
+	// Make sure to check positions too
+	std::string str3 = str1 + str2;
+	nthash::NtHash tHash(str3, 1, k);
+	std::vector<uint64_t> vec1;
+	std::vector<size_t> positions1;
+	while(tHash.roll()){
+		vec1.push_back(*(tHash.hashes()));
+		positions1.push_back(tHash.get_pos());
+	}
+	std::vector<uint64_t> vec2;
+	std::vector<size_t> positions2;
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	dig.append_seq(str2);
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	REQUIRE(vec1.size() == vec2.size());
+	for(size_t i =0; i < vec1.size(); i++){
+		INFO(i);
+		CHECK(vec1[i] == vec2[i]);
+		CHECK(positions1[i] == positions2[i]);
+	}
+}
+
+void append_seq_small_cases(){
+	std::string str1 = "CCGTGT";
+	std::string str2 = "CCGNGT";
+	std::string str3 = "AGCCTT";
+	std::string str4 = "ANCCTT";
+	std::string str5 = "A";
+
+	digest::Digester* dig = new digest::UM_Digester(str1, 4, 17, 0, 0, 0);
+	append_seq_compare(str1, str3, *dig, 4);
+	delete dig;
+
+	dig = new digest::UM_Digester(str2, 4, 17, 0, 0, 0);
+	append_seq_compare(str2, str4, *dig, 4);
+	delete dig;
+
+	dig = new digest::UM_Digester(str2, 4, 17, 0, 0, 0);
+	append_seq_compare(str2, str3, *dig, 4);
+	delete dig;
+
+	dig = new digest::UM_Digester(str2, 4, 17, 0, 0, 0);
+	append_seq_compare(str2, str5, *dig, 4);
+	delete dig;
+
+	dig = new digest::UM_Digester(str1, 4, 17, 0, 0, 0);
+	append_seq_compare(str1, str5, *dig, 4);
+	delete dig;
 }
 
 TEST_CASE("UM_Digester Testing"){
@@ -244,6 +314,26 @@ TEST_CASE("UM_Digester Testing"){
 				
 			}
 		}
+	}
+
+	SECTION("Testing append_seq()"){
+		append_seq_small_cases();
+
+		// Throws NotRolledTillEndException()
+		digest::UM_Digester* dig = new digest::UM_Digester(test_strs[0], 4, 17);
+		CHECK_THROWS_AS(dig->append_seq(test_strs[0]), digest::NotRolledTillEndException);
+
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				std::string str1 = test_strs[i].substr(0, 50);
+				std::string str2 = test_strs[i].substr(50, 100);
+				digest::UM_Digester* dig = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+				append_seq_compare(str1, str2, *dig, ks[j]);
+				delete dig;
+			}
+		}
+		
+			
 	}
 	
 }

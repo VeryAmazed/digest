@@ -190,7 +190,7 @@ class Digester{
             this->start = pos;
             this->end = pos+this->k;
             is_valid_hash = false;
-            if(pos >= len || minimized_h > 2){
+            if(pos >= len){
                 throw BadConstructionException();
             }
             init_hash();

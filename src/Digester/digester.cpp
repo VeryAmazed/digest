@@ -4,45 +4,58 @@ namespace digest{
     
 
     void Digester::append_seq(const char* seq, size_t len){
-        if(end >= this->len){
+        
+        if(end < this->len){
             throw NotRolledTillEndException();
         }
-        size_t ind = end-1;
-        if(is_valid_hash){
-            while(c_outs->size() <= k && ind >= 0){
-                c_outs->push_front(this->seq[ind]);
-                ind--;
+        size_t ind = this->len-1;
+        //std::cout << ind <<std::endl;
+        
+        while(c_outs->size() < k-1 && ind >= 0){
+            if(!is_ACTG(this->seq[ind])){
+                break;
             }
-            start = 0;
-            end =0;
-        }else{
-            while(c_outs->size() <= k && ind >= 0){
-                if(!is_ACTG(this->seq[ind])){
-                    break;
-                }
-                c_outs->push_front(this->seq[ind]);
-                ind--;
-            }
-            ind = 0;
-            while(c_outs->size() <= k && ind < len){
-                if(!is_ACTG(this->seq[ind])){
-                    pos += c_outs->size() + 2;
-                    start = ind+1;
-                    end = start + k;
-                    init_hash();
-                    c_outs->clear();
-                    break;
-                }
-                c_outs->push_back(seq[ind]);
-                ind++;
-                end++;
-            }
-            if(c_outs->size() == k){
-                std::string temp(c_outs->begin(), c_outs->end());
-                fhash = nthash::ntf64(temp.c_str(), k);
-                rhash = nthash::ntr64(temp.c_str(), k);
-            }
+            c_outs->push_front(this->seq[ind]);
+            //std::cout << c_outs->front() <<std::endl;
+            ind--;
         }
+        ind = 0;
+        if(c_outs->size() == k-1){
+            pos++;
+        }
+        start = 0;
+        end = 0;
+        while(c_outs->size() < k && ind < len){
+            if(!is_ACTG(seq[ind])){
+                // first plus one is to move it past the part of the sequence represented by the deque, then the second plus one is cause the current character is bad
+                pos += c_outs->size() + 1; 
+                start = ind+1;
+                end = start + k;
+                this->seq = seq;
+                this->len = len;
+                init_hash();
+                c_outs->clear();
+                break;
+            }
+            c_outs->push_back(seq[ind]);
+            //std::cout << c_outs->back() <<std::endl;
+            ind++;
+            start++;
+            end++;
+        }
+        if(c_outs->size() == k){
+            std::string temp(c_outs->begin(), c_outs->end());
+            unsigned locn_useless;
+            nthash::ntc64(temp.c_str(), k, fhash, rhash, chash, locn_useless);
+            is_valid_hash = true;
+
+        }
+        
+        
+        for(std::deque<char>::iterator it = c_outs->begin(); it != c_outs->end(); it++){
+            std::cout << *it << std::endl;
+        }
+        
         this->seq = seq;
         this->len = len;
     }
@@ -67,11 +80,6 @@ namespace digest{
             if(!works){
                 continue;
             }
-            /*
-            fhash = nthash::ntf64(seq + start, k);
-            rhash = nthash::ntr64(seq + start, k);
-            chash = nthash::canonical(fhash, rhash);
-            */
             nthash::ntc64(seq + start, k, fhash, rhash, chash, locn_useless);
             is_valid_hash = true;
             return true;
@@ -90,8 +98,8 @@ namespace digest{
             }
             if(c_outs->size() > 0){
                 if(is_ACTG(seq[end])){
-                    fhash = nthash::ntf64(fhash, k, seq[c_outs->front()], seq[end]);
-                    rhash = nthash::ntr64(rhash, k, seq[c_outs->front()], seq[end]);
+                    fhash = nthash::ntf64(fhash, k, c_outs->front(), seq[end]);
+                    rhash = nthash::ntr64(rhash, k, c_outs->front(), seq[end]);
                     c_outs->pop_front();
                     pos++;
                     end++;
