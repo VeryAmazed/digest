@@ -4,10 +4,10 @@ namespace digest{
     
 
     void Digester::append_seq(const char* seq, size_t len){
-        
         if(end < this->len){
             throw NotRolledTillEndException();
         }
+        offset += this->len;
         size_t ind = this->len-1;
         //std::cout << ind <<std::endl;
         
@@ -20,15 +20,11 @@ namespace digest{
             ind--;
         }
         ind = 0;
-        if(c_outs->size() == k-1){
-            pos++;
-        }
+        
         start = 0;
         end = 0;
         while(c_outs->size() < k && ind < len){
             if(!is_ACTG(seq[ind])){
-                // first plus one is to move it past the part of the sequence represented by the deque, then the second plus one is cause the current character is bad
-                pos += c_outs->size() + 1; 
                 start = ind+1;
                 end = start + k;
                 this->seq = seq;
@@ -51,11 +47,11 @@ namespace digest{
 
         }
         
-        
+        /*
         for(std::deque<char>::iterator it = c_outs->begin(); it != c_outs->end(); it++){
             std::cout << *it << std::endl;
         }
-        
+        */
         this->seq = seq;
         this->len = len;
     }
@@ -70,7 +66,6 @@ namespace digest{
             bool works = true;
             for(size_t i = start; i < end; i++){
                 if(!is_ACTG(seq[i])){
-                    pos += (i+1) - start;
                     start = i+1;
                     end = start + k;
                     works = false;
@@ -101,12 +96,10 @@ namespace digest{
                     fhash = nthash::ntf64(fhash, k, c_outs->front(), seq[end]);
                     rhash = nthash::ntr64(rhash, k, c_outs->front(), seq[end]);
                     c_outs->pop_front();
-                    pos++;
                     end++;
                     chash = nthash::canonical(fhash,rhash);
                     return true;
                 }else{
-                    pos += k+1;
                     c_outs->clear();
                     start = end+1;
                     end = start + k;
@@ -117,12 +110,10 @@ namespace digest{
                     fhash = nthash::ntf64(fhash, k, seq[start], seq[end]);
                     rhash = nthash::ntr64(rhash, k, seq[start], seq[end]);
                     start++;
-                    pos++;
                     end++;
                     chash = nthash::canonical(fhash,rhash);
                     return true;
                 }else{
-                    pos += k+1;
                     start = end+1;
                     end = start + k;
                     return init_hash();

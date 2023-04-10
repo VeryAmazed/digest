@@ -22,13 +22,13 @@ class UM_Digester : public Digester{
          * @param k 
          * @param mod Mod space to be used to calculate universal minimizers
          * @param congruence value we want minimizer hashes to be congruent to in the mod space
-         * @param pos 
+         * @param start
          * @param minimized_h 
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        UM_Digester(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t pos = 0, unsigned minimized_h = 0)
-        :  Digester(seq, len, k, pos, minimized_h), mod(mod), congruence(congruence)
+        UM_Digester(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, unsigned minimized_h = 0)
+        :  Digester(seq, len, k, start, minimized_h), mod(mod), congruence(congruence)
         {
             if(congruence >= mod){
                 throw BadModException();
@@ -41,13 +41,13 @@ class UM_Digester : public Digester{
          * @param k 
          * @param mod Mod space to be used to calculate universal minimizers
          * @param congruence value we want minimizer hashes to be congruent to in the mod space
-         * @param pos 
+         * @param start
          * @param minimized_h 
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        UM_Digester(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t pos = 0, unsigned minimized_h = 0) :
-            UM_Digester(seq.c_str(), seq.size(), k, mod, congruence, pos, minimized_h)
+        UM_Digester(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, unsigned minimized_h = 0) :
+            UM_Digester(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
         {}
         
 

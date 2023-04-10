@@ -14,7 +14,7 @@ class BadConstructionException : public std::exception
 {
 	const char * what () const throw ()
     {
-    	return "minimized_h must be either 0, 1, or 2, k cannot be 0, pos must be less than len";
+    	return "minimized_h must be either 0, 1, or 2, k cannot be 0,offset must be less than len";
     }
 };
 
@@ -41,12 +41,12 @@ class Digester{
          * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
          *      or if the starting position is not at least k-1 from the end of the string
          */
-        Digester(const char* seq, size_t len, unsigned k, size_t pos = 0, unsigned minimized_h = 0) 
-            : seq(seq), len(len), pos(pos), start(pos), end(pos+k), k(k), minimized_h(minimized_h) {
+        Digester(const char* seq, size_t len, unsigned k, size_t start = 0, unsigned minimized_h = 0) 
+            : seq(seq), len(len), offset(0), start(start), end(start+k), k(k), minimized_h(minimized_h) {
                 fhash = 0;
                 chash = 0;
                 rhash = 0;
-                if(k == 0 || pos >= len || minimized_h > 2){
+                if(k == 0 ||start >= len || minimized_h > 2){
                     throw BadConstructionException();
                 }
                 init_hash();
@@ -57,14 +57,14 @@ class Digester{
          * Constructor.
          * @param seq std string of DNA sequence to be hashed.
          * @param k K-mer size. 
-         * @param pos 0-indexed position in seq to start hashing from. 
+         * @param start 0-indexed position in seq to start hashing from. 
          * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
          * 
          * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
          *      or if the starting position is not at least k-1 from the end of the string
          */
-        Digester(const std::string& seq, unsigned k, size_t pos = 0, unsigned minimized_h = 0) :
-            Digester(seq.c_str(), seq.size(), k, pos, minimized_h) {}
+        Digester(const std::string& seq, unsigned k, size_t start = 0, unsigned minimized_h = 0) :
+            Digester(seq.c_str(), seq.size(), k, start, minimized_h) {}
 
         /**
          * Helper function
@@ -75,7 +75,7 @@ class Digester{
             this->seq = copy.seq;
             this->len = copy.len;
             this->k = copy.k;
-            this->pos = copy.pos;
+            this->offset = copy.offset;
             this->start = copy.start;
             this->end = copy.end;
             this->is_valid_hash = copy.is_valid_hash;
@@ -135,18 +135,26 @@ class Digester{
         }
 
         /**
-         * roll the hash 1 position to the right or construcuts the initial hash on first call 
+         * roll the hash 1offsetition to the right or construcuts the initial hash on first call 
          * 
          * @throws std::out_of_range if the end of the string has already been reached
          */
         bool roll_one();
 
-        // Possibly write another function that returns a group of minimizers instead of just rolling to the next one, 
-        // TODO
+        /**
+         * 
+         * @param amount number of minimizers you want to generate
+         * @return std::vector<size_t> vector filled with the positions of the minimizers up to the amount
+         */
         virtual std::vector<size_t> roll_minimizer(unsigned amount) = 0;
 
+        /**
+         * 
+         * @return current index of the first character of the kmer that has been hashed
+         *         strings that have been appended onto each other count as 1 big string
+         */
         size_t get_pos(){
-            return pos;
+            return offset + start - c_outs->size();
         }
 
         /**
@@ -177,20 +185,20 @@ class Digester{
          * 
          * @param seq new sequence to be hashed
          * @param len length of the new sequence
-         * @param pos new position to start from
+         * @paramoffset newoffsetition to start from
          * 
          * @throws BadConstructionException Thrown if k is greater than the length of the sequence,
-         *      or if the starting position is not at least k-1 from the end of the string
+         *      or if the startingoffsetition is not at least k-1 from the end of the string
          */
-        void new_seq(const char* seq, size_t len, size_t pos){
+        void new_seq(const char* seq, size_t len, size_t start){
             c_outs->clear();
             this->seq = seq;
             this->len = len;
-            this->pos = pos;
-            this->start = pos;
-            this->end = pos+this->k;
+            this->offset = 0;
+            this->start = start;
+            this->end = start+this->k;
             is_valid_hash = false;
-            if(pos >= len){
+            if(start >= len){
                 throw BadConstructionException();
             }
             init_hash();
@@ -199,10 +207,10 @@ class Digester{
         /**
          * 
          * @param seq new sequence to be hashed
-         * @param pos new position to start from
+         * @paramoffset newoffsetition to start from
          * 
          * @throws BadConstructionException Thrown if k is greater than the length of the sequence,
-         *      or if the starting position is not at least k-1 from the end of the string
+         *      or if the startingoffsetition is not at least k-1 from the end of the string
          */
         void new_seq(const std::string& seq, size_t pos){
             new_seq(seq.c_str(), seq.size(), pos);
@@ -266,8 +274,8 @@ class Digester{
         // length of seq
         size_t len;
         
-        // pos within entirety of the sequence you are digesting, sequences that are appended by append_seq are counted as one sequence
-        size_t pos;
+        // the combined length of all the previous strings that have been appended together, not counting the current string
+        size_t offset;
         
         // internal index of the next character to be thrown out, junk if c_outs is not empty
         size_t start;
