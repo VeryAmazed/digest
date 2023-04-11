@@ -14,7 +14,7 @@ class BadConstructionException : public std::exception
 {
 	const char * what () const throw ()
     {
-    	return "minimized_h must be either 0, 1, or 2, k cannot be 0,offset must be less than len";
+    	return "minimized_h must be either 0, 1, or 2, k cannot be 0, start must be less than len";
     }
 };
 
@@ -49,8 +49,8 @@ class Digester{
                 if(k == 0 ||start >= len || minimized_h > 2){
                     throw BadConstructionException();
                 }
-                init_hash();
                 this->c_outs = new std::deque<char>;
+                init_hash();
             }
         
         /**
@@ -191,7 +191,6 @@ class Digester{
          *      or if the startingoffsetition is not at least k-1 from the end of the string
          */
         void new_seq(const char* seq, size_t len, size_t start){
-            c_outs->clear();
             this->seq = seq;
             this->len = len;
             this->offset = 0;

@@ -169,6 +169,56 @@ void append_seq_compare(std::string& str1, std::string& str2, digest::Digester& 
 	}
 }
 
+void append_seq_compare3(std::string& str1, std::string& str2, std::string str3, digest::Digester& dig, unsigned  k){
+	INFO(str1);
+	INFO(str2);
+	INFO(str3);
+	INFO(k);
+	// Make sure to check positions too
+	std::string str4 = str1 + str2 + str3;
+	nthash::NtHash tHash(str4, 1, k);
+	std::vector<uint64_t> vec1;
+	std::vector<size_t> positions1;
+	while(tHash.roll()){
+		vec1.push_back(*(tHash.hashes()));
+		positions1.push_back(tHash.get_pos());
+	}
+	std::vector<uint64_t> vec2;
+	std::vector<size_t> positions2;
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	dig.append_seq(str2);
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	dig.append_seq(str3);
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	REQUIRE(vec1.size() == vec2.size());
+	for(size_t i =0; i < vec1.size(); i++){
+		INFO(i);
+		CHECK(vec1[i] == vec2[i]);
+		CHECK(positions1[i] == positions2[i]);
+	}
+}
+
 void append_seq_small_cases(){
 	std::string str1 = "CCGTGT";
 	std::string str2 = "CCGNGT";
@@ -194,6 +244,48 @@ void append_seq_small_cases(){
 
 	dig = new digest::UM_Digester(str1, 4, 17, 0, 0, 0);
 	append_seq_compare(str1, str5, *dig, 4);
+	delete dig;
+}
+
+void append_seq_small_cases2(){
+	std::string str1_good = "CATACCGGT";
+	std::string str1_short = "TAG";
+	std::string str1_badCh = "CATACNCGGT";
+
+	std::string str2_good = "GTTCTCGCTT";
+	std::string str2_badCh = "GTNTCTCGCTT";
+	std::string str2A = "A";
+	std::string str2_short = "TGGA";
+
+	std::string str3_good = "CAACGACCGC";
+	std::string str3_badCh = "NCAACGACCGC";
+
+	digest::Digester* dig = new digest::UM_Digester(str1_good, 6, 17, 0, 0, 0);
+	append_seq_compare3(str1_good, str2_good, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::UM_Digester(str1_good, 6, 17, 0, 0, 0);
+	append_seq_compare3(str1_good, str2_badCh, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::UM_Digester(str1_good, 6, 17, 0, 0, 0);
+	append_seq_compare3(str1_good, str2A, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::UM_Digester(str1_short, 6, 17, 0, 0, 0);
+	append_seq_compare3(str1_short, str2A, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::UM_Digester(str1_badCh, 6, 17, 0, 0, 0);
+	append_seq_compare3(str1_badCh, str2A, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::UM_Digester(str1_good, 6, 17, 0, 0, 0);
+	append_seq_compare3(str1_good, str2_short, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::UM_Digester(str1_short, 6, 17, 0, 0, 0);
+	append_seq_compare3(str1_short, str2A, str3_badCh, *dig, 6);
 	delete dig;
 }
 
@@ -318,22 +410,36 @@ TEST_CASE("UM_Digester Testing"){
 
 	SECTION("Testing append_seq()"){
 		append_seq_small_cases();
-
 		// Throws NotRolledTillEndException()
 		digest::UM_Digester* dig = new digest::UM_Digester(test_strs[0], 4, 17);
 		CHECK_THROWS_AS(dig->append_seq(test_strs[0]), digest::NotRolledTillEndException);
-
 		for(int i =0; i < 7; i +=2){
 			for(int j =0; j < 8; j++){
-				std::string str1 = test_strs[i].substr(0, 50);
-				std::string str2 = test_strs[i].substr(50, 100);
-				digest::UM_Digester* dig = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
-				append_seq_compare(str1, str2, *dig, ks[j]);
-				delete dig;
+				for(int l = 15; l < 91; l += 15){
+					std::string str1 = test_strs[i].substr(0, l);
+					std::string str2 = test_strs[i].substr(l, 100);
+					digest::UM_Digester* dig = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+					append_seq_compare(str1, str2, *dig, ks[j]);
+					delete dig;
+				}
 			}
 		}
-		
-			
+		append_seq_small_cases2();
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int r = 12; r < 85; r += 24){
+						std::string str1 = test_strs[i].substr(0, l);
+						std::string str2 = test_strs[i].substr(l, r);
+						std::string str3 = test_strs[i].substr(l+r, 75);
+						digest::UM_Digester* dig = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+						append_seq_compare3(str1, str2, str3, *dig, ks[j]);
+						delete dig;
+					}
+					
+				}
+			}
+		}	
 	}
 	
 }

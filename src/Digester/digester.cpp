@@ -9,15 +9,25 @@ namespace digest{
         }
         offset += this->len;
         size_t ind = this->len-1;
+        // if we never got to initialize the hash, we shouldn't be popping stuff
+        if((start != end || c_outs->size() == k) && c_outs->size() > 0){
+            c_outs->pop_front();
+        }
         //std::cout << ind <<std::endl;
         
-        while(c_outs->size() < k-1 && ind >= 0){
+        // from ind >= 0 to ind >= start
+        std::deque<char> temp;
+        while(temp.size() + c_outs->size()< k-1 && ind >= start){
             if(!is_ACTG(this->seq[ind])){
                 break;
             }
-            c_outs->push_front(this->seq[ind]);
+            // issue is here
+            temp.push_front(this->seq[ind]);
             //std::cout << c_outs->front() <<std::endl;
             ind--;
+        }
+        for(std::deque<char>::iterator it = temp.begin(); it != temp.end(); it++){
+            c_outs->push_back(*it);
         }
         ind = 0;
         
@@ -29,8 +39,8 @@ namespace digest{
                 end = start + k;
                 this->seq = seq;
                 this->len = len;
-                init_hash();
                 c_outs->clear();
+                init_hash();
                 break;
             }
             c_outs->push_back(seq[ind]);
@@ -51,6 +61,7 @@ namespace digest{
         for(std::deque<char>::iterator it = c_outs->begin(); it != c_outs->end(); it++){
             std::cout << *it << std::endl;
         }
+        std::cout << "---------------------------------------------------------" << std::endl;
         */
         this->seq = seq;
         this->len = len;
@@ -61,6 +72,7 @@ namespace digest{
     }
 
     bool Digester::init_hash(){
+        c_outs->clear();
         unsigned locn_useless;
         while(end-1 < len){
             bool works = true;
