@@ -299,11 +299,10 @@ TEST_CASE("UM_Digester Testing"){
 	SECTION("Testing Constructors"){
 		unsigned k, minimized_h;
 		uint64_t mod, congruence;
-		size_t pos, len;
+		size_t pos;
 		std::string str;
 		// string is length 1, k = 1
 		str = "A";
-		len = 1;
 		k = ks[0];
 		pos = 0;
 		for(int i =0; i < 3; i++){
@@ -317,7 +316,6 @@ TEST_CASE("UM_Digester Testing"){
 
 		// string is length 1, k = 4
 		str = "A";
-		len = 1;
 		k = ks[1];
 		pos = 0;
 		for(int i =0; i < 3; i++){
@@ -330,7 +328,6 @@ TEST_CASE("UM_Digester Testing"){
 		}	
 		
 		for(int i =0; i < test_strs.size(); i++){
-			len = test_strs[i].size();
 			for(int j =0; j < 8; j++){
 				k = ks[j];
 				for(int l =0; l < 16; l++){
@@ -394,6 +391,7 @@ TEST_CASE("UM_Digester Testing"){
 		}
 	}
 	
+	// maybe move this into an entirely new test case, and make this big thing just tests for the Dig class
 	SECTION("Testing roll_minimizer(). The one that takes no parameters"){
 		uint64_t prime = 17;
 		for(int i =0; i < 7; i += 2){
@@ -441,7 +439,47 @@ TEST_CASE("UM_Digester Testing"){
 			}
 		}	
 	}
-	
+
+
+	SECTION("Testing new_seq()"){
+		unsigned k, minimized_h;
+		std::string str;
+		// string is length 1, k = 4
+		str = "A";
+		k = ks[1];
+			
+		digest::UM_Digester* dig1 = new digest::UM_Digester(test_strs[0], k, 1e9+7, 0, 0, 0);
+		dig1->new_seq(str, 0);
+		base_constructor_stdstr(*dig1, str, k, 0, 0);
+		delete dig1;
+		
+		// Throw BadConstructionException()
+		dig1 = new digest::UM_Digester(test_strs[0], k, 1e9+7, 0, 0, 0);
+		CHECK_THROWS_AS(dig1->new_seq(test_strs[0], 500), digest::BadConstructionException);
+
+		for(int i =0; i < test_strs.size(); i += 2){
+			for(int j = 0; j < 32; j += 8){
+				digest::UM_Digester* dig = new digest::UM_Digester(test_strs[1], ks[3], 1e9+7, 0, 0, 0);
+				dig->new_seq(test_strs[i], j);
+				base_constructor_stdstr(*dig, test_strs[i], ks[3], j, 0);
+				delete dig;
+			}
+		}
+
+		for(int i =0; i < test_strs.size(); i += 2){
+			for(int l = 13; l <= 78; l +=13 ){
+				digest::UM_Digester* dig = new digest::UM_Digester(test_strs[5], ks[3], 1e9+7, 0, 0, 0);
+				int ind = 0;
+				while(ind < l && dig->roll_one()){
+					ind++;
+				}
+				dig->new_seq(test_strs[i], 0);
+				base_constructor_stdstr(*dig, test_strs[i], ks[3], 0, 0);
+				delete dig;
+			}
+			
+		}
+	}
 }
 
 

@@ -16,18 +16,18 @@ namespace digest{
         //std::cout << ind <<std::endl;
         
         // from ind >= 0 to ind >= start
-        std::deque<char> temp;
-        while(temp.size() + c_outs->size()< k-1 && ind >= start){
+        std::vector<char> temp_vec;
+        while(temp_vec.size() + c_outs->size()< k-1 && ind >= start){
             if(!is_ACTG(this->seq[ind])){
                 break;
             }
             // issue is here
-            temp.push_front(this->seq[ind]);
+            temp_vec.push_back(this->seq[ind]);
             //std::cout << c_outs->front() <<std::endl;
             ind--;
         }
-        for(std::deque<char>::iterator it = temp.begin(); it != temp.end(); it++){
-            c_outs->push_back(*it);
+        for(std::vector<char>::reverse_iterator rit = temp_vec.rbegin(); rit != temp_vec.rend(); rit++){
+            c_outs->push_back(*rit);
         }
         ind = 0;
         
