@@ -1,2 +1,0 @@
-/usr/bin/ar qc libntHash.a  CMakeFiles/ntHash.dir/src/ntHash/nthash.cpp.o CMakeFiles/ntHash.dir/src/ntHash/nthash_consts.cpp.o CMakeFiles/ntHash.dir/src/ntHash/nthash_lowlevel.cpp.o CMakeFiles/ntHash.dir/src/ntHash/status.cpp.o
-/usr/bin/ranlib libntHash.a
