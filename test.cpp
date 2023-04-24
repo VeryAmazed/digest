@@ -69,10 +69,41 @@ void base_constructor_stdstr(digest::Digester& dig, std::string& str, unsigned k
 	}
 }
 
+void base_dig_comp(digest::Digester& dig1, digest::Digester& dig2){
+	CHECK(strcmp(dig1.get_sequence(), dig2.get_sequence()) == 0);
+	CHECK(dig1.get_len() == dig2.get_len());
+	CHECK(dig1.get_k() == dig2.get_k());
+	CHECK(dig1.get_minimized_h() == dig2.get_minimized_h());
+	CHECK(dig1.get_is_valid_hash() == dig2.get_is_valid_hash());
+	if(dig1.get_is_valid_hash()){
+		CHECK(dig1.get_chash() == dig2.get_chash());
+		CHECK(dig1.get_fhash() == dig2.get_fhash());
+		CHECK(dig1.get_rhash() == dig2.get_rhash());
+	}
+}
+
+void base_dig_roll(digest::Digester& dig1, digest::Digester& dig2){
+	while(dig1.get_is_valid_hash()){
+		dig1.roll_one();
+		dig2.roll_one();
+		CHECK(dig1.get_fhash() == dig2.get_fhash());
+		CHECK(dig1.get_rhash() == dig2.get_rhash());
+		CHECK(dig1.get_pos() == dig2.get_pos());
+	}
+	CHECK(dig1.get_is_valid_hash() == dig2.get_is_valid_hash());
+}
+
 void UM_constructor_stdstr(digest::UM_Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h, uint64_t mod, uint64_t congruence){
 	base_constructor_stdstr(dig, str, k, pos, minimized_h);
 	CHECK(dig.get_mod() ==  mod);
 	CHECK(dig.get_congruence() == congruence);
+}
+
+void UM_dig_comp(digest::UM_Digester& dig1, digest::UM_Digester& dig2){
+	base_dig_comp(dig1, dig2);
+	CHECK(dig1.get_mod() ==  dig2.get_mod());
+	CHECK(dig1.get_congruence() == dig2.get_congruence());
+	base_dig_roll(dig1, dig2);
 }
 
 void roll_one(digest::Digester& dig, std::string& str, unsigned k){
@@ -288,6 +319,11 @@ void append_seq_small_cases2(){
 	append_seq_compare3(str1_short, str2A, str3_badCh, *dig, 6);
 	delete dig;
 }
+/*
+	consider re-organizing this so this only tests the UM_Digester specific stuff
+	like the constructor and roll_minimizer, but put the more general stuff, append_seq
+	and roll_one in the general testing group
+*/
 
 TEST_CASE("UM_Digester Testing"){
 	setupStrings();
@@ -499,5 +535,68 @@ TEST_CASE("UM_Digester Testing"){
 		base_constructor_stdstr(*dig1, bad_str, 8, 0, 0);
 		delete dig1;
 	}
+	
+	SECTION("Testing Copy Constructor"){
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					digest::UM_Digester* dig1 = new digest::UM_Digester(test_strs[i], ks[j], 1e9+7, 0, l, 1);
+					digest::UM_Digester* dig2 = new digest::UM_Digester(*dig1);
+					UM_dig_comp(*dig1, *dig2);
+					delete dig1;
+					delete dig2;
+				}
+			}
+		}
+
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					std::string str1 = test_strs[i].substr(0, l);
+					std::string str2 = test_strs[i].substr(l, 100);
+					digest::UM_Digester* dig1 = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+					dig1->roll_minimizer(1000);
+					dig1->append_seq(str2);
+					digest::UM_Digester* dig2 = new digest::UM_Digester(*dig1);
+					UM_dig_comp(*dig1, *dig2);
+					delete dig1;
+					delete dig2;
+				}
+			}
+		}
+	}
+
+	SECTION("Testing Assignment Operator"){
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					digest::UM_Digester* dig1 = new digest::UM_Digester(test_strs[i], ks[j], 1e9+7, 0, l, 1);
+					digest::UM_Digester* dig2 = new digest::UM_Digester(test_strs[1], 99, 98765, 3, 0, 2);
+					*dig2 = *dig1;
+					UM_dig_comp(*dig1, *dig2);
+					delete dig1;
+					delete dig2;
+				}
+			}
+		}
+
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					std::string str1 = test_strs[i].substr(0, l);
+					std::string str2 = test_strs[i].substr(l, 100);
+					digest::UM_Digester* dig1 = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+					dig1->roll_minimizer(1000);
+					dig1->append_seq(str2);
+					digest::UM_Digester* dig2 = new digest::UM_Digester(test_strs[1], 99, 98765, 3, 0, 2);
+					*dig2 = *dig1;
+					UM_dig_comp(*dig1, *dig2);
+					delete dig1;
+					delete dig2;
+				}
+			}
+		}
+	}
+	
 
 }
