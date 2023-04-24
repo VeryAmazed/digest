@@ -13,29 +13,18 @@ namespace digest{
         if((start != end || c_outs->size() == k) && c_outs->size() > 0){
             c_outs->pop_front();
         }
-        //std::cout << ind <<std::endl;
-        
-        // from ind >= 0 to ind >= start
-        //std::cout << "Break 1" << std::endl;
+
         std::vector<char> temp_vec;
         while(temp_vec.size() + c_outs->size()< k-1 && ind >= start){
-            //std::cout << ind << std::endl;
-            //std::cout << "Loop Break 1" << std::endl;
             if(!is_ACTG(this->seq[ind])){
-               //std::cout << "Loop Break 1.5" << std::endl;
                 break;
             }
-            //std::cout << "Loop Break 2" << std::endl;
-            // issue is here
             temp_vec.push_back(this->seq[ind]);
-            //std::cout << "Loop Break 3" << std::endl;
-            //std::cout << c_outs->front() <<std::endl;
             if(ind == 0) break;
             else{
                 ind--;
             }
         }
-        //std::cout << "Break 2" << std::endl;
         for(std::vector<char>::reverse_iterator rit = temp_vec.rbegin(); rit != temp_vec.rend(); rit++){
             c_outs->push_back(*rit);
         }
@@ -53,7 +42,6 @@ namespace digest{
                 break;
             }
             c_outs->push_back(seq[ind]);
-            //std::cout << c_outs->back() <<std::endl;
             ind++;
             start++;
             end++;
