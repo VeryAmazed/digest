@@ -131,19 +131,4 @@ namespace digest{
             }
         }
     }
-    /*
-    std::string Digester::get_string(){
-        std::string str;
-        if(c_outs->size() > 0){
-            std::deque<char>::iterator it = c_outs->begin();
-            while(it != c_outs->end()){
-                str.push_back(*it);
-            }
-        }
-        for(int i = start; i < end; i++){
-            str.push_back(seq[i]);
-        }
-        return str;
-    }
-    */
 } 

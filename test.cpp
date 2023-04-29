@@ -324,15 +324,11 @@ void append_seq_small_cases2(){
 	like the constructor and roll_minimizer, but put the more general stuff, append_seq
 	and roll_one in the general testing group
 */
-
-TEST_CASE("UM_Digester Testing"){
+TEST_CASE("Digester Testing"){
 	setupStrings();
-	/*
-	for(unsigned i =0; i < strs.size(); i++){
-		std::cout << strs[i] << std::endl;
-	}
-	*/
-	SECTION("Testing Constructors"){
+	// These use the ModMinimizer Class because Digester can't be instantiated, but correctness
+	// doesn't depend on any of the fields of functions in the ModMinimizer Class
+	SECTION("Base Constructor Special Cases"){
 		unsigned k, minimized_h;
 		uint64_t mod, congruence;
 		size_t pos;
@@ -361,27 +357,7 @@ TEST_CASE("UM_Digester Testing"){
 			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
 			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
-		}	
-		
-		for(int i =0; i < test_strs.size(); i++){
-			for(int j =0; j < 8; j++){
-				k = ks[j];
-				for(int l =0; l < 16; l++){
-					pos = l;
-					for(int p =0; p < 3; p++){
-						minimized_h = p;
-						mod = 1e9+7;
-						congruence = 0;
-						digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], k, mod, congruence, pos, minimized_h);
-						UM_constructor_stdstr(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
-						delete dig;
-					}
-				}
-				
-			}
-			
 		}
-		
 
 		// Throwing Exceptions
 		// Shouldn't/Doesn't leak any memory
@@ -398,7 +374,7 @@ TEST_CASE("UM_Digester Testing"){
 		digest::UM_Digester* dig;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 		k = 2;
-
+		
 		// pos >= seq.size()
 		pos = 8;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
@@ -407,17 +383,8 @@ TEST_CASE("UM_Digester Testing"){
 		// minimized_h > 2
 		minimized_h = 3;
 		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		minimized_h = 0;
-
-		// mod >= congruence
-		mod = 2;
-		congruence = 2;
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
-		mod = 1e9+7;
-		congruence = 0;
-		
+		minimized_h = 0;	
 	}
-
 	
 	SECTION("Testing roll_one"){
 		for(int i =0; i < 7; i++){
@@ -428,23 +395,7 @@ TEST_CASE("UM_Digester Testing"){
 			}
 		}
 	}
-	
-	// maybe move this into an entirely new test case, and make this big thing just tests for the Dig class
-	SECTION("Testing roll_minimizer(). The one that takes no parameters"){
-		uint64_t prime = 17;
-		for(int i =0; i < 7; i += 2){
-			for(int j =0; j < 8; j++){
-				for(int l = 0; l < 3; l++){
-					digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], ks[j], prime, 0, 0, l);
-					um_roll_minimizer(*dig, test_strs[i], ks[j], l, prime);
-					delete dig;
-				}
-				
-			}
-		}
-	}
 
-	// there are valgrind errors, invalid read of size 1 tracing to append_seq function
 	SECTION("Testing append_seq()"){
 		append_seq_small_cases();
 
@@ -484,7 +435,6 @@ TEST_CASE("UM_Digester Testing"){
 
 	
 	SECTION("Testing new_seq()"){
-		
 		unsigned k, minimized_h;
 		std::string str;
 		// string is length 1, k = 4
@@ -542,6 +492,69 @@ TEST_CASE("UM_Digester Testing"){
 		dig1->new_seq(bad_str, 0);
 		base_constructor_stdstr(*dig1, bad_str, 8, 0, 0);
 		delete dig1;
+	}
+}
+
+TEST_CASE("UM_Digester Testing"){
+	setupStrings();
+
+	SECTION("Testing Constructors"){
+		unsigned k, minimized_h;
+		uint64_t mod, congruence;
+		size_t pos;
+		std::string str;
+		// string is length 1, k = 1
+		
+		for(int i =0; i < test_strs.size(); i++){
+			for(int j =0; j < 8; j++){
+				k = ks[j];
+				for(int l =0; l < 16; l++){
+					pos = l;
+					for(int p =0; p < 3; p++){
+						minimized_h = p;
+						mod = 1e9+7;
+						congruence = 0;
+						digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], k, mod, congruence, pos, minimized_h);
+						UM_constructor_stdstr(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
+						delete dig;
+					}
+				}
+				
+			}
+			
+		}
+		
+
+		// Throwing Exceptions
+		// Shouldn't/Doesn't leak any memory
+		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
+		
+		str = "ACTGACTG";
+		k = 2;
+		pos = 0;
+		minimized_h = 0;
+		digest::UM_Digester* dig;
+
+		// mod >= congruence
+		mod = 2;
+		congruence = 2;
+		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
+		
+	}
+	
+	// maybe move this into an entirely new test case, and make this big thing just tests for the Dig class
+	SECTION("Testing roll_minimizer(). The one that takes no parameters"){
+		uint64_t prime = 17;
+		for(int i =0; i < 7; i += 2){
+			for(int j =0; j < 8; j++){
+				for(int l = 0; l < 3; l++){
+					digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], ks[j], prime, 0, 0, l);
+					um_roll_minimizer(*dig, test_strs[i], ks[j], l, prime);
+					delete dig;
+				}
+				
+			}
+		}
 	}
 	
 	SECTION("Testing Copy Constructor"){
@@ -605,6 +618,4 @@ TEST_CASE("UM_Digester Testing"){
 			}
 		}
 	}
-	
-
 }
