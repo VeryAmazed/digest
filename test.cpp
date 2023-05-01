@@ -46,7 +46,7 @@ void setupStrings(){
 	fs.close();
 }
 
-void base_constructor_stdstr(digest::Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h){
+void base_constructor(digest::Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h){
 	INFO("String is: " << str);
 	INFO("K is: " << k);
 	INFO("Pos is: " << dig.get_pos());
@@ -93,13 +93,13 @@ void base_dig_roll(digest::Digester& dig1, digest::Digester& dig2){
 	CHECK(dig1.get_is_valid_hash() == dig2.get_is_valid_hash());
 }
 
-void UM_constructor_stdstr(digest::UM_Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h, uint64_t mod, uint64_t congruence){
-	base_constructor_stdstr(dig, str, k, pos, minimized_h);
+void ModMin_constructor(digest::ModMin& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h, uint64_t mod, uint64_t congruence){
+	base_constructor(dig, str, k, pos, minimized_h);
 	CHECK(dig.get_mod() ==  mod);
 	CHECK(dig.get_congruence() == congruence);
 }
 
-void UM_dig_comp(digest::UM_Digester& dig1, digest::UM_Digester& dig2){
+void ModMin_dig_comp(digest::ModMin& dig1, digest::ModMin& dig2){
 	base_dig_comp(dig1, dig2);
 	CHECK(dig1.get_mod() ==  dig2.get_mod());
 	CHECK(dig1.get_congruence() == dig2.get_congruence());
@@ -132,7 +132,7 @@ void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	CHECK(dig.get_is_valid_hash() == worked);
 }
 
-void um_roll_minimizer(digest::Digester& dig, std::string& str, unsigned k, unsigned minimized_h, uint64_t prime){
+void ModMin_roll_minimizer(digest::Digester& dig, std::string& str, unsigned k, unsigned minimized_h, uint64_t prime){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<size_t> positions;
 	std::vector<uint64_t> hashes;
@@ -257,23 +257,23 @@ void append_seq_small_cases(){
 	std::string str4 = "ANCCTT";
 	std::string str5 = "A";
 
-	digest::Digester* dig = new digest::UM_Digester(str1, 4, 17, 0, 0, 0);
+	digest::Digester* dig = new digest::ModMin(str1, 4, 17, 0, 0, 0);
 	append_seq_compare(str1, str3, *dig, 4);
 	delete dig;
 
-	dig = new digest::UM_Digester(str2, 4, 17, 0, 0, 0);
+	dig = new digest::ModMin(str2, 4, 17, 0, 0, 0);
 	append_seq_compare(str2, str4, *dig, 4);
 	delete dig;
 
-	dig = new digest::UM_Digester(str2, 4, 17, 0, 0, 0);
+	dig = new digest::ModMin(str2, 4, 17, 0, 0, 0);
 	append_seq_compare(str2, str3, *dig, 4);
 	delete dig;
 
-	dig = new digest::UM_Digester(str2, 4, 17, 0, 0, 0);
+	dig = new digest::ModMin(str2, 4, 17, 0, 0, 0);
 	append_seq_compare(str2, str5, *dig, 4);
 	delete dig;
 
-	dig = new digest::UM_Digester(str1, 4, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1, 4, 17, 0, 0, 0);
 	append_seq_compare(str1, str5, *dig, 4);
 	delete dig;
 }
@@ -291,31 +291,31 @@ void append_seq_small_cases2(){
 	std::string str3_good = "CAACGACCGC";
 	std::string str3_badCh = "NCAACGACCGC";
 
-	digest::Digester* dig = new digest::UM_Digester(str1_good, 6, 17, 0, 0, 0);
+	digest::Digester* dig = new digest::ModMin(str1_good, 6, 17, 0, 0, 0);
 	append_seq_compare3(str1_good, str2_good, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::UM_Digester(str1_good, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, 0);
 	append_seq_compare3(str1_good, str2_badCh, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::UM_Digester(str1_good, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, 0);
 	append_seq_compare3(str1_good, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::UM_Digester(str1_short, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_short, 6, 17, 0, 0, 0);
 	append_seq_compare3(str1_short, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::UM_Digester(str1_badCh, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_badCh, 6, 17, 0, 0, 0);
 	append_seq_compare3(str1_badCh, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::UM_Digester(str1_good, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, 0);
 	append_seq_compare3(str1_good, str2_short, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::UM_Digester(str1_short, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_short, 6, 17, 0, 0, 0);
 	append_seq_compare3(str1_short, str2A, str3_badCh, *dig, 6);
 	delete dig;
 }
@@ -341,8 +341,8 @@ TEST_CASE("Digester Testing"){
 			minimized_h = i;
 			mod = 2;
 			congruence = 1;
-			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
-			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
+			digest::ModMin* dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h);
+			ModMin_constructor(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
 
@@ -354,8 +354,8 @@ TEST_CASE("Digester Testing"){
 			minimized_h = i;
 			mod = 2;
 			congruence = 1;
-			digest::UM_Digester* dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h);
-			UM_constructor_stdstr(*dig, str, k, pos, minimized_h, mod, congruence);
+			digest::ModMin* dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h);
+			ModMin_constructor(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
 
@@ -371,25 +371,25 @@ TEST_CASE("Digester Testing"){
 		congruence = 0;
 		// k = 0
 		k = 0;
-		digest::UM_Digester* dig;
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		digest::ModMin* dig;
+		CHECK_THROWS_AS(dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 		k = 2;
 		
 		// pos >= seq.size()
 		pos = 8;
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		CHECK_THROWS_AS(dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 		pos = 0;
 
 		// minimized_h > 2
 		minimized_h = 3;
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
+		CHECK_THROWS_AS(dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 		minimized_h = 0;	
 	}
 	
 	SECTION("Testing roll_one"){
 		for(int i =0; i < 7; i++){
 			for(int j =0; j < 8; j++){
-				digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], ks[j], 1e9+7, 0, 0, 1);
+				digest::ModMin* dig = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, 0, 1);
 				roll_one(*dig, test_strs[i], ks[j]);
 				delete dig;
 			}
@@ -400,7 +400,7 @@ TEST_CASE("Digester Testing"){
 		append_seq_small_cases();
 
 		// Throws NotRolledTillEndException()
-		digest::UM_Digester* dig = new digest::UM_Digester(test_strs[0], 4, 17);
+		digest::ModMin* dig = new digest::ModMin(test_strs[0], 4, 17);
 		CHECK_THROWS_AS(dig->append_seq(test_strs[0]), digest::NotRolledTillEndException);
 		delete dig;
 
@@ -409,7 +409,7 @@ TEST_CASE("Digester Testing"){
 				for(int l = 15; l < 91; l += 15){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
-					digest::UM_Digester* dig = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+					digest::ModMin* dig = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
 					append_seq_compare(str1, str2, *dig, ks[j]);
 					delete dig;
 				}
@@ -423,7 +423,7 @@ TEST_CASE("Digester Testing"){
 						std::string str1 = test_strs[i].substr(0, l);
 						std::string str2 = test_strs[i].substr(l, r);
 						std::string str3 = test_strs[i].substr(l+r, 75);
-						digest::UM_Digester* dig = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+						digest::ModMin* dig = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
 						append_seq_compare3(str1, str2, str3, *dig, ks[j]);
 						delete dig;
 					}
@@ -441,61 +441,61 @@ TEST_CASE("Digester Testing"){
 		str = "A";
 		k = ks[1];
 			
-		digest::UM_Digester* dig1 = new digest::UM_Digester(test_strs[0], k, 1e9+7, 0, 0, 0);
+		digest::ModMin* dig1 = new digest::ModMin(test_strs[0], k, 1e9+7, 0, 0, 0);
 		dig1->new_seq(str, 0);
-		base_constructor_stdstr(*dig1, str, k, 0, 0);
+		base_constructor(*dig1, str, k, 0, 0);
 		delete dig1;
 		
 		// Throw BadConstructionException()
-		dig1 = new digest::UM_Digester(test_strs[0], k, 1e9+7, 0, 0, 0);
+		dig1 = new digest::ModMin(test_strs[0], k, 1e9+7, 0, 0, 0);
 		CHECK_THROWS_AS(dig1->new_seq(test_strs[0], 500), digest::BadConstructionException);
 		delete dig1;
 
 		for(int i =0; i < test_strs.size(); i += 2){
 			for(int j = 0; j < 32; j += 8){
-				digest::UM_Digester* dig = new digest::UM_Digester(test_strs[1], ks[3], 1e9+7, 0, 0, 0);
+				digest::ModMin* dig = new digest::ModMin(test_strs[1], ks[3], 1e9+7, 0, 0, 0);
 				dig->new_seq(test_strs[i], j);
-				base_constructor_stdstr(*dig, test_strs[i], ks[3], j, 0);
+				base_constructor(*dig, test_strs[i], ks[3], j, 0);
 				delete dig;
 			}
 		}
 
 		for(int i =0; i < test_strs.size(); i += 2){
 			for(int l = 13; l <= 78; l +=13 ){
-				digest::UM_Digester* dig = new digest::UM_Digester(test_strs[5], ks[3], 1e9+7, 0, 0, 0);
+				digest::ModMin* dig = new digest::ModMin(test_strs[5], ks[3], 1e9+7, 0, 0, 0);
 				int ind = 0;
 				while(ind < l && dig->roll_one()){
 					ind++;
 				}
 				dig->new_seq(test_strs[i], 0);
-				base_constructor_stdstr(*dig, test_strs[i], ks[3], 0, 0);
+				base_constructor(*dig, test_strs[i], ks[3], 0, 0);
 				delete dig;
 			}
 			
 		}
 		
 		// new_seq when deque has stuff in it
-		dig1 = new digest::UM_Digester(test_strs[2], 8, 17, 0, 0, 0);
+		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, 0);
 		dig1->roll_minimizer(1000);
 		dig1->append_seq(test_strs[2]);
 		dig1->roll_minimizer(1000);
 		dig1->new_seq(test_strs[4], 0);
-		base_constructor_stdstr(*dig1, test_strs[4], 8, 0, 0);
+		base_constructor(*dig1, test_strs[4], 8, 0, 0);
 		delete dig1;
 
 		// new_seq when deque has stuff in it and a new hash can't be properly initialized
 		std::string bad_str = "TTACTNGTACCTG";
-		dig1 = new digest::UM_Digester(test_strs[2], 8, 17, 0, 0, 0);
+		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, 0);
 		dig1->roll_minimizer(1000);
 		dig1->append_seq(test_strs[2]);
 		dig1->roll_minimizer(1000);
 		dig1->new_seq(bad_str, 0);
-		base_constructor_stdstr(*dig1, bad_str, 8, 0, 0);
+		base_constructor(*dig1, bad_str, 8, 0, 0);
 		delete dig1;
 	}
 }
 
-TEST_CASE("UM_Digester Testing"){
+TEST_CASE("ModMin Testing"){
 	setupStrings();
 
 	SECTION("Testing Constructors"){
@@ -514,8 +514,8 @@ TEST_CASE("UM_Digester Testing"){
 						minimized_h = p;
 						mod = 1e9+7;
 						congruence = 0;
-						digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], k, mod, congruence, pos, minimized_h);
-						UM_constructor_stdstr(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
+						digest::ModMin* dig = new digest::ModMin(test_strs[i], k, mod, congruence, pos, minimized_h);
+						ModMin_constructor(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
 						delete dig;
 					}
 				}
@@ -533,12 +533,12 @@ TEST_CASE("UM_Digester Testing"){
 		k = 2;
 		pos = 0;
 		minimized_h = 0;
-		digest::UM_Digester* dig;
+		digest::ModMin* dig;
 
 		// mod >= congruence
 		mod = 2;
 		congruence = 2;
-		CHECK_THROWS_AS(dig = new digest::UM_Digester(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
+		CHECK_THROWS_AS(dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h), digest::BadModException);
 		
 	}
 	
@@ -548,8 +548,8 @@ TEST_CASE("UM_Digester Testing"){
 		for(int i =0; i < 7; i += 2){
 			for(int j =0; j < 8; j++){
 				for(int l = 0; l < 3; l++){
-					digest::UM_Digester* dig = new digest::UM_Digester(test_strs[i], ks[j], prime, 0, 0, l);
-					um_roll_minimizer(*dig, test_strs[i], ks[j], l, prime);
+					digest::ModMin* dig = new digest::ModMin(test_strs[i], ks[j], prime, 0, 0, l);
+					ModMin_roll_minimizer(*dig, test_strs[i], ks[j], l, prime);
 					delete dig;
 				}
 				
@@ -561,9 +561,9 @@ TEST_CASE("UM_Digester Testing"){
 		for(int i =0; i < 7; i +=2){
 			for(int j =0; j < 8; j++){
 				for(int l = 15; l < 91; l += 15){
-					digest::UM_Digester* dig1 = new digest::UM_Digester(test_strs[i], ks[j], 1e9+7, 0, l, 1);
-					digest::UM_Digester* dig2 = new digest::UM_Digester(*dig1);
-					UM_dig_comp(*dig1, *dig2);
+					digest::ModMin* dig1 = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, l, 1);
+					digest::ModMin* dig2 = new digest::ModMin(*dig1);
+					ModMin_dig_comp(*dig1, *dig2);
 					delete dig1;
 					delete dig2;
 				}
@@ -575,11 +575,11 @@ TEST_CASE("UM_Digester Testing"){
 				for(int l = 15; l < 91; l += 15){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
-					digest::UM_Digester* dig1 = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
 					dig1->roll_minimizer(1000);
 					dig1->append_seq(str2);
-					digest::UM_Digester* dig2 = new digest::UM_Digester(*dig1);
-					UM_dig_comp(*dig1, *dig2);
+					digest::ModMin* dig2 = new digest::ModMin(*dig1);
+					ModMin_dig_comp(*dig1, *dig2);
 					delete dig1;
 					delete dig2;
 				}
@@ -591,10 +591,10 @@ TEST_CASE("UM_Digester Testing"){
 		for(int i =0; i < 7; i +=2){
 			for(int j =0; j < 8; j++){
 				for(int l = 15; l < 91; l += 15){
-					digest::UM_Digester* dig1 = new digest::UM_Digester(test_strs[i], ks[j], 1e9+7, 0, l, 1);
-					digest::UM_Digester* dig2 = new digest::UM_Digester(test_strs[1], 99, 98765, 3, 0, 2);
+					digest::ModMin* dig1 = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, l, 1);
+					digest::ModMin* dig2 = new digest::ModMin(test_strs[1], 99, 98765, 3, 0, 2);
 					*dig2 = *dig1;
-					UM_dig_comp(*dig1, *dig2);
+					ModMin_dig_comp(*dig1, *dig2);
 					delete dig1;
 					delete dig2;
 				}
@@ -606,12 +606,12 @@ TEST_CASE("UM_Digester Testing"){
 				for(int l = 15; l < 91; l += 15){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
-					digest::UM_Digester* dig1 = new digest::UM_Digester(str1, ks[j], 1e9+7, 0, 0, 1);
+					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
 					dig1->roll_minimizer(1000);
 					dig1->append_seq(str2);
-					digest::UM_Digester* dig2 = new digest::UM_Digester(test_strs[1], 99, 98765, 3, 0, 2);
+					digest::ModMin* dig2 = new digest::ModMin(test_strs[1], 99, 98765, 3, 0, 2);
 					*dig2 = *dig1;
-					UM_dig_comp(*dig1, *dig2);
+					ModMin_dig_comp(*dig1, *dig2);
 					delete dig1;
 					delete dig2;
 				}

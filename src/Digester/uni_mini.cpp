@@ -1,7 +1,7 @@
 #include "uni_mini.hpp"
 
 namespace digest{
-    std::vector<size_t> UM_Digester::roll_minimizer(unsigned amount){
+    std::vector<size_t> ModMin::roll_minimizer(unsigned amount){
         std::vector<size_t> vec;
         if(!is_valid_hash) return vec;
         do{

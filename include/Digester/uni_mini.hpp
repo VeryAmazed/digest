@@ -13,7 +13,7 @@ class BadModException : public std::exception
     }
 };
 
-class UM_Digester : public Digester{
+class ModMin : public Digester{
     public:
         /**
          * 
@@ -27,7 +27,7 @@ class UM_Digester : public Digester{
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        UM_Digester(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, unsigned minimized_h = 0)
+        ModMin(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, unsigned minimized_h = 0)
         :  Digester(seq, len, k, start, minimized_h), mod(mod), congruence(congruence)
         {
             if(congruence >= mod){
@@ -46,20 +46,20 @@ class UM_Digester : public Digester{
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        UM_Digester(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, unsigned minimized_h = 0) :
-            UM_Digester(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
+        ModMin(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, unsigned minimized_h = 0) :
+            ModMin(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
         {}
         
 
         /**
          * Copy Constructor
          * 
-         * @param copy, UM_Digester object you want to copy from 
+         * @param copy, ModMin object you want to copy from 
          */
-        UM_Digester(const UM_Digester& copy) : Digester(copy), mod(copy.mod), congruence(copy.congruence)
+        ModMin(const ModMin& copy) : Digester(copy), mod(copy.mod), congruence(copy.congruence)
         {}
 
-        UM_Digester& operator=(const UM_Digester& copy){
+        ModMin& operator=(const ModMin& copy){
             this->mod = copy.mod;
             this->congruence = copy.congruence;
             Digester::operator=(copy);
