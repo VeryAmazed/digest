@@ -1,4 +1,4 @@
-#include "uni_mini.hpp"
+#include "mod_minimizer.hpp"
 
 namespace digest{
     std::vector<size_t> ModMin::roll_minimizer(unsigned amount){

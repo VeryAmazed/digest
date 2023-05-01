@@ -1,6 +1,6 @@
 #include "nthash.hpp"
 #include <catch2/catch_test_macros.hpp>
-#include "uni_mini.hpp"
+#include "mod_minimizer.hpp"
 #include <fstream>
 
 std::vector<std::string> test_strs;
