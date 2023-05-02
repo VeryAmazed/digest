@@ -146,7 +146,7 @@ class Digester{
          * @param amount number of minimizers you want to generate
          * @return std::vector<size_t> vector filled with the positions of the minimizers up to the amount
          */
-        virtual std::vector<size_t> roll_minimizer(unsigned amount) = 0;
+        virtual void roll_minimizer(unsigned amount, std::vector<size_t>& vec) = 0;
 
         /**
          * 
@@ -185,7 +185,7 @@ class Digester{
          * 
          * @param seq new sequence to be hashed
          * @param len length of the new sequence
-         * @paramoffset newoffsetition to start from
+         * @param offset newoffsetition to start from
          * 
          * @throws BadConstructionException Thrown if k is greater than the length of the sequence,
          *      or if the startingoffsetition is not at least k-1 from the end of the string

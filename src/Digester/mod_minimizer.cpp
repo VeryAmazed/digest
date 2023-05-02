@@ -1,9 +1,8 @@
 #include "mod_minimizer.hpp"
 
 namespace digest{
-    std::vector<size_t> ModMin::roll_minimizer(unsigned amount){
-        std::vector<size_t> vec;
-        if(!is_valid_hash) return vec;
+    void ModMin::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
+        if(!is_valid_hash) return;
         do{
             if(get_minimized_h() == 0){
                 if(chash % mod == congruence){
@@ -19,6 +18,6 @@ namespace digest{
                 }
             }
         }while(roll_one() && vec.size() < amount);
-        return vec;
+
     }
 }

@@ -151,7 +151,8 @@ void ModMin_roll_minimizer(digest::Digester& dig, std::string& str, unsigned k, 
 		}
 		
 	}
-	std::vector<size_t> dig_positions = dig.roll_minimizer(400);
+	std::vector<size_t> dig_positions;
+	dig.roll_minimizer(400, dig_positions);
 	REQUIRE(positions.size() == dig_positions.size());
 	for(size_t i = 0; i < positions.size(); i++){
 		CHECK(dig_positions[i] == positions[i]);
@@ -476,9 +477,12 @@ TEST_CASE("Digester Testing"){
 		
 		// new_seq when deque has stuff in it
 		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, 0);
-		dig1->roll_minimizer(1000);
+		std::vector<size_t> vec;
+		dig1->roll_minimizer(1000, vec);
+		vec.clear();
 		dig1->append_seq(test_strs[2]);
-		dig1->roll_minimizer(1000);
+		dig1->roll_minimizer(1000, vec);
+		vec.clear();
 		dig1->new_seq(test_strs[4], 0);
 		base_constructor(*dig1, test_strs[4], 8, 0, 0);
 		delete dig1;
@@ -486,9 +490,11 @@ TEST_CASE("Digester Testing"){
 		// new_seq when deque has stuff in it and a new hash can't be properly initialized
 		std::string bad_str = "TTACTNGTACCTG";
 		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, 0);
-		dig1->roll_minimizer(1000);
+		dig1->roll_minimizer(1000, vec);
+		vec.clear();
 		dig1->append_seq(test_strs[2]);
-		dig1->roll_minimizer(1000);
+		dig1->roll_minimizer(1000, vec);
+		vec.clear();
 		dig1->new_seq(bad_str, 0);
 		base_constructor(*dig1, bad_str, 8, 0, 0);
 		delete dig1;
@@ -576,7 +582,8 @@ TEST_CASE("ModMin Testing"){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
 					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
-					dig1->roll_minimizer(1000);
+					std::vector<size_t> vec;
+					dig1->roll_minimizer(1000, vec);
 					dig1->append_seq(str2);
 					digest::ModMin* dig2 = new digest::ModMin(*dig1);
 					ModMin_dig_comp(*dig1, *dig2);
@@ -607,7 +614,8 @@ TEST_CASE("ModMin Testing"){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
 					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
-					dig1->roll_minimizer(1000);
+					std::vector<size_t> vec;
+					dig1->roll_minimizer(1000, vec);
 					dig1->append_seq(str2);
 					digest::ModMin* dig2 = new digest::ModMin(test_strs[1], 99, 98765, 3, 0, 2);
 					*dig2 = *dig1;

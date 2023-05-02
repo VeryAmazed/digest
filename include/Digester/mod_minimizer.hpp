@@ -1,5 +1,5 @@
-#ifndef UNI_MINI_HPP
-#define UNI_MINI_HPP
+#ifndef MOD_MINI_HPP
+#define MOD_MINI_HPP
 
 #include "digester.hpp"
 
@@ -66,7 +66,7 @@ class ModMin : public Digester{
             return *this;
         }
 
-        std::vector<size_t> roll_minimizer(unsigned amount) override;    
+        void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;    
 
         /**
          * 
