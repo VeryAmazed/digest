@@ -17,7 +17,7 @@ target_include_directories(ntHash
 )
 
 add_library(Digester STATIC 
-    src/Digester/mod_minimizer.cpp src/Digester/digester.cpp
+    src/Digester/mod_minimizer.cpp src/Digester/digester.cpp src/Digester/window_minimizer.cpp
 )
 
 target_include_directories(Digester

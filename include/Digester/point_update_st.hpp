@@ -27,8 +27,7 @@ struct SegTree {
         segtree = new std::vector<std::pair<uint64_t, size_t>>(len * 2, DEFAULT);
     }
 
-    SegTree(const SegTree& copy){
-        this->len = copy.len;
+    SegTree(const SegTree& copy) : len(copy.len) {
         this->segtree = new std::vector<std::pair<uint64_t, size_t>>(*(copy.segtree));
     }
 
@@ -72,7 +71,7 @@ struct SegTree {
      * Sets the value at ind to val. 
      * 
      */
-	void set(int ind, std::pair<uint64_t, size_t> val) {
+	void set(size_t ind, std::pair<uint64_t, size_t> val) {
 		// assert(0 <= ind && ind < len);
 		ind += len;
 		(*segtree)[ind] = val;
@@ -86,7 +85,7 @@ struct SegTree {
      * @param start the 0-indexed indice indicating the inclusive left point of the range
      * @param end the 0-indexed indice indicating the exclusive right point of the range
      */
-	std::pair<uint64_t, size_t> query(int start, int end) {
+	std::pair<uint64_t, size_t> query(size_t start, size_t end) {
 		// assert(0 <= start && start < len && 0 < end && end <= len);
 		std::pair<uint64_t, size_t> minAm = DEFAULT;
 		for (start += len, end += len; start < end; start /= 2, end /= 2) {
