@@ -5,7 +5,7 @@
 #include <fstream>
 
 std::vector<std::string> test_strs;
-unsigned ks[] = {1, 4, 7, 8, 9, 16, 25, 64};
+unsigned ks[] = {2, 4, 7, 8, 9, 16, 25, 64}; // I got tired of all the warning messages form ntHash, so I only occasioanlly run a test on everything for k = 1
 
 void setupStrings(){
 	std::string str;
@@ -115,6 +115,28 @@ void ModMin_dig_comp(digest::ModMin& dig1, digest::ModMin& dig2){
 	base_dig_roll(dig1, dig2);
 }
 
+void WindowMin_roll_minimizers_comp(digest::WindowMin& dig1, digest::WindowMin& dig2){
+	std::vector<size_t> vec1;
+	std::vector<size_t> vec2;
+	dig1.roll_minimizer(1000, vec1);
+	dig2.roll_minimizer(1000, vec2);
+	REQUIRE(vec1.size() == vec2.size());
+	for(size_t i = 0; i < vec1.size(); i++){
+		CHECK(vec1[i] == vec2[i]);
+	}
+
+}
+
+void WindowMin_dig_comp(digest::WindowMin& dig1, digest::WindowMin& dig2){
+	base_dig_comp(dig1, dig2);
+	CHECK(dig1.get_large_wind_kmer_am() == dig2.get_large_wind_kmer_am());
+	CHECK(dig1.get_st_index() == dig2.get_st_index());
+	CHECK(dig1.get_st_size() == dig2.get_st_size());
+	CHECK(dig1.get_is_minimized() == dig2.get_is_minimized());
+	// need to use this because I need to check, or at least get some indication, of whether the two seg trees are the same
+	WindowMin_roll_minimizers_comp(dig1, dig2);
+}
+
 void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	INFO(str);
 	INFO(k);
@@ -207,7 +229,7 @@ void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned
 			}
 		}
 	}
-	
+
 	std::vector<size_t> wind_mins;
 	dig.roll_minimizer(1000, wind_mins);
 	REQUIRE(answers.size() == wind_mins.size());
@@ -726,4 +748,82 @@ TEST_CASE("WindowMin Testing"){
 			}
 		}
 	}
+	/*
+		the below also inadverntently tests how append_seq (only the case that there are 2 sequences involved total) 
+		works with roll_minimizer for WindowMin. In theory this shouldn't be needed and also can't be considered "thorough", but it is extra assurance.
+	*/
+	SECTION("Testing Copy Constructor"){
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int m = 1; m <= 32; m++){
+						digest::WindowMin* dig1 = new digest::WindowMin(test_strs[i], ks[j], m, l, 1);
+						digest::WindowMin* dig2 = new digest::WindowMin(*dig1);
+						WindowMin_dig_comp(*dig1, *dig2);
+						delete dig1;
+						delete dig2;
+					}
+				}
+			}
+		}
+
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int m =1; m <= 32; m++){
+						std::string str1 = test_strs[i].substr(0, l);
+						std::string str2 = test_strs[i].substr(l, 100);
+						digest::WindowMin* dig1 = new digest::WindowMin(str1, ks[j], m, 0, 1);
+						std::vector<size_t> vec;
+						dig1->roll_minimizer(1000, vec);
+						dig1->append_seq(str2);
+						digest::WindowMin* dig2 = new digest::WindowMin(*dig1);
+						WindowMin_dig_comp(*dig1, *dig2);
+						delete dig1;
+						delete dig2;
+					}
+					
+				}
+			}
+		}
+	}
+
+	SECTION("Testing Assignment Operator"){
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int m =1; m <= 32; m++){
+						digest::WindowMin* dig1 = new digest::WindowMin(test_strs[i], ks[j], m, l, 1);
+						digest::WindowMin* dig2 = new digest::WindowMin(test_strs[1], 99, 35, 0, 2);
+						*dig2 = *dig1;
+						WindowMin_dig_comp(*dig1, *dig2);
+						delete dig1;
+						delete dig2;
+					}
+					
+				}
+			}
+		}
+
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int m =1; m<= 32; m++){
+						std::string str1 = test_strs[i].substr(0, l);
+						std::string str2 = test_strs[i].substr(l, 100);
+						digest::WindowMin* dig1 = new digest::WindowMin(str1, ks[j], m, 0, 1);
+						std::vector<size_t> vec;
+						dig1->roll_minimizer(1000, vec);
+						dig1->append_seq(str2);
+						digest::WindowMin* dig2 = new digest::WindowMin(test_strs[1], 35, 3, 0, 2);
+						*dig2 = *dig1;
+						WindowMin_dig_comp(*dig1, *dig2);
+						delete dig1;
+						delete dig2;
+					}
+				}
+			}
+		}
+	}
+
 }
