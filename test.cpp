@@ -1,6 +1,7 @@
 #include "nthash.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include "mod_minimizer.hpp"
+#include "window_minimizer.hpp"
 #include <fstream>
 
 std::vector<std::string> test_strs;
@@ -99,6 +100,14 @@ void ModMin_constructor(digest::ModMin& dig, std::string& str, unsigned k, size_
 	CHECK(dig.get_congruence() == congruence);
 }
 
+void WindowMin_constructor(digest::WindowMin& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h, unsigned large_wind_kmer_am){
+	base_constructor(dig, str, k, pos, minimized_h);
+	CHECK(dig.get_large_wind_kmer_am() == large_wind_kmer_am);
+	CHECK(dig.get_st_index() == 0);
+	CHECK(dig.get_st_size() == 0);
+	CHECK(dig.get_is_minimized() == false);
+}
+
 void ModMin_dig_comp(digest::ModMin& dig1, digest::ModMin& dig2){
 	base_dig_comp(dig1, dig2);
 	CHECK(dig1.get_mod() ==  dig2.get_mod());
@@ -132,7 +141,7 @@ void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	CHECK(dig.get_is_valid_hash() == worked);
 }
 
-void ModMin_roll_minimizer(digest::Digester& dig, std::string& str, unsigned k, unsigned minimized_h, uint64_t prime){
+void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, unsigned minimized_h, uint64_t prime){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<size_t> positions;
 	std::vector<uint64_t> hashes;
@@ -156,6 +165,54 @@ void ModMin_roll_minimizer(digest::Digester& dig, std::string& str, unsigned k, 
 	REQUIRE(positions.size() == dig_positions.size());
 	for(size_t i = 0; i < positions.size(); i++){
 		CHECK(dig_positions[i] == positions[i]);
+	}
+}
+
+void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned k, unsigned minimized_h, unsigned large_wind_kmer_am){
+	nthash::NtHash tHash(str, 1, k, 0);
+	std::vector<std::pair<uint64_t, size_t>> hashes;
+	while(tHash.roll()){
+		uint64_t temp;
+		if(minimized_h == 0){
+			temp = *(tHash.hashes());
+		}else if(minimized_h == 1){
+			temp = tHash.get_forward_hash();
+		}else{
+			temp = tHash.get_reverse_hash();
+		}
+		hashes.push_back(std::make_pair(temp, tHash.get_pos()));
+	}
+
+	std::vector<std::pair<uint64_t, size_t>> answers;
+	std::pair<uint64_t, size_t> prev;
+	for(size_t i =0; i + large_wind_kmer_am <= hashes.size(); i++){
+		std::pair<uint64_t, size_t> temp_pair = hashes[i];
+		for(int j = 1; j < large_wind_kmer_am; j++){
+			std::pair<uint64_t, size_t> curr = hashes[i+j];
+			if(curr.first < temp_pair.first){
+				temp_pair = curr;
+			}else if(curr.first == temp_pair.first){
+				if(curr.second > temp_pair.second){
+					temp_pair = curr;
+				}
+			}
+		}
+		if(i == 0){
+			prev = temp_pair;
+			answers.push_back(temp_pair);
+		}else{
+			if(prev != temp_pair){
+				prev = temp_pair;
+				answers.push_back(temp_pair);
+			}
+		}
+	}
+	
+	std::vector<size_t> wind_mins;
+	dig.roll_minimizer(1000, wind_mins);
+	REQUIRE(answers.size() == wind_mins.size());
+	for(size_t i = 0; i < answers.size(); i++){
+		CHECK(wind_mins[i] == answers[i].second);
 	}
 }
 
@@ -360,6 +417,24 @@ TEST_CASE("Digester Testing"){
 			delete dig;
 		}
 
+		for(int i =0; i < test_strs.size(); i++){
+			for(int j =0; j < 8; j++){
+				k = ks[j];
+				for(int l =0; l < 16; l++){
+					pos = l;
+					for(int p =0; p < 3; p++){
+						minimized_h = p;
+						mod = 1e9+7;
+						congruence = 0;
+						digest::ModMin* dig = new digest::ModMin(test_strs[i], k, mod, congruence, pos, minimized_h);
+						ModMin_constructor(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
+						delete dig;
+					}
+				}
+				
+			}
+		}
+
 		// Throwing Exceptions
 		// Shouldn't/Doesn't leak any memory
 		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
@@ -509,27 +584,6 @@ TEST_CASE("ModMin Testing"){
 		uint64_t mod, congruence;
 		size_t pos;
 		std::string str;
-		// string is length 1, k = 1
-		
-		for(int i =0; i < test_strs.size(); i++){
-			for(int j =0; j < 8; j++){
-				k = ks[j];
-				for(int l =0; l < 16; l++){
-					pos = l;
-					for(int p =0; p < 3; p++){
-						minimized_h = p;
-						mod = 1e9+7;
-						congruence = 0;
-						digest::ModMin* dig = new digest::ModMin(test_strs[i], k, mod, congruence, pos, minimized_h);
-						ModMin_constructor(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
-						delete dig;
-					}
-				}
-				
-			}
-			
-		}
-		
 
 		// Throwing Exceptions
 		// Shouldn't/Doesn't leak any memory
@@ -623,6 +677,52 @@ TEST_CASE("ModMin Testing"){
 					delete dig1;
 					delete dig2;
 				}
+			}
+		}
+	}
+}
+
+TEST_CASE("WindowMin Testing"){
+	SECTION("Constructor Testing"){
+		unsigned k, minimized_h, large_wind_kmer_am;
+		size_t pos;
+		std::string str;
+
+		// Throwing Exceptions
+		// Shouldn't/Doesn't leak any memory
+		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
+		
+		str = "ACTGACTG";
+		k = 2;
+		pos = 0;
+		minimized_h = 0;
+		digest::WindowMin* dig1;
+		large_wind_kmer_am = 0;
+		CHECK_THROWS_AS((dig1 = new digest::WindowMin(str, k, large_wind_kmer_am, pos, minimized_h)), digest::BadWindowSizeException);
+
+		for(int i =0; i < test_strs.size(); i++){
+			for(int j =1; j <= 64; j++){
+				k = 4;
+				pos = 0;
+				minimized_h = 0;
+				
+				digest::WindowMin* dig = new digest::WindowMin(test_strs[i], k, j, pos, minimized_h);
+				WindowMin_constructor(*dig, test_strs[i], k, pos, minimized_h, j);
+				delete dig;
+			}
+		}
+	}
+
+	SECTION("roll_minimizer() testing"){
+		for(int i =0; i < 7; i += 2){
+			for(int j =0; j < 8; j++){
+				for(int m = 1; m <= 32; m++){
+					for(int l = 0; l < 3; l++){
+						digest::WindowMin* dig = new digest::WindowMin(test_strs[i], ks[j], m, 0, l);
+						WindowMin_roll_minimizer(*dig, test_strs[i], ks[j], l, m);
+						delete dig;
+					}
+				}				
 			}
 		}
 	}
