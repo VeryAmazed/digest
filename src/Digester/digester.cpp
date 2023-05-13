@@ -9,25 +9,35 @@ namespace digest{
         }
         offset += this->len;
         size_t ind = this->len-1;
-        // if we never got to initialize the hash, we shouldn't be popping stuff
+        
+        /*
+            this is for the case where we call append_seq after having previously called append_seq and not having gotten through the deque
+            In such a case, since append_seq initializes a hash, we need to get rid of the first character in the deque since if we just initialized the hash
+            without doing this, it would be identical the the current hash held by the object
+            
+            However, there is also the case that a hash was never previously initialized, such as when the length of the string used in the previous append_seq call, 
+            plus the the amount of ACTG characters after the last non-ACTG character in the original string summed to be less than k
+            In this case, it would not be correct to remove the first character in the deque
+        */
         if((start != end || c_outs->size() == k) && c_outs->size() > 0){
             c_outs->pop_front();
         }
 
+        // the following copies in characters from the end of the old sequence into the deque
         std::vector<char> temp_vec;
         while(temp_vec.size() + c_outs->size()< k-1 && ind >= start){
-            if(!is_ACTG(this->seq[ind])){
-                break;
-            }
+            if(!is_ACTG(this->seq[ind])) break;
+            
             temp_vec.push_back(this->seq[ind]);
             if(ind == 0) break;
-            else{
-                ind--;
-            }
+
+            ind--;
         }
         for(std::vector<char>::reverse_iterator rit = temp_vec.rbegin(); rit != temp_vec.rend(); rit++){
             c_outs->push_back(*rit);
         }
+
+        // the following copies in characters from the front of the new sequence if there weren't enough non-ACTG characters at the end of the old sequence
         ind = 0;
         start = 0;
         end = 0;
@@ -46,6 +56,8 @@ namespace digest{
             start++;
             end++;
         }
+
+        // the following initializes a hash if we managed to fill the deque
         if(c_outs->size() == k){
             std::string temp(c_outs->begin(), c_outs->end());
             unsigned locn_useless;
@@ -53,13 +65,6 @@ namespace digest{
             is_valid_hash = true;
 
         }
-        
-        /*
-        for(std::deque<char>::iterator it = c_outs->begin(); it != c_outs->end(); it++){
-            std::cout << *it << std::endl;
-        }
-        std::cout << "---------------------------------------------------------" << std::endl;
-        */
         this->seq = seq;
         this->len = len;
     }
@@ -95,40 +100,40 @@ namespace digest{
     bool Digester::roll_one(){
         if(!is_valid_hash){
             return false;
-        }else{
-            if(end >= len){
-                is_valid_hash = false;
-                return false;
-            }
-            if(c_outs->size() > 0){
-                if(is_ACTG(seq[end])){
-                    fhash = nthash::ntf64(fhash, k, c_outs->front(), seq[end]);
-                    rhash = nthash::ntr64(rhash, k, c_outs->front(), seq[end]);
-                    c_outs->pop_front();
-                    end++;
-                    chash = nthash::canonical(fhash,rhash);
-                    return true;
-                }else{
-                    c_outs->clear();
-                    start = end+1;
-                    end = start + k;
-                    return init_hash();
-                }
+        }
+        if(end >= len){
+            is_valid_hash = false;
+            return false;
+        }
+        if(c_outs->size() > 0){
+            if(is_ACTG(seq[end])){
+                fhash = nthash::ntf64(fhash, k, c_outs->front(), seq[end]);
+                rhash = nthash::ntr64(rhash, k, c_outs->front(), seq[end]);
+                c_outs->pop_front();
+                end++;
+                chash = nthash::canonical(fhash,rhash);
+                return true;
             }else{
-                if(is_ACTG(seq[end])){
-                    fhash = nthash::ntf64(fhash, k, seq[start], seq[end]);
-                    rhash = nthash::ntr64(rhash, k, seq[start], seq[end]);
-                    start++;
-                    end++;
-                    chash = nthash::canonical(fhash,rhash);
-                    return true;
-                }else{
-                    start = end+1;
-                    end = start + k;
-                    return init_hash();
-                }
-                
+                // c_outs will contain at most k-1 characters, so if we jump to end + 1, we won't consider anything else in deque so we should clear it
+                c_outs->clear();
+                start = end+1;
+                end = start + k;
+                return init_hash();
+            }
+        }else{
+            if(is_ACTG(seq[end])){
+                fhash = nthash::ntf64(fhash, k, seq[start], seq[end]);
+                rhash = nthash::ntr64(rhash, k, seq[start], seq[end]);
+                start++;
+                end++;
+                chash = nthash::canonical(fhash,rhash);
+                return true;
+            }else{
+                start = end+1;
+                end = start + k;
+                return init_hash();
             }
         }
+        
     }
 } 

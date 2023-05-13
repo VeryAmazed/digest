@@ -15,11 +15,8 @@ class BadWindowSizeException : public std::exception
 };
 
 class WindowMin : public Digester{
-	// extra stuff needed, segtree, large window size, segtree internal pointer (private)
-	// errors, large window size can't be 0
 	public:
 		/**
-         * 
          * @param seq 
          * @param len
          * @param k 
@@ -39,7 +36,6 @@ class WindowMin : public Digester{
         }
 
         /**
-         * 
          * @param seq 
          * @param k 
          * @param large_wind_kmer_am number of kmers to be considered at a time
@@ -72,13 +68,19 @@ class WindowMin : public Digester{
 			delete st;
 		}
 
+		/**
+		 * @brief adds up to amount of positions of minimizers into vec, here a k-mer is considered a minimizer if its hash is the smallest in the large window, using rightmost index wins in ties 
+         *        Time Complexity: O(log(large_wind_kmer_am)) per k-mer tested
+		 * 
+		 * @param amount 
+		 * @param vec 
+		 */
 		virtual void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;
 
 		unsigned get_large_wind_kmer_am(){
 			return large_wind_kmer_am;
 		}
-
-		// I don't know why you would ever call this, but it's here
+		
 		size_t get_st_index(){
 			return st_index;
 		}
@@ -87,21 +89,43 @@ class WindowMin : public Digester{
 			return st_size;
 		}
 
+		// function is mainly to help with tests
 		bool get_is_minimized(){
 			return is_minimized;
 		}
 
 	protected:
+		// internal point update segment tree data structure used to find minimum in large window, memory is owned by the object
 		segtree::SegTree* st;
+
+		// number of k-mer to be considered in the large window
 		unsigned large_wind_kmer_am;
+
+		// internal index that denotes the position of the leftmost element in the large window within the segment tree
 		size_t st_index;
+
+		// internal counter that tracks the number of actual values in the segment tree
 		size_t st_size;
+
+		// internal bool keeping track of if we have obtained the first minimizer yet, because we don't want to add a position to the vector if it's already in there
 		bool is_minimized;
+
+		// internal pair representing the previous minimizer, a minimizer is only a new minimizer if it is different from the previous minimizer
 		std::pair<uint64_t, size_t> prev_mini;
 
+		/**
+		 * @brief helper function which handles adding new elements into the segment tree when it is not full
+		 * 
+		 */
 		void fill_st();
 	
 	private:
+
+		/**
+		 * @brief helper function that checks to see if the current minimizer is a new minimizer, and should thus be added to the vec
+		 * 
+		 * @param vec 
+		 */
 		void check(std::vector<size_t>& vec);
 };
 

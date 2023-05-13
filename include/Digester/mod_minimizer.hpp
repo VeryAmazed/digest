@@ -20,7 +20,7 @@ class ModMin : public Digester{
          * @param seq 
          * @param len
          * @param k 
-         * @param mod Mod space to be used to calculate universal minimizers
+         * @param mod mod space to be used to calculate universal minimizers
          * @param congruence value we want minimizer hashes to be congruent to in the mod space
          * @param start
          * @param minimized_h 
@@ -39,7 +39,7 @@ class ModMin : public Digester{
          * 
          * @param seq 
          * @param k 
-         * @param mod Mod space to be used to calculate universal minimizers
+         * @param mod mod space to be used to calculate universal minimizers
          * @param congruence value we want minimizer hashes to be congruent to in the mod space
          * @param start
          * @param minimized_h 
@@ -50,15 +50,9 @@ class ModMin : public Digester{
             ModMin(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
         {}
         
-
-        /**
-         * Copy Constructor
-         * 
-         * @param copy, ModMin object you want to copy from 
-         */
         ModMin(const ModMin& copy) : Digester(copy), mod(copy.mod), congruence(copy.congruence)
         {}
-
+        
         ModMin& operator=(const ModMin& copy){
             this->mod = copy.mod;
             this->congruence = copy.congruence;
@@ -66,10 +60,16 @@ class ModMin : public Digester{
             return *this;
         }
 
+        /**
+         * @brief adds up to amount of positions of minimizers into vec, here a k-mer is considered a minimizer if its hash is congruent to congruence in the mod space 
+         *        Time Complexity: O(1) per k-mer tested
+         * 
+         * @param amount 
+         * @param vec 
+         */
         void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;    
 
         /**
-         * 
          * @return uint64_t, the mod space being used
          */
         uint64_t get_mod(){
@@ -77,7 +77,6 @@ class ModMin : public Digester{
         }
 
         /**
-         * 
          * @return uint64_t, the value the minimized hash must be congruent to
          */
         uint64_t get_congruence(){

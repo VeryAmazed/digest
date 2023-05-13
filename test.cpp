@@ -6,7 +6,7 @@
 #include <fstream>
 
 std::vector<std::string> test_strs;
-unsigned ks[] = {1, 4, 7, 8, 9, 16, 25, 64}; // I got tired of all the warning messages form ntHash, so I only occasioanlly run a test on everything for k = 1
+unsigned ks[] = {1, 4, 7, 8, 9, 16, 25, 64};
 
 void setupStrings(){
 	std::string str;
@@ -253,7 +253,6 @@ void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned
 
 	std::vector<size_t> wind_mins;
 	dig.roll_minimizer(1000, wind_mins);
-	//std::cout << answers.size() << std::endl;
 	REQUIRE(answers.size() == wind_mins.size());
 	for(size_t i = 0; i < answers.size(); i++){
 		CHECK(wind_mins[i] == answers[i].second);
@@ -290,7 +289,6 @@ void Syncmer_roll_minimizer(digest::Syncmer& dig, std::string& str, unsigned k, 
 
 	std::vector<std::pair<size_t, size_t>> wind_mins;
 	dig.roll_minimizer(1000, wind_mins);
-	//std::cout << answers.size() << std::endl;
 	REQUIRE(answers.size() == wind_mins.size());
 	for(size_t i = 0; i < answers.size(); i++){
 		CHECK(wind_mins[i].first == answers[i].first);
@@ -304,7 +302,7 @@ void append_seq_compare(std::string& str1, std::string& str2, digest::Digester& 
 	INFO(str1.size());
 	INFO(str2.size());
 	INFO(k);
-	// Make sure to check positions too
+	
 	std::string str3 = str1 + str2;
 	nthash::NtHash tHash(str3, 1, k);
 	std::vector<uint64_t> vec1;

@@ -7,7 +7,9 @@
 
 
 namespace segtree{
-// Based on a template taken from USACO.guide and then modified by me, and now modified again
+// Based on a template taken from USACO.guide and then modified by me (for competitive programming), and now modified again (for this)
+// https://usaco.guide/gold/PURS?lang=cpp
+// https://codeforces.com/blog/entry/18051 (USACO.guide was probably heavily inspired by this)
 /** A data structure that can answer point update & range minimum queries. */
 
 struct SegTree {
@@ -15,7 +17,7 @@ struct SegTree {
     const uint64_t uint64_t_MAX = 0xFFFFFFFFFFFFFFFF;
     
     // Default value, loses to everything
-    const std::pair<uint64_t, size_t> DEFAULT = std::make_pair(uint64_t_MAX, 0);  // Default value, change as necessary
+    const std::pair<uint64_t, size_t> DEFAULT = std::make_pair(uint64_t_MAX, 0);
 
     // array representation of complete binary tree
 	std::vector<std::pair<uint64_t, size_t>>* segtree;
@@ -41,15 +43,13 @@ struct SegTree {
         delete segtree;
     }
 
-    // add copy constructor and assignment operator overload and destructor
-
     /** 
      * 
      * @param a the left value to be considered
      * @param b the right value to be considered
      * 
      * @return the object a and b with the minimum hash value (uint64_t), ties broken with the larger index
-     *         ties are broken this way because we need default to always lose, but size_T doesn't have a well
+     *         ties are broken this way because we need default to always lose, but size_t doesn't have a well
      *         defined maximum value, so this allows us to make the default size_t value 0
 	 */
 	std::pair<uint64_t, size_t> comb(std::pair<uint64_t, size_t> a, std::pair<uint64_t, size_t> b) { 
@@ -68,8 +68,10 @@ struct SegTree {
 
 	// look at ASSERTS to see how you should be indexing things
 	/** 
-     * Sets the value at ind to val. 
+     * @brief sets the value at ind to val. 
      * 
+     * @param ind the index within the original sequence to be considered
+     * @param val the value to set to
      */
 	void set(size_t ind, std::pair<uint64_t, size_t> val) {
 		// assert(0 <= ind && ind < len);

@@ -10,7 +10,7 @@ namespace digest{
                 return;
             }
             st_size--;
-            // ----------------------
+            // -------------------
             check(vec);
         }
         
@@ -33,7 +33,6 @@ namespace digest{
 
     void WindowMin::check(std::vector<size_t>& vec){
         if(is_minimized){
-            //std::cout << (*(st->segtree))[1].first << " " << (*(st->segtree))[1].second << " " << prev_mini.first << " " << prev_mini.second << std::endl;
             if((*(st->segtree))[1] != prev_mini){
                 prev_mini = (*(st->segtree))[1];
                 vec.push_back((*(st->segtree))[1].second);
