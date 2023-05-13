@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(digester_test)
 
-add_subdirectory(digester)
+add_subdirectory(Digester)
 
 ############################################################
 # Catch2 Stuff
@@ -32,8 +32,6 @@ add_executable(test
 
 
 target_link_libraries( test
-    PRIVATE 
-        ntHash
     PRIVATE
         Digester
     PRIVATE
