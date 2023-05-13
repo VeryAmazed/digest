@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Digester)
+project(digester)
 
 set (CMAKE_CXX_STANDARD 11)
 
@@ -19,16 +19,16 @@ target_include_directories(ntHash
         ${PROJECT_SOURCE_DIR}/include/ntHash
 )
 
-add_library(Digester STATIC 
+add_library(digester STATIC 
     src/Digester/mod_minimizer.cpp src/Digester/digester.cpp src/Digester/window_minimizer.cpp src/Digester/syncmer.cpp
 )
 
-target_include_directories(Digester
+target_include_directories(digester
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include/Digester ${PROJECT_SOURCE_DIR}/include/ntHash
 )
 
-target_link_libraries( Digester
+target_link_libraries( digester
     PRIVATE
         ntHash  
 )
