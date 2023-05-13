@@ -1,4 +1,4 @@
-#include "nthash.hpp"
+//#include "nthash.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include "mod_minimizer.hpp"
 #include "window_minimizer.hpp"

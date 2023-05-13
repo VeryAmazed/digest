@@ -25,7 +25,7 @@ namespace digest{
                 return;
             }
             st_size--;
-            // ----------------------
+            // -------------------
             check1(vec);
         }
     }
@@ -39,7 +39,7 @@ namespace digest{
                 return;
             }
             st_size--;
-            // ----------------------
+            // -------------------
             check2(vec);
         }
     }     
