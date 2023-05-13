@@ -2,10 +2,11 @@
 #include <catch2/catch_test_macros.hpp>
 #include "mod_minimizer.hpp"
 #include "window_minimizer.hpp"
+#include "syncmer.hpp"
 #include <fstream>
 
 std::vector<std::string> test_strs;
-unsigned ks[] = {2, 4, 7, 8, 9, 16, 25, 64}; // I got tired of all the warning messages form ntHash, so I only occasioanlly run a test on everything for k = 1
+unsigned ks[] = {1, 4, 7, 8, 9, 16, 25, 64}; // I got tired of all the warning messages form ntHash, so I only occasioanlly run a test on everything for k = 1
 
 void setupStrings(){
 	std::string str;
@@ -124,7 +125,17 @@ void WindowMin_roll_minimizers_comp(digest::WindowMin& dig1, digest::WindowMin& 
 	for(size_t i = 0; i < vec1.size(); i++){
 		CHECK(vec1[i] == vec2[i]);
 	}
+}
 
+void Syncmer_roll_minimizers_comp(digest::Syncmer& dig1, digest::Syncmer& dig2){
+	std::vector<std::pair<size_t, size_t>> vec1;
+	std::vector<std::pair<size_t, size_t>> vec2;
+	dig1.roll_minimizer(1000, vec1);
+	dig2.roll_minimizer(1000, vec2);
+	REQUIRE(vec1.size() == vec2.size());
+	for(size_t i = 0; i < vec1.size(); i++){
+		CHECK(vec1[i] == vec2[i]);
+	}
 }
 
 void WindowMin_dig_comp(digest::WindowMin& dig1, digest::WindowMin& dig2){
@@ -135,6 +146,16 @@ void WindowMin_dig_comp(digest::WindowMin& dig1, digest::WindowMin& dig2){
 	CHECK(dig1.get_is_minimized() == dig2.get_is_minimized());
 	// need to use this because I need to check, or at least get some indication, of whether the two seg trees are the same
 	WindowMin_roll_minimizers_comp(dig1, dig2);
+}
+
+void Syncmer_dig_comp(digest::Syncmer& dig1, digest::Syncmer& dig2){
+	base_dig_comp(dig1, dig2);
+	CHECK(dig1.get_large_wind_kmer_am() == dig2.get_large_wind_kmer_am());
+	CHECK(dig1.get_st_index() == dig2.get_st_index());
+	CHECK(dig1.get_st_size() == dig2.get_st_size());
+	CHECK(dig1.get_is_minimized() == dig2.get_is_minimized());
+	// need to use this because I need to check, or at least get some indication, of whether the two seg trees are the same
+	Syncmer_roll_minimizers_comp(dig1, dig2);
 }
 
 void roll_one(digest::Digester& dig, std::string& str, unsigned k){
@@ -232,9 +253,48 @@ void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned
 
 	std::vector<size_t> wind_mins;
 	dig.roll_minimizer(1000, wind_mins);
+	//std::cout << answers.size() << std::endl;
 	REQUIRE(answers.size() == wind_mins.size());
 	for(size_t i = 0; i < answers.size(); i++){
 		CHECK(wind_mins[i] == answers[i].second);
+	}
+}
+
+void Syncmer_roll_minimizer(digest::Syncmer& dig, std::string& str, unsigned k, unsigned minimized_h, unsigned large_wind_kmer_am){
+	nthash::NtHash tHash(str, 1, k, 0);
+	std::vector<std::pair<uint64_t, size_t>> hashes;
+	while(tHash.roll()){
+		uint64_t temp;
+		if(minimized_h == 0){
+			temp = *(tHash.hashes());
+		}else if(minimized_h == 1){
+			temp = tHash.get_forward_hash();
+		}else{
+			temp = tHash.get_reverse_hash();
+		}
+		hashes.push_back(std::make_pair(temp, tHash.get_pos()));
+	}
+
+	std::vector<std::pair<size_t, size_t>> answers;
+	for(size_t i =0; i + large_wind_kmer_am <= hashes.size(); i++){
+		uint64_t minAm = hashes[i].first;
+
+		for(int j = 1; j < large_wind_kmer_am; j++){
+			minAm = std::min(minAm, hashes[i+j].first);
+		}
+
+		if(minAm == hashes[i].first || minAm == hashes[i+large_wind_kmer_am-1].first){
+			answers.push_back(std::make_pair(hashes[i].second, hashes[i+large_wind_kmer_am-1].second));
+		}
+	}
+
+	std::vector<std::pair<size_t, size_t>> wind_mins;
+	dig.roll_minimizer(1000, wind_mins);
+	//std::cout << answers.size() << std::endl;
+	REQUIRE(answers.size() == wind_mins.size());
+	for(size_t i = 0; i < answers.size(); i++){
+		CHECK(wind_mins[i].first == answers[i].first);
+		CHECK(wind_mins[i].second == answers[i].second);
 	}
 }
 
@@ -737,6 +797,7 @@ TEST_CASE("WindowMin Testing"){
 
 	SECTION("roll_minimizer() testing"){
 		for(int i =0; i < 7; i += 2){
+			//std::cout << test_strs[i] << std::endl;
 			for(int j =0; j < 8; j++){
 				for(int m = 1; m <= 32; m++){
 					for(int l = 0; l < 3; l++){
@@ -825,5 +886,132 @@ TEST_CASE("WindowMin Testing"){
 			}
 		}
 	}
+}
 
+TEST_CASE("Syncmer Testing"){
+	// Syncmer and WindowMinimizers have all the same class members so I can just use the WindowMin tests for Constructor and be ok
+	SECTION("Constructor Testing"){
+		
+		unsigned k, minimized_h, large_wind_kmer_am;
+		size_t pos;
+		std::string str;
+
+		// Throwing Exceptions
+		// Shouldn't/Doesn't leak any memory
+		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
+		
+		str = "ACTGACTG";
+		k = 2;
+		pos = 0;
+		minimized_h = 0;
+		digest::Syncmer* dig1;
+		large_wind_kmer_am = 0;
+		CHECK_THROWS_AS((dig1 = new digest::Syncmer(str, k, large_wind_kmer_am, pos, minimized_h)), digest::BadWindowSizeException);
+
+		for(int i =0; i < test_strs.size(); i++){
+			for(int j =1; j <= 64; j++){
+				k = 4;
+				pos = 0;
+				minimized_h = 0;
+				
+				digest::Syncmer* dig = new digest::Syncmer(test_strs[i], k, j, pos, minimized_h);
+				WindowMin_constructor(*dig, test_strs[i], k, pos, minimized_h, j);
+				delete dig;
+			}
+		}
+	}
+
+	SECTION("roll_minimizer() testing"){
+		for(int i =0; i < 7; i += 2){
+			//std::cout << test_strs[i] << std::endl;
+			for(int j =0; j < 8; j++){
+				for(int m = 1; m <= 32; m++){
+					for(int l = 0; l < 3; l++){
+						digest::Syncmer* dig = new digest::Syncmer(test_strs[i], ks[j], m, 0, l);
+						Syncmer_roll_minimizer(*dig, test_strs[i], ks[j], l, m);
+						delete dig;
+					}
+				}				
+			}
+		}
+	}
+	
+	/*
+		the below also inadverntently tests how append_seq (only the case that there are 2 sequences involved total) 
+		works with roll_minimizer for WindowMin. In theory this shouldn't be needed and also can't be considered "thorough", but it is extra assurance.
+	*/
+	SECTION("Testing Copy Constructor"){
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int m = 1; m <= 32; m++){
+						digest::Syncmer* dig1 = new digest::Syncmer(test_strs[i], ks[j], m, l, 1);
+						digest::Syncmer* dig2 = new digest::Syncmer(*dig1);
+						Syncmer_dig_comp(*dig1, *dig2);
+						delete dig1;
+						delete dig2;
+					}
+				}
+			}
+		}
+
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int m =1; m <= 32; m++){
+						std::string str1 = test_strs[i].substr(0, l);
+						std::string str2 = test_strs[i].substr(l, 100);
+						digest::Syncmer* dig1 = new digest::Syncmer(str1, ks[j], m, 0, 1);
+						std::vector<size_t> vec;
+						dig1->roll_minimizer(1000, vec);
+						dig1->append_seq(str2);
+						digest::Syncmer* dig2 = new digest::Syncmer(*dig1);
+						Syncmer_dig_comp(*dig1, *dig2);
+						delete dig1;
+						delete dig2;
+					}
+					
+				}
+			}
+		}
+	}
+
+	SECTION("Testing Assignment Operator"){
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int m =1; m <= 32; m++){
+						digest::Syncmer* dig1 = new digest::Syncmer(test_strs[i], ks[j], m, l, 1);
+						digest::Syncmer* dig2 = new digest::Syncmer(test_strs[1], 99, 35, 0, 2);
+						*dig2 = *dig1;
+						Syncmer_dig_comp(*dig1, *dig2);
+						delete dig1;
+						delete dig2;
+					}
+					
+				}
+			}
+		}
+
+		for(int i =0; i < 7; i +=2){
+			for(int j =0; j < 8; j++){
+				for(int l = 15; l < 91; l += 15){
+					for(int m =1; m<= 32; m++){
+						std::string str1 = test_strs[i].substr(0, l);
+						std::string str2 = test_strs[i].substr(l, 100);
+						digest::Syncmer* dig1 = new digest::Syncmer(str1, ks[j], m, 0, 1);
+						std::vector<size_t> vec;
+						dig1->roll_minimizer(1000, vec);
+						dig1->append_seq(str2);
+						digest::Syncmer* dig2 = new digest::Syncmer(test_strs[1], 35, 3, 0, 2);
+						*dig2 = *dig1;
+						Syncmer_dig_comp(*dig1, *dig2);
+						delete dig1;
+						delete dig2;
+					}
+				}
+			}
+		}
+	}
+	
 }

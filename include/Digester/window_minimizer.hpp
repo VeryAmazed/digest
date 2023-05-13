@@ -68,11 +68,11 @@ class WindowMin : public Digester{
 			return *this;
 		}
 
-		~WindowMin(){
+		virtual ~WindowMin(){
 			delete st;
 		}
 
-		void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;
+		virtual void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;
 
 		unsigned get_large_wind_kmer_am(){
 			return large_wind_kmer_am;
@@ -91,13 +91,18 @@ class WindowMin : public Digester{
 			return is_minimized;
 		}
 
-	private:
+	protected:
 		segtree::SegTree* st;
 		unsigned large_wind_kmer_am;
 		size_t st_index;
 		size_t st_size;
 		bool is_minimized;
 		std::pair<uint64_t, size_t> prev_mini;
+
+		void fill_st();
+	
+	private:
+		void check(std::vector<size_t>& vec);
 };
 
 }
