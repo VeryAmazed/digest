@@ -4,36 +4,43 @@ project(digester_test)
 
 add_subdirectory(digester)
 
-############################################################
-# Catch2 Stuff
-############################################################
+#message(STATUS "Testing. Did we get here 1")
 
-Include(FetchContent)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    #message(STATUS "Testing. Did we get here 2")
+    
+    ############################################################
+    # Catch2 Stuff
+    ############################################################
 
-FetchContent_Declare(
-  Catch2
-  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG        v3.0.1 # or a later release
-)
+    Include(FetchContent)
 
-FetchContent_MakeAvailable(Catch2)
+    FetchContent_Declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG        v3.0.1 # or a later release
+    )
 
-############################################################
-# Create an executable
-############################################################
+    FetchContent_MakeAvailable(Catch2)
 
-# Add an executable with the above sources
+    ############################################################
+    # Create an executable
+    ############################################################
 
-add_executable(test 
-    test.cpp
-)
+    # Add an executable with the above sources
 
-# link the new hello_library target with the hello_binary target
+    add_executable(test 
+        test.cpp
+    )
+
+    # link the new hello_library target with the hello_binary target
 
 
-target_link_libraries( test
-    PRIVATE
-        digester
-    PRIVATE
-        Catch2::Catch2WithMain
-)
+    target_link_libraries( test
+        PRIVATE
+            digester
+        PRIVATE
+            Catch2::Catch2WithMain
+    )
+endif()
+
