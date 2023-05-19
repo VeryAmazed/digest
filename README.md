@@ -8,6 +8,8 @@ Supports Mod Minimizers, Window Minimizers, and Syncmers <br>
 
 Uses the cyclic or hash provided by [ntHash](https://github.com/bcgsc/ntHash). For now I just downloaded the essential files off their github and compiled it myself but I may change how I link in ntHash in the future. <br>
 
+Tests were written usig the [Catch2](https://github.com/catchorg/Catch2) unit testing framework. <br>
+
 As ntHash only hashes ACTG characters, this library can also only hash ACTG characters. Any kmer that contains a non-ACTG character will be skipped over, for example is the kmer size is 4, and the sequence is ACCGNATTGC, only ACCG, ATTG, and TTGC will be hashed and considered for being a minimizer. <br>
 
 Mod Minimzer classifies a kmer as a minimizer if the hash of the kmer is congruent to the user specified value in the user specified mod-space. <br>
