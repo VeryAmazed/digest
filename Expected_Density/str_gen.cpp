@@ -90,8 +90,8 @@ int main() {
 	for(int i =0; i < 100; i++){
 		string temp;
 		for(int j = 0; j < 1e5; j++){
-			int curr = rand() % 17;
-			if(curr == 16){
+			int curr = rand() % 33;
+			if(curr == 32){
 				temp.pb(chars2[4]);
 			}else{
 				curr %= 4;

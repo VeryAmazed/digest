@@ -15,7 +15,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Digest)
 
 add_executable(expected
-    ACTG.cpp
+    non-ACTG.cpp
 )
 
 target_link_libraries( expected

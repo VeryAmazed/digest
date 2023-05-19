@@ -79,7 +79,7 @@ int main() {
         int start = 0;
         while(start + 7 < 1e5){
             bool works = true;
-            for(int j =0; j < 8; j++){
+            for(int j =0; j < 16; j++){
                 if(strs[i][start+j] == 'N'){
                     works = false;
                     start = start+j;
@@ -100,7 +100,7 @@ int main() {
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::ModMin mm(strs[j], 8, mods[i], 0, 0, 0);
+            digest::ModMin mm(strs[j], 16, mods[i], 0, 0, 0);
             std::vector<size_t> temp;
             mm.roll_minimizer(100000, temp);
             double am = temp.size();
@@ -112,7 +112,7 @@ int main() {
     
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::WindowMin wm(strs[j], 8, l_winds[i], 0, 0);
+            digest::WindowMin wm(strs[j], 16, l_winds[i], 0, 0);
             std::vector<size_t> temp;
             wm.roll_minimizer(100000, temp);
             double am = temp.size();
@@ -124,7 +124,7 @@ int main() {
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::Syncmer syn(strs[j], 8, l_winds[i], 0, 0);
+            digest::Syncmer syn(strs[j], 16, l_winds[i], 0, 0);
             std::vector<size_t> temp;
             syn.roll_minimizer(100000, temp);
             double am = temp.size();

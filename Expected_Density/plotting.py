@@ -7,7 +7,7 @@ for i in range(12):
     temp = [];
     inputs.append(temp);
 
-fp = open("out1.txt");
+fp = open("out2.txt");
 for i in range(12):
     line = fp.readline();
     inputs[i] = line.rstrip().split();

@@ -73,11 +73,11 @@ int main() {
     uint64_t mods[4] = {109, 128, 1009, 1024};
     unsigned l_winds[4] = {7, 8, 17, 16};
 
-    double kmers = 100000 - 8 + 1;
+    double kmers = 100000 - 16 + 1;
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::ModMin mm(strs[j], 8, mods[i], 0, 0, 0);
+            digest::ModMin mm(strs[j], 16, mods[i], 0, 0, 0);
             std::vector<size_t> temp;
             mm.roll_minimizer(100000, temp);
             double am = temp.size();
@@ -89,7 +89,7 @@ int main() {
     
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::WindowMin wm(strs[j], 8, l_winds[i], 0, 0);
+            digest::WindowMin wm(strs[j], 16, l_winds[i], 0, 0);
             std::vector<size_t> temp;
             wm.roll_minimizer(100000, temp);
             double am = temp.size();
@@ -100,7 +100,7 @@ int main() {
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::Syncmer syn(strs[j], 8, l_winds[i], 0, 0);
+            digest::Syncmer syn(strs[j], 16, l_winds[i], 0, 0);
             std::vector<size_t> temp;
             syn.roll_minimizer(100000, temp);
             double am = temp.size();
