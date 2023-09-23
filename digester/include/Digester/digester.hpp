@@ -1,7 +1,7 @@
 #ifndef DIGESTER_HPP
 #define DIGESTER_HPP
 
-#include "../ntHash/nthash.hpp"
+#include "nthash.hpp"
 #include <stdexcept>
 #include <deque>
 #include <cctype>

@@ -1,2 +1,7 @@
-#everything in the build folder
+# everything in the build folder
 build/
+
+# don't track subprojects
+subprojects/*
+# keep wrap files
+!*.wrap
