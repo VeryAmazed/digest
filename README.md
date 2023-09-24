@@ -3,6 +3,7 @@ C++ library which supports various minimizer schemes for digestion of DNA sequen
 
 The project is functional. I'm not sure how optimized it is.
 I'm not done with this project but I am putting it on hold for the summer. I'll also make this README look better when I finish.
+
 # Implementation (Most of the documentation is in the code)
 Supports Mod Minimizers, Window Minimizers, and Syncmers <br>
 
@@ -17,19 +18,14 @@ Mod Minimzer classifies a kmer as a minimizer if the hash of the kmer is congrue
 Window Minimizer classifies a kmer as a minimizer if it is the smallest in the user specifed large window, using rightmost kmer to break ties. <br>
 
 Syncmer classifies a large window as a minimizer if its smallest value is equal to the value of the hashes of the leftmost or rightmost kmer in the window (doesn't care if the smallest hash value is not unique). Because of how the large window is defined and how this library handles skipping over non-ACTG characters, if your sequence has non-ACTG characters, it is possible for this large window to have varying lengths in terms of number of characters. <br>
+
 # Usage
+Make sure [meson](https://mesonbuild.com) is installed.
+
+PREFIX is an absolute path to install location.
 ```
-FetchContent_Declare(
-  Digest
-  GIT_REPOSITORY https://github.com/VeryAmazed/Digest
-  GIT_TAG        v0.1.1
-)
+meson setup --prefix=PREFIX build
+meson install -C build
 ```
-Supports C++ 11 or later. Just copy the above code into your cmake file and that will generate a subdirectory called digester which you can then link into your project. Below is an example.
-```
-target_link_libraries( exec
-    PRIVATE
-        digester
-)
-```
-You can actually look in the Expected_Density folder to see how I linked in this library. 
+This will generate include/ and lib/ folders.
+
