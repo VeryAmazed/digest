@@ -1,7 +1,7 @@
 project(
 	'digest',
 	'cpp',
-	version: '0.1.0',
+	version: '0.2.0',
 	default_options : [
 		'cpp_std=c++17',
 		'optimization=3',
@@ -34,9 +34,8 @@ digest_dep = declare_dependency(
 
 ### test ###
 catch2 = dependency('catch2-with-main')
-tests = executable(
+executable(
 	'tests',
 	'test/tests.cpp',
 	dependencies : [catch2, digest_dep],
 )
-test('tests', tests)
