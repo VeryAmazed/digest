@@ -31,6 +31,6 @@ This will generate include/ and lib/ folders.
 * Classes are in `digest` namespace
 
 # Todo
-License
-expected density?
-combine headers
+License  
+expected density?  
+combine headers  
