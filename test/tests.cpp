@@ -1,8 +1,8 @@
 //#include "nthash.hpp"
 #include <catch2/catch_test_macros.hpp>
-#include "mod_minimizer.hpp"
-#include "window_minimizer.hpp"
-#include "syncmer.hpp"
+#include "digest/mod_minimizer.hpp"
+#include "digest/window_minimizer.hpp"
+#include "digest/syncmer.hpp"
 #include <fstream>
 
 std::vector<std::string> test_strs;
