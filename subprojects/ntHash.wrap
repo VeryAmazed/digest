@@ -1,4 +1,4 @@
 [wrap-git]
-url = https://github.com/bcgsc/ntHash.git
+url = https://github.com/VeryAmazed/ntHash.git
 revision = head
 depth = 1

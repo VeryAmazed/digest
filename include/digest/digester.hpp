@@ -2,6 +2,7 @@
 #define DIGESTER_HPP
 
 #include <nthash/nthash.hpp>
+#include <nthash/kmer_functions.hpp>
 #include <stdexcept>
 #include <deque>
 #include <cctype>

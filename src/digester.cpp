@@ -62,6 +62,9 @@ namespace digest{
             std::string temp(c_outs->begin(), c_outs->end());
             unsigned locn_useless;
             // nthash::ntc64(temp.c_str(), k, fhash, rhash, chash, locn_useless);
+            fhash = base_forward_hash(temp.c_str(), k);
+            rhash = base_reverse_hash(temp.c_str(), k);
+            chash = nthash::canonical(fhash, rhash);
             is_valid_hash = true;
 
         }
@@ -90,6 +93,9 @@ namespace digest{
                 continue;
             }
             // nthash::ntc64(seq + start, k, fhash, rhash, chash, locn_useless);
+            fhash = base_forward_hash(seq + start, k);
+            rhash = base_reverse_hash(seq + start, k);
+            chash = nthash::canonical(fhash, rhash);
             is_valid_hash = true;
             return true;
         }
@@ -107,11 +113,11 @@ namespace digest{
         }
         if(c_outs->size() > 0){
             if(is_ACTG(seq[end])){
-                // fhash = nthash::ntf64(fhash, k, c_outs->front(), seq[end]);
-                // rhash = nthash::ntr64(rhash, k, c_outs->front(), seq[end]);
+                fhash = next_forward_hash(fhash, k, c_outs->front(), seq[end]);
+                rhash = next_reverse_hash(rhash, k, c_outs->front(), seq[end]);
                 c_outs->pop_front();
                 end++;
-                // chash = nthash::canonical(fhash,rhash);
+                chash = nthash::canonical(fhash, rhash);
                 return true;
             }else{
                 // c_outs will contain at most k-1 characters, so if we jump to end + 1, we won't consider anything else in deque so we should clear it
@@ -122,11 +128,11 @@ namespace digest{
             }
         }else{
             if(is_ACTG(seq[end])){
-                // fhash = nthash::ntf64(fhash, k, seq[start], seq[end]);
-                // rhash = nthash::ntr64(rhash, k, seq[start], seq[end]);
+                fhash = next_forward_hash(fhash, k, seq[start], seq[end]);
+                rhash = next_reverse_hash(rhash, k, seq[start], seq[end]);
                 start++;
                 end++;
-                // chash = nthash::canonical(fhash,rhash);
+                chash = nthash::canonical(fhash,rhash);
                 return true;
             }else{
                 start = end+1;
