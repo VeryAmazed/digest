@@ -1,5 +1,6 @@
-# everything in the build folder
-build/
+# build and .cache folder
+build
+.cache
 
 # don't track subprojects
 subprojects/*
