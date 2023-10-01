@@ -13,7 +13,7 @@ class BadConstructionException : public std::exception
 {
 	const char * what () const throw ()
     {
-    	return "minimized_h must be either 0, 1, or 2, k cannot be 0, start must be less than len";
+    	return "minimized_h must be either 0, 1, or 2, k must be greater than 3, start must be less than len";
     }
 };
 
@@ -40,7 +40,7 @@ class Digester{
          */
         Digester(const char* seq, size_t len, unsigned k, size_t start = 0, unsigned minimized_h = 0) 
             : seq(seq), len(len), offset(0), start(start), end(start+k), k(k), minimized_h(minimized_h), fhash(0), chash(0), rhash(0) {
-                if(k == 0 ||start >= len || minimized_h > 2){
+                if(k < 4 ||start >= len || minimized_h > 2){
                     throw BadConstructionException();
                 }
                 this->c_outs = new std::deque<char>;

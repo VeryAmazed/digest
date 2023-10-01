@@ -1,5 +1,8 @@
 #pragma once
 
+#include "nthash/internal.hpp"
+#include "nthash/nthash.hpp"
+
 namespace {
 /**
  * Check the current k-mer for non ACGTU's

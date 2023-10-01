@@ -6,7 +6,7 @@
 #include <fstream>
 
 std::vector<std::string> test_strs;
-// changed the first k = 1, to k = 4, will be fixed soon
+// used to be first value was 1, but now k must be >= 4
 unsigned ks[] = {4, 4, 7, 8, 9, 16, 25, 64};
 
 void setupStrings(){
@@ -481,9 +481,9 @@ TEST_CASE("Digester Testing"){
 		std::string str;
 		// string is length 1, k = 1
 		
-		/*
-		str = "A";
-		k = ks[0];
+		
+		str = "AAAA";
+		k = 4;
 		pos = 0;
 		for(int i =0; i < 3; i++){
 			minimized_h = i;
@@ -493,7 +493,7 @@ TEST_CASE("Digester Testing"){
 			ModMin_constructor(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
-		*/
+		
 
 		// string is length 1, k = 4
 		str = "A";
@@ -531,16 +531,16 @@ TEST_CASE("Digester Testing"){
 		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
 		
 		str = "ACTGACTG";
-		k = 2;
+		k = 4;
 		pos = 0;
 		minimized_h = 0;
 		mod = 1e9+7;
 		congruence = 0;
-		// k = 0
+
 		k = 0;
 		digest::ModMin* dig;
 		CHECK_THROWS_AS(dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		k = 2;
+		k = 4;
 		
 		// pos >= seq.size()
 		pos = 8;
