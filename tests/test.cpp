@@ -13,43 +13,43 @@ void setupStrings(){
 	std::string str;
 	std::fstream fs;
 
-	fs.open("../test/test_strings/A.txt", std::fstream::in);
+	fs.open("../tests/test_strings/A.txt", std::fstream::in);
 	fs >> str;
 	//std::cout << str << std::endl;
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test/test_strings/a_lowercase.txt", std::fstream::in);
+	fs.open("../tests/test_strings/a_lowercase.txt", std::fstream::in);
 	fs >> str;
 	//std::cout << str << std::endl;
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test/test_strings/salmonella_enterica.txt", std::fstream::in);
+	fs.open("../tests/test_strings/salmonella_enterica.txt", std::fstream::in);
 	fs >> str;
 	//std::cout << str << std::endl;
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test/test_strings/salmonella_lowercase.txt", std::fstream::in);
+	fs.open("../tests/test_strings/salmonella_lowercase.txt", std::fstream::in);
 	fs >> str;
 	//std::cout << str << std::endl;
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test/test_strings/random.txt", std::fstream::in);
+	fs.open("../tests/test_strings/random.txt", std::fstream::in);
 	fs >> str;
 	//std::cout << str << std::endl;
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test/test_strings/random_lowercase.txt", std::fstream::in);
+	fs.open("../tests/test_strings/random_lowercase.txt", std::fstream::in);
 	fs >> str;
 	//std::cout << str << std::endl;
 	test_strs.push_back(str);
 	fs.close();
 
-	fs.open("../test/test_strings/N.txt", std::fstream::in);
+	fs.open("../tests/test_strings/N.txt", std::fstream::in);
 	fs >> str;
 	//std::cout << str << std::endl;
 	test_strs.push_back(str);
