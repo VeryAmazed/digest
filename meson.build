@@ -36,6 +36,14 @@ digest_dep = declare_dependency(
 catch2 = dependency('catch2-with-main')
 executable(
 	'tests',
-	'test/tests.cpp',
+	'tests/test.cpp',
 	dependencies : [catch2, digest_dep],
+)
+
+### benchmark ###
+bench = dependency('benchmark')
+executable(
+	'benchmarks',
+	'tests/benchmark.cpp',
+	dependencies : [bench, digest_dep],
 )
