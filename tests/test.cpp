@@ -10,50 +10,23 @@ std::vector<std::string> test_strs;
 unsigned ks[] = {4, 4, 7, 8, 9, 16, 25, 64};
 
 void setupStrings(){
-	std::string str;
-	std::fstream fs;
-
-	fs.open("../tests/test_strings/A.txt", std::fstream::in);
-	fs >> str;
-	//std::cout << str << std::endl;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../tests/test_strings/a_lowercase.txt", std::fstream::in);
-	fs >> str;
-	//std::cout << str << std::endl;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../tests/test_strings/salmonella_enterica.txt", std::fstream::in);
-	fs >> str;
-	//std::cout << str << std::endl;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../tests/test_strings/salmonella_lowercase.txt", std::fstream::in);
-	fs >> str;
-	//std::cout << str << std::endl;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../tests/test_strings/random.txt", std::fstream::in);
-	fs >> str;
-	//std::cout << str << std::endl;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../tests/test_strings/random_lowercase.txt", std::fstream::in);
-	fs >> str;
-	//std::cout << str << std::endl;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../tests/test_strings/N.txt", std::fstream::in);
-	fs >> str;
-	//std::cout << str << std::endl;
-	test_strs.push_back(str);
-	fs.close();
+	std::string files[] = {
+		"../tests/test_strings/A.txt",
+		"../tests/test_strings/a_lowercase.txt",
+		"../tests/test_strings/salmonella_enterica.txt",
+		"../tests/test_strings/salmonella_lowercase.txt",
+		"../tests/test_strings/random.txt",
+		"../tests/test_strings/random_lowercase.txt",
+		"../tests/test_strings/N.txt",
+	};
+	
+	for (auto& file : files) {
+		std::ifstream ifs(file);
+		ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		std::string str;
+		ifs >> str;
+		test_strs.push_back(str);
+	}
 }
 
 void base_constructor(digest::Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h){
