@@ -5,6 +5,10 @@
 #include <fstream>
 #include <benchmark/benchmark.h>
 
+#define DEFAULT_LARGE_WIND 16
+#define DEFAULT_KMER_LEN 16
+#define DEFAULT_STR_LEN 1e4
+
 std::vector<std::string> bench_strs;
 
 void setupStrings(){
@@ -27,7 +31,7 @@ static void BM_ModMinConstruction(benchmark::State& state){
         std::string str = bench_strs[0].substr(0, state.range(0));
         state.ResumeTiming();
 
-        digest::ModMin *dig = new digest::ModMin(str, 16, 17);
+        digest::ModMin *dig = new digest::ModMin(str, DEFAULT_KMER_LEN, 17);
         benchmark::DoNotOptimize(dig);
         
         state.PauseTiming();
@@ -41,7 +45,7 @@ static void BM_ModMinRoll(benchmark::State& state){
     for(auto _ : state){
         state.PauseTiming();
         std::string str = bench_strs[0].substr(0, state.range(0));
-        digest::ModMin *dig = new digest::ModMin(str, 16, 17);
+        digest::ModMin *dig = new digest::ModMin(str, DEFAULT_KMER_LEN, 17);
         std::vector<size_t> *vec = new std::vector<size_t>();
         vec->reserve(state.range(0));
         benchmark::DoNotOptimize(vec);
@@ -54,13 +58,13 @@ static void BM_ModMinRoll(benchmark::State& state){
     }
 }
 
-static void BM_WindowMinConstruction(benchmark::State& state){
+static void BM_WindowMinConstructionFixWind(benchmark::State& state){
     for(auto _ : state){
         state.PauseTiming();
         std::string str = bench_strs[0].substr(0, state.range(0));
         state.ResumeTiming();
 
-        digest::WindowMin *dig = new digest::WindowMin(str, 16, state.range(1));
+        digest::WindowMin *dig = new digest::WindowMin(str, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
         benchmark::DoNotOptimize(dig);
         
         state.PauseTiming();
@@ -70,11 +74,11 @@ static void BM_WindowMinConstruction(benchmark::State& state){
 }
 
 
-static void BM_WindowMinRoll(benchmark::State& state){
+static void BM_WindowMinRollFixWind(benchmark::State& state){
     for(auto _ : state){
         state.PauseTiming();
         std::string str = bench_strs[0].substr(0, state.range(0));
-        digest::WindowMin *dig = new digest::WindowMin(str, 16, state.range(1));
+        digest::WindowMin *dig = new digest::WindowMin(str, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
         std::vector<size_t> *vec = new std::vector<size_t>();
         vec->reserve(state.range(0));
         benchmark::DoNotOptimize(vec);
@@ -87,13 +91,13 @@ static void BM_WindowMinRoll(benchmark::State& state){
     }
 }
 
-static void BM_SyncmerConstruction(benchmark::State& state){
+static void BM_WindowMinConstructionFixLen(benchmark::State& state){
     for(auto _ : state){
         state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, state.range(0));
+        std::string str = bench_strs[0].substr(0, DEFAULT_STR_LEN);
         state.ResumeTiming();
 
-        digest::Syncmer *dig = new digest::Syncmer(str, 16, state.range(1));
+        digest::WindowMin *dig = new digest::WindowMin(str, DEFAULT_KMER_LEN, state.range(0));
         benchmark::DoNotOptimize(dig);
         
         state.PauseTiming();
@@ -103,11 +107,44 @@ static void BM_SyncmerConstruction(benchmark::State& state){
 }
 
 
-static void BM_SyncmerRoll(benchmark::State& state){
+static void BM_WindowMinRollFixLen(benchmark::State& state){
+    for(auto _ : state){
+        state.PauseTiming();
+        std::string str = bench_strs[0].substr(0, DEFAULT_STR_LEN);
+        digest::WindowMin *dig = new digest::WindowMin(str, DEFAULT_KMER_LEN, state.range(0));
+        std::vector<size_t> *vec = new std::vector<size_t>();
+        vec->reserve(DEFAULT_STR_LEN);
+        benchmark::DoNotOptimize(vec);
+        state.ResumeTiming();
+        dig->roll_minimizer(DEFAULT_STR_LEN, *vec);
+        state.PauseTiming();
+        delete vec;
+        delete dig;
+        state.ResumeTiming();
+    }
+}
+
+static void BM_SyncmerConstructionFixWind(benchmark::State& state){
     for(auto _ : state){
         state.PauseTiming();
         std::string str = bench_strs[0].substr(0, state.range(0));
-        digest::Syncmer *dig = new digest::Syncmer(str, 16, state.range(1));
+        state.ResumeTiming();
+
+        digest::Syncmer *dig = new digest::Syncmer(str, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+        benchmark::DoNotOptimize(dig);
+        
+        state.PauseTiming();
+        delete dig;
+        state.ResumeTiming();
+    }
+}
+
+
+static void BM_SyncmerRollFixWind(benchmark::State& state){
+    for(auto _ : state){
+        state.PauseTiming();
+        std::string str = bench_strs[0].substr(0, state.range(0));
+        digest::Syncmer *dig = new digest::Syncmer(str, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
         std::vector<size_t> *vec = new std::vector<size_t>();
         vec->reserve(state.range(0));
         benchmark::DoNotOptimize(vec);
@@ -120,26 +157,53 @@ static void BM_SyncmerRoll(benchmark::State& state){
     }
 }
 
+static void BM_SyncmerConstructionFixLen(benchmark::State& state){
+    for(auto _ : state){
+        state.PauseTiming();
+        std::string str = bench_strs[0].substr(0, DEFAULT_STR_LEN);
+        state.ResumeTiming();
+
+        digest::Syncmer *dig = new digest::Syncmer(str, DEFAULT_KMER_LEN, state.range(0));
+        benchmark::DoNotOptimize(dig);
+        
+        state.PauseTiming();
+        delete dig;
+        state.ResumeTiming();
+    }
+}
+
+
+static void BM_SyncmerRollFixLen(benchmark::State& state){
+    for(auto _ : state){
+        state.PauseTiming();
+        std::string str = bench_strs[0].substr(0, DEFAULT_STR_LEN);
+        digest::Syncmer *dig = new digest::Syncmer(str, DEFAULT_KMER_LEN, state.range(0));
+        std::vector<size_t> *vec = new std::vector<size_t>();
+        vec->reserve(DEFAULT_STR_LEN);
+        benchmark::DoNotOptimize(vec);
+        state.ResumeTiming();
+        dig->roll_minimizer(DEFAULT_STR_LEN, *vec);
+        state.PauseTiming();
+        delete vec;
+        delete dig;
+        state.ResumeTiming();
+    }
+}
 
 BENCHMARK(BM_ModMinConstruction)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
 BENCHMARK(BM_ModMinRoll)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
 
-/*
-BENCHMARK(BM_WindowMinConstruction)->ArgsProduct({
-    benchmark::CreateRange(1e3, 1e6, 10),
-      benchmark::CreateRange(8, 64, 2)});
-BENCHMARK(BM_WindowMinRoll)->ArgsProduct({
-    benchmark::CreateRange(1e3, 1e6, 10),
-      benchmark::CreateRange(8, 64, 2)});
+BENCHMARK(BM_WindowMinConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
+BENCHMARK(BM_WindowMinRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
 
-BENCHMARK(BM_SyncmerConstruction)->ArgsProduct({
-    benchmark::CreateRange(1e3, 1e6, 10),
-      benchmark::CreateRange(8, 64, 2)});
-BENCHMARK(BM_SyncmerRoll)->ArgsProduct({
-    benchmark::CreateRange(1e3, 1e6, 10),
-      benchmark::CreateRange(8, 64, 2)});
-*/
+BENCHMARK(BM_WindowMinConstructionFixLen)->RangeMultiplier(2)->Range(8, 64)->Complexity();
+BENCHMARK(BM_WindowMinRollFixLen)->RangeMultiplier(2)->Range(8, 64)->Complexity();
 
+BENCHMARK(BM_SyncmerConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
+BENCHMARK(BM_SyncmerRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
+
+BENCHMARK(BM_SyncmerConstructionFixLen)->RangeMultiplier(2)->Range(8, 64)->Complexity();
+BENCHMARK(BM_SyncmerRollFixLen)->RangeMultiplier(2)->Range(8, 64)->Complexity();
 int main(int argc, char** argv)
 {
    setupStrings();
