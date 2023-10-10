@@ -1,51 +1,32 @@
 //#include "nthash.hpp"
 #include <catch2/catch_test_macros.hpp>
-#include "mod_minimizer.hpp"
-#include "window_minimizer.hpp"
-#include "syncmer.hpp"
+#include "digest/mod_minimizer.hpp"
+#include "digest/window_minimizer.hpp"
+#include "digest/syncmer.hpp"
 #include <fstream>
 
 std::vector<std::string> test_strs;
-unsigned ks[] = {1, 4, 7, 8, 9, 16, 25, 64};
+// used to be first value was 1, but now k must be >= 4
+unsigned ks[] = {4, 4, 7, 8, 9, 16, 25, 64};
 
 void setupStrings(){
-	std::string str;
-	std::fstream fs;
-
-	fs.open("../test_strings/A.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/a_lowercase.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/salmonella_enterica.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/salmonella_lowercase.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/random.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/random_lowercase.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
-
-	fs.open("../test_strings/N.txt", std::fstream::in);
-	fs >> str;
-	test_strs.push_back(str);
-	fs.close();
+	std::string files[] = {
+		"../tests/test_strings/A.txt",
+		"../tests/test_strings/a_lowercase.txt",
+		"../tests/test_strings/salmonella_enterica.txt",
+		"../tests/test_strings/salmonella_lowercase.txt",
+		"../tests/test_strings/random.txt",
+		"../tests/test_strings/random_lowercase.txt",
+		"../tests/test_strings/N.txt",
+	};
+	
+	for (auto& file : files) {
+		std::ifstream ifs(file);
+		ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		std::string str;
+		ifs >> str;
+		test_strs.push_back(str);
+	}
 }
 
 void base_constructor(digest::Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h){
@@ -472,8 +453,10 @@ TEST_CASE("Digester Testing"){
 		size_t pos;
 		std::string str;
 		// string is length 1, k = 1
-		str = "A";
-		k = ks[0];
+		
+		
+		str = "AAAA";
+		k = 4;
 		pos = 0;
 		for(int i =0; i < 3; i++){
 			minimized_h = i;
@@ -483,6 +466,7 @@ TEST_CASE("Digester Testing"){
 			ModMin_constructor(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
+		
 
 		// string is length 1, k = 4
 		str = "A";
@@ -520,16 +504,16 @@ TEST_CASE("Digester Testing"){
 		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
 		
 		str = "ACTGACTG";
-		k = 2;
+		k = 4;
 		pos = 0;
 		minimized_h = 0;
 		mod = 1e9+7;
 		congruence = 0;
-		// k = 0
+
 		k = 0;
 		digest::ModMin* dig;
 		CHECK_THROWS_AS(dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		k = 2;
+		k = 4;
 		
 		// pos >= seq.size()
 		pos = 8;
@@ -669,8 +653,9 @@ TEST_CASE("ModMin Testing"){
 		// Shouldn't/Doesn't leak any memory
 		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
 		
+		
 		str = "ACTGACTG";
-		k = 2;
+		k = 4;
 		pos = 0;
 		minimized_h = 0;
 		digest::ModMin* dig;
@@ -773,7 +758,7 @@ TEST_CASE("WindowMin Testing"){
 		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
 		
 		str = "ACTGACTG";
-		k = 2;
+		k = 4;
 		pos = 0;
 		minimized_h = 0;
 		digest::WindowMin* dig1;
@@ -899,7 +884,7 @@ TEST_CASE("Syncmer Testing"){
 		// https://stackoverflow.com/questions/147572/will-the-below-code-cause-memory-leak-in-c
 		
 		str = "ACTGACTG";
-		k = 2;
+		k = 4;
 		pos = 0;
 		minimized_h = 0;
 		digest::Syncmer* dig1;

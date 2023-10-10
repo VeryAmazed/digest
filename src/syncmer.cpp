@@ -1,4 +1,4 @@
-#include "syncmer.hpp"
+#include "digest/syncmer.hpp"
 
 namespace digest{
     void Syncmer::check1(std::vector<size_t>& vec){

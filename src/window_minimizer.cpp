@@ -1,4 +1,4 @@
-#include "window_minimizer.hpp"
+#include "digest/window_minimizer.hpp"
 
 namespace digest{
     void WindowMin::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
