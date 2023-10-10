@@ -190,20 +190,20 @@ static void BM_SyncmerRollFixLen(benchmark::State& state){
     }
 }
 
-BENCHMARK(BM_ModMinConstruction)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
-BENCHMARK(BM_ModMinRoll)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
+BENCHMARK(BM_ModMinConstruction)->RangeMultiplier(10)->Range(1e3, 1e6);
+BENCHMARK(BM_ModMinRoll)->RangeMultiplier(10)->Range(1e3, 1e6);
 
-BENCHMARK(BM_WindowMinConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
-BENCHMARK(BM_WindowMinRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
+BENCHMARK(BM_WindowMinConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
+BENCHMARK(BM_WindowMinRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
 
-BENCHMARK(BM_WindowMinConstructionFixLen)->RangeMultiplier(2)->Range(8, 64)->Complexity();
-BENCHMARK(BM_WindowMinRollFixLen)->RangeMultiplier(2)->Range(8, 64)->Complexity();
+BENCHMARK(BM_WindowMinConstructionFixLen)->RangeMultiplier(2)->Range(8, 64);
+BENCHMARK(BM_WindowMinRollFixLen)->RangeMultiplier(2)->Range(8, 64);
 
-BENCHMARK(BM_SyncmerConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
-BENCHMARK(BM_SyncmerRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6)->Complexity();
+BENCHMARK(BM_SyncmerConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
+BENCHMARK(BM_SyncmerRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
 
-BENCHMARK(BM_SyncmerConstructionFixLen)->RangeMultiplier(2)->Range(8, 64)->Complexity();
-BENCHMARK(BM_SyncmerRollFixLen)->RangeMultiplier(2)->Range(8, 64)->Complexity();
+BENCHMARK(BM_SyncmerConstructionFixLen)->RangeMultiplier(2)->Range(8, 64);
+BENCHMARK(BM_SyncmerRollFixLen)->RangeMultiplier(2)->Range(8, 64);
 int main(int argc, char** argv)
 {
    setupStrings();
