@@ -10,6 +10,7 @@
 #define DEFAULT_STR_LEN 1e4
 
 std::vector<std::string> bench_strs;
+std::string s;
 
 void setupStrings(){
 	std::string files[] = {
@@ -25,38 +26,37 @@ void setupStrings(){
 	}
 }
 
+static void DoSetup(const benchmark::State& state) {
+	s = bench_strs[0].substr(0, state.range(0));
+}
 static void BM_ModMinConstruction(benchmark::State& state){
-    for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, state.range(0));
-        state.ResumeTiming();
-
-        digest::ModMin *dig = new digest::ModMin(str, DEFAULT_KMER_LEN, 17);
+    for(auto _ : state) {
+        digest::ModMin dig(s, DEFAULT_KMER_LEN, 17);
         benchmark::DoNotOptimize(dig);
-        
-        state.PauseTiming();
-        delete dig;
-        state.ResumeTiming();
+		benchmark::ClobberMemory();
     }
 }
+BENCHMARK(BM_ModMinConstruction)->Range(1<<3, 1<<18)->Setup(DoSetup)->Complexity();
 
 
 static void BM_ModMinRoll(benchmark::State& state){
-    for(auto _ : state){
+    for(auto _ : state) {
         state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, state.range(0));
-        digest::ModMin *dig = new digest::ModMin(str, DEFAULT_KMER_LEN, 17);
+        digest::ModMin *dig = new digest::ModMin(s, DEFAULT_KMER_LEN, 17);
         std::vector<size_t> *vec = new std::vector<size_t>();
         vec->reserve(state.range(0));
         benchmark::DoNotOptimize(vec);
+
         state.ResumeTiming();
+
         dig->roll_minimizer(state.range(0), *vec);
+
         state.PauseTiming();
         delete vec;
         delete dig;
-        state.ResumeTiming();
     }
 }
+BENCHMARK(BM_ModMinRoll)->Range(1<<9, 1<<18)->Setup(DoSetup)->Complexity(benchmark::oN);
 
 static void BM_WindowMinConstructionFixWind(benchmark::State& state){
     for(auto _ : state){
@@ -190,20 +190,18 @@ static void BM_SyncmerRollFixLen(benchmark::State& state){
     }
 }
 
-BENCHMARK(BM_ModMinConstruction)->RangeMultiplier(10)->Range(1e3, 1e6);
-BENCHMARK(BM_ModMinRoll)->RangeMultiplier(10)->Range(1e3, 1e6);
 
-BENCHMARK(BM_WindowMinConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
-BENCHMARK(BM_WindowMinRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
-
-BENCHMARK(BM_WindowMinConstructionFixLen)->RangeMultiplier(2)->Range(8, 64);
-BENCHMARK(BM_WindowMinRollFixLen)->RangeMultiplier(2)->Range(8, 64);
-
-BENCHMARK(BM_SyncmerConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
-BENCHMARK(BM_SyncmerRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
-
-BENCHMARK(BM_SyncmerConstructionFixLen)->RangeMultiplier(2)->Range(8, 64);
-BENCHMARK(BM_SyncmerRollFixLen)->RangeMultiplier(2)->Range(8, 64);
+// BENCHMARK(BM_WindowMinConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
+// BENCHMARK(BM_WindowMinRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
+//
+// BENCHMARK(BM_WindowMinConstructionFixLen)->RangeMultiplier(2)->Range(8, 64);
+// BENCHMARK(BM_WindowMinRollFixLen)->RangeMultiplier(2)->Range(8, 64);
+//
+// BENCHMARK(BM_SyncmerConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
+// BENCHMARK(BM_SyncmerRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
+//
+// BENCHMARK(BM_SyncmerConstructionFixLen)->RangeMultiplier(2)->Range(8, 64);
+// BENCHMARK(BM_SyncmerRollFixLen)->RangeMultiplier(2)->Range(8, 64);
 int main(int argc, char** argv)
 {
    setupStrings();

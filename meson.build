@@ -43,7 +43,9 @@ executable(
 ### benchmark ###
 bench = dependency('benchmark')
 executable(
-	'benchmarks',
+	'bench',
 	'tests/benchmark.cpp',
 	dependencies : [bench, digest_dep],
 )
+# perf record --call-graph dwarf bench
+# perf report -g
