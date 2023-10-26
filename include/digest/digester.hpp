@@ -39,7 +39,7 @@ class Digester{
          *      or if the starting position is not at least k-1 from the end of the string
          */
         Digester(const char* seq, size_t len, unsigned k, size_t start = 0, unsigned minimized_h = 0) 
-            : seq(seq), len(len), offset(0), start(start), end(start+k), k(k), minimized_h(minimized_h), fhash(0), chash(0), rhash(0) {
+            : seq(seq), len(len), offset(0), start(start), end(start+k), chash(0), fhash(0), rhash(0), k(k), minimized_h(minimized_h) {
                 if(k < 4 ||start >= len || minimized_h > 2){
                     throw BadConstructionException();
                 }
