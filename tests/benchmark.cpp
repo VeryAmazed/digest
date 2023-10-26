@@ -1,4 +1,3 @@
-//#include "nthash.hpp"
 #include <digest/mod_minimizer.hpp>
 #include <digest/window_minimizer.hpp>
 #include <digest/syncmer.hpp>
@@ -26,182 +25,146 @@ void setupStrings(){
 	}
 }
 
-static void DoSetup(const benchmark::State& state) {
+static void BM_setup(const benchmark::State& state) {
 	s = bench_strs[0].substr(0, state.range(0));
 }
+
+
+
+
 static void BM_ModMinConstruction(benchmark::State& state){
     for(auto _ : state) {
         digest::ModMin dig(s, DEFAULT_KMER_LEN, 17);
         benchmark::DoNotOptimize(dig);
 		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
-BENCHMARK(BM_ModMinConstruction)->Range(1<<3, 1<<18)->Setup(DoSetup)->Complexity();
+BENCHMARK(BM_ModMinConstruction)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
 
-
-static void BM_ModMinRoll(benchmark::State& state){
+static void BM_ModMinRoll(benchmark::State& state) {
     for(auto _ : state) {
-        state.PauseTiming();
-        digest::ModMin *dig = new digest::ModMin(s, DEFAULT_KMER_LEN, 17);
-        std::vector<size_t> *vec = new std::vector<size_t>();
-        vec->reserve(state.range(0));
-        benchmark::DoNotOptimize(vec);
+        digest::ModMin dig(s, DEFAULT_KMER_LEN, 17);
+        std::vector<size_t> vec;
+        vec.reserve(state.range(0));
 
-        state.ResumeTiming();
-
-        dig->roll_minimizer(state.range(0), *vec);
-
-        state.PauseTiming();
-        delete vec;
-        delete dig;
+        dig.roll_minimizer(state.range(0), vec);
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
-BENCHMARK(BM_ModMinRoll)->Range(1<<9, 1<<18)->Setup(DoSetup)->Complexity(benchmark::oN);
+BENCHMARK(BM_ModMinRoll)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
+
+
+
 
 static void BM_WindowMinConstructionFixWind(benchmark::State& state){
     for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, state.range(0));
-        state.ResumeTiming();
-
-        digest::WindowMin *dig = new digest::WindowMin(str, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+        digest::WindowMin dig(s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
         benchmark::DoNotOptimize(dig);
-        
-        state.PauseTiming();
-        delete dig;
-        state.ResumeTiming();
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
-
+BENCHMARK(BM_WindowMinConstructionFixWind)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
 
 static void BM_WindowMinRollFixWind(benchmark::State& state){
     for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, state.range(0));
-        digest::WindowMin *dig = new digest::WindowMin(str, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
-        std::vector<size_t> *vec = new std::vector<size_t>();
-        vec->reserve(state.range(0));
-        benchmark::DoNotOptimize(vec);
-        state.ResumeTiming();
-        dig->roll_minimizer(state.range(0), *vec);
-        state.PauseTiming();
-        delete vec;
-        delete dig;
-        state.ResumeTiming();
+        digest::WindowMin dig(s, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
+        std::vector<size_t> vec;
+        vec.reserve(state.range(0));
+
+        dig.roll_minimizer(state.range(0), vec);
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
+BENCHMARK(BM_WindowMinRollFixWind)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
+
+
+
 
 static void BM_WindowMinConstructionFixLen(benchmark::State& state){
     for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, DEFAULT_STR_LEN);
-        state.ResumeTiming();
-
-        digest::WindowMin *dig = new digest::WindowMin(str, DEFAULT_KMER_LEN, state.range(0));
+        digest::WindowMin dig(s, DEFAULT_KMER_LEN, state.range(0));
         benchmark::DoNotOptimize(dig);
-        
-        state.PauseTiming();
-        delete dig;
-        state.ResumeTiming();
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
-
+BENCHMARK(BM_WindowMinConstructionFixLen)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
 
 static void BM_WindowMinRollFixLen(benchmark::State& state){
     for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, DEFAULT_STR_LEN);
-        digest::WindowMin *dig = new digest::WindowMin(str, DEFAULT_KMER_LEN, state.range(0));
-        std::vector<size_t> *vec = new std::vector<size_t>();
-        vec->reserve(DEFAULT_STR_LEN);
-        benchmark::DoNotOptimize(vec);
-        state.ResumeTiming();
-        dig->roll_minimizer(DEFAULT_STR_LEN, *vec);
-        state.PauseTiming();
-        delete vec;
-        delete dig;
-        state.ResumeTiming();
+        digest::WindowMin dig(s, DEFAULT_KMER_LEN, state.range(0));
+        std::vector<size_t> vec;
+        vec.reserve(DEFAULT_STR_LEN);
+
+        dig.roll_minimizer(DEFAULT_STR_LEN, vec);
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
+BENCHMARK(BM_WindowMinRollFixLen)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
+
+
+
 
 static void BM_SyncmerConstructionFixWind(benchmark::State& state){
     for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, state.range(0));
-        state.ResumeTiming();
-
-        digest::Syncmer *dig = new digest::Syncmer(str, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+        digest::Syncmer dig(s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
         benchmark::DoNotOptimize(dig);
-        
-        state.PauseTiming();
-        delete dig;
-        state.ResumeTiming();
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
+BENCHMARK(BM_SyncmerConstructionFixWind)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
 
 
 static void BM_SyncmerRollFixWind(benchmark::State& state){
     for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, state.range(0));
-        digest::Syncmer *dig = new digest::Syncmer(str, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
-        std::vector<size_t> *vec = new std::vector<size_t>();
-        vec->reserve(state.range(0));
-        benchmark::DoNotOptimize(vec);
-        state.ResumeTiming();
-        dig->roll_minimizer(state.range(0), *vec);
-        state.PauseTiming();
-        delete vec;
-        delete dig;
-        state.ResumeTiming();
+        digest::Syncmer dig(s, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
+        std::vector<size_t> vec;
+        vec.reserve(state.range(0));
+
+        dig.roll_minimizer(state.range(0), vec);
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
+BENCHMARK(BM_SyncmerRollFixWind)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
+
+
+
+
 
 static void BM_SyncmerConstructionFixLen(benchmark::State& state){
     for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, DEFAULT_STR_LEN);
-        state.ResumeTiming();
-
-        digest::Syncmer *dig = new digest::Syncmer(str, DEFAULT_KMER_LEN, state.range(0));
+        digest::Syncmer dig(s, DEFAULT_KMER_LEN, state.range(0));
         benchmark::DoNotOptimize(dig);
-        
-        state.PauseTiming();
-        delete dig;
-        state.ResumeTiming();
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
+BENCHMARK(BM_SyncmerConstructionFixLen)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
 
 
 static void BM_SyncmerRollFixLen(benchmark::State& state){
     for(auto _ : state){
-        state.PauseTiming();
-        std::string str = bench_strs[0].substr(0, DEFAULT_STR_LEN);
-        digest::Syncmer *dig = new digest::Syncmer(str, DEFAULT_KMER_LEN, state.range(0));
-        std::vector<size_t> *vec = new std::vector<size_t>();
-        vec->reserve(DEFAULT_STR_LEN);
-        benchmark::DoNotOptimize(vec);
-        state.ResumeTiming();
-        dig->roll_minimizer(DEFAULT_STR_LEN, *vec);
-        state.PauseTiming();
-        delete vec;
-        delete dig;
-        state.ResumeTiming();
+        digest::Syncmer dig(s, DEFAULT_KMER_LEN, state.range(0));
+        std::vector<size_t> vec;
+        vec.reserve(DEFAULT_STR_LEN);
+
+        dig.roll_minimizer(DEFAULT_STR_LEN, vec);
+		benchmark::ClobberMemory();
     }
+	state.SetComplexityN(state.range(0));
 }
+BENCHMARK(BM_SyncmerRollFixLen)->Range(1<<3, 1<<18)->Setup(BM_setup)->Complexity();
 
 
-// BENCHMARK(BM_WindowMinConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
-// BENCHMARK(BM_WindowMinRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
-//
-// BENCHMARK(BM_WindowMinConstructionFixLen)->RangeMultiplier(2)->Range(8, 64);
-// BENCHMARK(BM_WindowMinRollFixLen)->RangeMultiplier(2)->Range(8, 64);
-//
-// BENCHMARK(BM_SyncmerConstructionFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
-// BENCHMARK(BM_SyncmerRollFixWind)->RangeMultiplier(10)->Range(1e3, 1e6);
-//
-// BENCHMARK(BM_SyncmerConstructionFixLen)->RangeMultiplier(2)->Range(8, 64);
-// BENCHMARK(BM_SyncmerRollFixLen)->RangeMultiplier(2)->Range(8, 64);
+
+
 int main(int argc, char** argv)
 {
    setupStrings();
