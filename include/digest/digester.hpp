@@ -233,8 +233,7 @@ class Digester{
          * @return bool, true if in is an upper or lowercase ACTG character, false otherwise
          */
         bool is_ACTG(char in){
-            in = toupper(in);
-            if(in == 'A' || in == 'C' || in == 'T' || in == 'G'){
+            if(in == 'a' || in == 'A' || in == 'c' || in == 'C' || in == 't' || in == 'T' || in == 'g' || in == 'G'){
                 return true;
             }
             return false;
