@@ -18,7 +18,6 @@ std::string s;
 void setupStrings(){
 	std::string files[] = {
 		"../tests/benchmark_strings/ACTG.txt",
-		"../tests/benchmark_strings/ecoli.txt",
 	};
 	
 	for (auto& file : files) {

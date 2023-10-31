@@ -1,0 +1,45 @@
+-------------------------------------------------------------------------
+Benchmark                               Time             CPU   Iterations
+-------------------------------------------------------------------------
+BM_NtHashRoll/64                      297 ns          297 ns      1943161
+BM_NtHashRoll/512                    2546 ns         2541 ns       287843
+BM_NtHashRoll/4096                  20109 ns        20109 ns        35000
+BM_NtHashRoll/32768                162299 ns       162299 ns         4001
+BM_NtHashRoll/262144              1311880 ns      1311865 ns          541
+BM_NtHashRoll_BigO                   5.00 N          5.00 N    
+BM_NtHashRoll_RMS                       0 %             0 %    
+BM_ModMinRoll/64                      430 ns          430 ns      1564304
+BM_ModMinRoll/512                    4025 ns         4025 ns       182716
+BM_ModMinRoll/4096                  31065 ns        31064 ns        22790
+BM_ModMinRoll/32768                255079 ns       255076 ns         2743
+BM_ModMinRoll/262144              1979304 ns      1979310 ns          349
+BM_ModMinRoll_BigO                   7.55 N          7.55 N    
+BM_ModMinRoll_RMS                       1 %             1 %    
+BM_WindowMinRollFixWind/64            921 ns          921 ns       745637
+BM_WindowMinRollFixWind/512          9487 ns         9486 ns        76683
+BM_WindowMinRollFixWind/4096        75513 ns        75513 ns         9562
+BM_WindowMinRollFixWind/32768      592007 ns       592001 ns         1162
+BM_WindowMinRollFixWind/262144    4811745 ns      4811673 ns          143
+BM_WindowMinRollFixWind_BigO        18.35 N         18.35 N    
+BM_WindowMinRollFixWind_RMS             0 %             0 %    
+BM_WindowMinRollFixLen/64            1058 ns         1058 ns       671804
+BM_WindowMinRollFixLen/512          11114 ns        11114 ns        64118
+BM_WindowMinRollFixLen/4096        110984 ns       110984 ns         6517
+BM_WindowMinRollFixLen/32768      1004744 ns      1004732 ns          687
+BM_WindowMinRollFixLen/262144     9458629 ns      9458242 ns           74
+BM_WindowMinRollFixLen_BigO          2.00 NlgN       2.00 NlgN 
+BM_WindowMinRollFixLen_RMS              0 %             0 %    
+BM_SyncmerRollFixWind/64              951 ns          951 ns       746538
+BM_SyncmerRollFixWind/512            9334 ns         9334 ns        76923
+BM_SyncmerRollFixWind/4096          75324 ns        75324 ns         9225
+BM_SyncmerRollFixWind/32768        633792 ns       633787 ns         1165
+BM_SyncmerRollFixWind/262144      4855315 ns      4855332 ns          142
+BM_SyncmerRollFixWind_BigO          18.53 N         18.53 N    
+BM_SyncmerRollFixWind_RMS               1 %             1 %    
+BM_SyncmerRollFixLen/64              1051 ns         1051 ns       670199
+BM_SyncmerRollFixLen/512            11341 ns        11341 ns        62861
+BM_SyncmerRollFixLen/4096          109875 ns       109874 ns         6456
+BM_SyncmerRollFixLen/32768        1000847 ns      1000836 ns          691
+BM_SyncmerRollFixLen/262144       9544260 ns      9544168 ns           76
+BM_SyncmerRollFixLen_BigO            2.02 NlgN       2.02 NlgN 
+BM_SyncmerRollFixLen_RMS                0 %             0 %    
