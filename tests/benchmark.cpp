@@ -1,12 +1,12 @@
+// perf record --call-graph dwarf bench
+// perf report -g
+
 #include <digest/mod_minimizer.hpp>
 #include <digest/window_minimizer.hpp>
 #include <digest/syncmer.hpp>
 #include <fstream>
 #include <benchmark/benchmark.h>
 #include <nthash/nthash.hpp>
-
-// perf record --call-graph dwarf bench
-// perf report -g
 
 #define DEFAULT_LARGE_WIND 16
 #define DEFAULT_KMER_LEN 16
@@ -199,6 +199,6 @@ BENCHMARK(BM_SyncmerRollFixLen)->Range(1<<6, 1<<18)->Setup(random)->Complexity()
 int main(int argc, char** argv)
 {
    setupStrings();
-   ::benchmark::Initialize(&argc, argv);
-   ::benchmark::RunSpecifiedBenchmarks();
+   benchmark::Initialize(&argc, argv);
+   benchmark::RunSpecifiedBenchmarks();
 }
