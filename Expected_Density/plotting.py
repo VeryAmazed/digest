@@ -7,7 +7,7 @@ for i in range(12):
     temp = [];
     inputs.append(temp);
 
-fp = open("out2.txt");
+fp = open("out1.txt");
 for i in range(12):
     line = fp.readline();
     inputs[i] = line.rstrip().split();
@@ -27,7 +27,7 @@ for i in range(12):
         print(data[i][j], end = " ")
     print("");
 """
-expected = [0.009174, 0.007812, 0.0009911, 0.0009766, 0.25, 0.2222, 0.1111, 0.1176, 0.25, 0.2222, 0.1111, 0.1176]
+expected = [0.009174, 0.007812, 0.0009911, 0.0009766, 0.25, 0.2222, 0.1111, 0.1176, 0.2857, 0.25, 0.1176, 0.125]
 titles = ["ModMin: Mod is 109", "ModMin: Mod is 128", "ModMin: Mod is 1009", "ModMin: Mod is 1024", "WindowMin: Large Window is 7", "WindowMin: Large Window is 8", "WindowMin: Large Window is 17", "WindowMin: Large Window is 16", "Syncmer: Large Window is 7", "Syncmer: Large Window is 8", "Syncmer: Large Window is 17", "Syncmer: Large Window is 16"]
 for i in range(12):
     fig, axs = plt.subplots(1, 1, figsize =(10, 7), tight_layout = True)
