@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <vector>
 #include <utility>
+#include <stdint.h>
 
 
 namespace segtree{
