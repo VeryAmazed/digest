@@ -35,17 +35,13 @@ void setupStrings(){
 }
 
 static void random(const benchmark::State& state) {
-	s = bench_strs[0].substr(0, state.range(0));
+	s = bench_strs[0].substr(0, 1e7);
 }
 
-static void ecoli(const benchmark::State& state) {
-	s = bench_strs[1].substr(0, state.range(0));
-}
+// static void ecoli(const benchmark::State& state) {
+// 	s = bench_strs[1].substr(0, state.range(0));
+// }
 
-static void random_append_seq(const benchmark::State& state){
-	s1 = bench_strs[0].substr(0, state.range(0));
-	s2 = s = bench_strs[0].substr(state.range(0), state.range(1));
-}
 
 // construction sanity check grouping
 /*
@@ -116,70 +112,89 @@ BENCHMARK(BM_SyncmerConstructionFixLen)->Range(1<<6, 1<<18)->Setup(random)->Comp
 
 static void BM_NtHashRoll(benchmark::State& state) {
 	for(auto _ : state) {
+		state.PauseTiming();
 		nthash::NtHash dig(s, 1, DEFAULT_KMER_LEN);
-
+		state.ResumeTiming();
 		while (dig.roll())
-			benchmark::DoNotOptimize(*dig.hashes());
+			;
+			// benchmark::DoNotOptimize(*dig.hashes());
 	}
-	state.SetComplexityN(state.range(0));
 }
-BENCHMARK(BM_NtHashRoll)->Range(1<<6, 1<<18)->Setup(random)->Complexity();
+BENCHMARK(BM_NtHashRoll)->Setup(random)->Complexity();
 
 static void BM_ModMinRoll(benchmark::State& state) {
 	for(auto _ : state) {
+		state.PauseTiming();
 		digest::ModMin dig(s, DEFAULT_KMER_LEN, 17);
 		std::vector<size_t> vec;
-		vec.reserve(state.range(0));
-
+		// vec.reserve(1e5);
+		state.ResumeTiming();
+		
 		benchmark::DoNotOptimize(vec);
-		dig.roll_minimizer(state.range(0), vec);
+		dig.roll_minimizer(1e7, vec);
 		benchmark::ClobberMemory();
 	}
-	state.SetComplexityN(state.range(0));
 }
-BENCHMARK(BM_ModMinRoll)->Range(1<<6, 1<<18)->Setup(random)->Complexity();
+BENCHMARK(BM_ModMinRoll)->Setup(random)
+    ->Args({15, 10}) // minimap
+    ->Args({4, 11}) // spumoni2
+    ->Args({31, 15}); // kraken v1
 
-static void BM_WindowMinRollFixWind(benchmark::State& state){
+static void BM_WindowMinRollFixWind(benchmark::State& state) {
     for(auto _ : state){
-        digest::WindowMin dig(s, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
-        std::vector<size_t> vec;
-        vec.reserve(state.range(0));
+		state.PauseTiming();
+		digest::WindowMin dig(s, state.range(0), state.range(1));
+		std::vector<size_t> vec;
+		// vec.reserve(1e5);
+		state.ResumeTiming();
 
 		benchmark::DoNotOptimize(vec);
-        dig.roll_minimizer(state.range(0), vec);
+        dig.roll_minimizer(1e7, vec);
 		benchmark::ClobberMemory();
     }
-	state.SetComplexityN(state.range(0));
 }
-BENCHMARK(BM_WindowMinRollFixWind)->Range(1<<6, 1<<18)->Setup(random)->Complexity();
+BENCHMARK(BM_WindowMinRollFixWind)->Setup(random)
+    ->Args({15, 10}) // minimap
+    ->Args({4, 11}) // spumoni2
+    ->Args({31, 15}); // kraken v1
 
-static void BM_WindowMinRollFixLen(benchmark::State& state){
-    for(auto _ : state){
-        digest::WindowMin dig(s, DEFAULT_KMER_LEN, state.range(0));
-        std::vector<size_t> vec;
-        vec.reserve(DEFAULT_STR_LEN);
-
-		benchmark::DoNotOptimize(vec);
-        dig.roll_minimizer(DEFAULT_STR_LEN, vec);
-		benchmark::ClobberMemory();
-    }
-	state.SetComplexityN(state.range(0));
-}
-BENCHMARK(BM_WindowMinRollFixLen)->Range(1<<6, 1<<18)->Setup(random)->Complexity();
 
 static void BM_SyncmerRollFixWind(benchmark::State& state){
     for(auto _ : state){
         digest::Syncmer dig(s, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
         std::vector<size_t> vec;
-        vec.reserve(state.range(0));
+        // vec.reserve(1e5);
 
 		benchmark::DoNotOptimize(vec);
-        dig.roll_minimizer(state.range(0), vec);
+        dig.roll_minimizer(1e7, vec);
+		benchmark::ClobberMemory();
+    }
+}
+BENCHMARK(BM_SyncmerRollFixWind)->Setup(random)
+    ->Args({15, 11}) // minimap
+    ->Args({4, 12}) // spumoni2
+    ->Args({31, 16}); // kraken v1
+
+
+
+
+/* Increasing window size 
+
+static void BM_WindowMinRollFixLen(benchmark::State& state){
+    for(auto _ : state){
+		state.PauseTiming();
+        digest::WindowMin dig(s, DEFAULT_KMER_LEN, state.range(0));
+        std::vector<size_t> vec;
+        // vec.reserve(DEFAULT_STR_LEN);
+		state.ResumeTiming();
+
+		benchmark::DoNotOptimize(vec);
+        dig.roll_minimizer(1e5, vec);
 		benchmark::ClobberMemory();
     }
 	state.SetComplexityN(state.range(0));
 }
-BENCHMARK(BM_SyncmerRollFixWind)->Range(1<<6, 1<<18)->Setup(random)->Complexity();
+BENCHMARK(BM_WindowMinRollFixLen)->Range(1<<6,1<<30)->Setup(random)->Complexity();
 
 static void BM_SyncmerRollFixLen(benchmark::State& state){
     for(auto _ : state){
@@ -193,13 +208,20 @@ static void BM_SyncmerRollFixLen(benchmark::State& state){
     }
 	state.SetComplexityN(state.range(0));
 }
-BENCHMARK(BM_SyncmerRollFixLen)->Range(1<<6, 1<<18)->Setup(random)->Complexity();
+BENCHMARK(BM_SyncmerRollFixLen)->Setup(random)->Complexity();
+*/
+
 
 
 
 
 // append_seq sanity check grouping
 /*
+static void random_append_seq(const benchmark::State& state){
+	s1 = bench_strs[0].substr(0, state.range(0));
+	s2 = s = bench_strs[0].substr(state.range(0), state.range(1));
+}
+
 static void BM_ModMinConstruction(benchmark::State& state){
 	for(auto _ : state) {
  		digest::ModMin dig(s, DEFAULT_KMER_LEN2, 17);
