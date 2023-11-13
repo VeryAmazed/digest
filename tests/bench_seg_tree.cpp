@@ -17,7 +17,7 @@ template <class T> class MinSegmentTree {
 	std::vector<T> segtree;
 	int len;
 
-	MinSegmentTree(int len) : len(len), segtree(len * 2, DEFAULT) {}
+	MinSegmentTree(int len) : segtree(len * 2, DEFAULT), len(len) {}
 
 	/** Sets the value at ind to val. */
 	void set(int ind, T val) {
