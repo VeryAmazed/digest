@@ -33,14 +33,14 @@ namespace digest{
 
     void WindowMin::check(std::vector<size_t>& vec){
         if(is_minimized){
-            if((*(st->segtree))[1] != prev_mini){
-                prev_mini = (*(st->segtree))[1];
-                vec.push_back((*(st->segtree))[1].second);
+            if(st->segtree[1] != prev_mini){
+                prev_mini = st->segtree[1];
+                vec.push_back(st->segtree[1].second);
             }
         }else{
             is_minimized = true;
-            prev_mini = (*(st->segtree))[1];
-            vec.push_back((*(st->segtree))[1].second);
+            prev_mini = st->segtree[1];
+            vec.push_back(st->segtree[1].second);
         }
     }
 }
