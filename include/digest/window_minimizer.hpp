@@ -27,12 +27,11 @@ class WindowMin : public Digester{
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         WindowMin(const char* seq, size_t len, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, unsigned minimized_h = 0)
-        :  Digester(seq, len, k, start, minimized_h), large_wind_kmer_am(large_wind_kmer_am), st_index(0), st_size(0), is_minimized(false)
+        :  Digester(seq, len, k, start, minimized_h), st(segtree::SegTree(large_wind_kmer_am)), large_wind_kmer_am(large_wind_kmer_am), st_index(0), st_size(0), is_minimized(false)
         {	
             if(large_wind_kmer_am == 0){
 				throw BadWindowSizeException();
 			}
-			(this->st) = new segtree::SegTree(large_wind_kmer_am);
         }
 
         /**
@@ -48,9 +47,8 @@ class WindowMin : public Digester{
             WindowMin(seq.c_str(), seq.size(), k, large_wind_kmer_am, start, minimized_h)
         {}
 
-		WindowMin(const WindowMin& copy) : Digester(copy), large_wind_kmer_am(copy.large_wind_kmer_am), st_index(copy.st_index), st_size(copy.st_size), is_minimized(copy.is_minimized), prev_mini(copy.prev_mini)
+		WindowMin(const WindowMin& copy) : Digester(copy), st(segtree::SegTree(copy.st)), large_wind_kmer_am(copy.large_wind_kmer_am), st_index(copy.st_index), st_size(copy.st_size), is_minimized(copy.is_minimized), prev_mini(copy.prev_mini)
 		{
-			st = new segtree::SegTree(*copy.st);
 		}
 
 		WindowMin& operator=(const WindowMin& copy){
@@ -59,13 +57,12 @@ class WindowMin : public Digester{
 			this->st_size = copy.st_size;
 			this->is_minimized = copy.is_minimized;
 			this->prev_mini = copy.prev_mini;
-			*st = *(copy.st);
+			st = copy.st;
 			Digester::operator=(copy);
 			return *this;
 		}
 
 		virtual ~WindowMin(){
-			delete st;
 		}
 
 		/**
@@ -95,8 +92,8 @@ class WindowMin : public Digester{
 		}
 
 	protected:
-		// internal point update segment tree data structure used to find minimum in large window, memory is owned by the object
-		segtree::SegTree* st;
+		// internal point update segment tree data structure used to find minimum in large window
+		segtree::SegTree st;
 
 		// number of k-mer to be considered in the large window
 		unsigned large_wind_kmer_am;

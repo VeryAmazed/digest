@@ -43,7 +43,6 @@ class Digester{
                 if(k < 4 ||start >= len || minimized_h > 2){
                     throw BadConstructionException();
                 }
-                this->c_outs = new std::deque<char>;
                 init_hash();
             }
         
@@ -61,17 +60,16 @@ class Digester{
 
         Digester(const Digester& copy){
             copyOver(copy);
-            this->c_outs = new std::deque<char>(*(copy.c_outs));
+            this->c_outs = std::deque<char>(copy.c_outs);
         }
 
         Digester& operator=(const Digester& copy){
             copyOver(copy);
-            (this->c_outs)->assign((copy.c_outs)->begin(), (copy.c_outs)->end());
+            this->c_outs.assign(copy.c_outs.begin(), copy.c_outs.end());
             return *this;
         }
 
         virtual ~Digester(){
-            delete c_outs;
         }
         
         /**
@@ -112,7 +110,7 @@ class Digester{
          *         k-mer is at index 4, 0-indexed, in the second string, then it will return 14
          */
         size_t get_pos(){
-            return offset + start - c_outs->size();
+            return offset + start - c_outs.size();
         }
 
         uint64_t get_chash(){
@@ -275,8 +273,8 @@ class Digester{
         // length of kmer
         unsigned k;
         
-        // deque of characters to be rolled out in the rolling hash from left to right, memory is owned by the object
-        std::deque<char>* c_outs;
+        // deque of characters to be rolled out in the rolling hash from left to right
+        std::deque<char> c_outs;
         
         //Hash value to be minimized, 0 for canonical, 1 for forward, 2 for reverse
         unsigned minimized_h;
