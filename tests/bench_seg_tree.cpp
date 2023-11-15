@@ -4,6 +4,9 @@
 #include <vector>
 #include <set>
 #include <deque>
+#include <cassert>
+#include <iostream>
+#include <algorithm>
 
 #define INPUT_SIZE 1e4
 
@@ -24,7 +27,7 @@ template <class T> class MinSegmentTree {
 		//assert(0 <= ind && ind < len);
 		ind += len;
 		segtree[ind] = val;
-		for (; ind > 1; ind /= 2) {
+		for (; ind > 1; ind >>= 1) {
 			segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
 		}
 	}
@@ -42,6 +45,9 @@ template <class T> class MinSegmentTree {
 };
 
 std::vector<int> inputs;
+std::vector<int> st_outputs;
+std::vector<int> mset_outputs;
+std::vector<int> naive_outputs;
 
 void setupInput(){
     std::string path = "../tests/benchmark_seg_tree_input/nums.txt";
@@ -57,6 +63,8 @@ void setupInput(){
 static void BM_SegTree(benchmark::State& state){
     for(auto _ : state) {
         state.PauseTiming();
+        st_outputs.clear();
+        st_outputs.reserve(INPUT_SIZE);
 		int k = state.range(0);
         int ind = 0;
         MinSegmentTree<int> st(k);
@@ -66,48 +74,71 @@ static void BM_SegTree(benchmark::State& state){
         }
         int kick = 0;
         state.ResumeTiming();
-        int a = 0;
         while(ind < INPUT_SIZE){
-            benchmark::DoNotOptimize(a);
-            a = st.segtree[1];
-            benchmark::ClobberMemory();
+            st_outputs.push_back(st.segtree[1]);
             st.set(kick, inputs[ind]);
-            kick = (kick+1)%k;
+            kick += 1;
+            if(kick == k) kick = 0;
             ind++;
         }
 	}
 }
-BENCHMARK(BM_SegTree)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+BENCHMARK(BM_SegTree)->RangeMultiplier(2)->Range(1<<2, 1<<8);
 
-static void BM_mset_dq(benchmark::State& state){
+static void BM_mset(benchmark::State& state){
     for(auto _ : state) {
         state.PauseTiming();
+        mset_outputs.clear();
+        mset_outputs.reserve(INPUT_SIZE);
 		int k = state.range(0);
         int ind = 0;
         std::multiset<int> mset;
-        std::deque<std::multiset<int>::iterator> dq;
-        benchmark::DoNotOptimize(mset);
-        benchmark::DoNotOptimize(dq);
+        std::deque<std::multiset<int>::iterator> vec;
         while(ind < k){
-            dq.push_back(mset.insert(inputs[ind]));
+            vec.push_back(mset.insert(inputs[ind]));
             ind++;
         }
+        int kick = 0;
         state.ResumeTiming();
-
         while(ind < INPUT_SIZE){
-            mset.erase(dq.front());
-            dq.pop_front();
-            dq.push_back(mset.insert(inputs[ind]));
-
+            mset_outputs.push_back(*(mset.begin()));
+            mset.erase(vec[kick]);
+            vec[kick] = mset.insert(inputs[ind]);
+            kick += 1;
+            if(kick == k) kick = 0;
             ind++;
         }
 	}
 }
-BENCHMARK(BM_mset_dq)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+BENCHMARK(BM_mset)->RangeMultiplier(2)->Range(1<<2, 1<<8);
+
+static void BM_naive(benchmark::State& state){
+    for(auto _ : state) {
+        state.PauseTiming();
+        naive_outputs.clear();
+        naive_outputs.reserve(INPUT_SIZE);
+		int k = state.range(0);
+
+        state.ResumeTiming();
+        for(int i = 0; i+k < INPUT_SIZE; i++){
+            int minAm = inputs[i];
+            for(int j = i+1; j < i + k; j++){
+                minAm = std::min(minAm, inputs[j]);
+            }
+            naive_outputs.push_back(minAm);
+        }
+	}
+}
+BENCHMARK(BM_naive)->RangeMultiplier(2)->Range(1<<2, 1<<8);
 
 int main(int argc, char** argv)
 {
-   setupInput();
-   benchmark::Initialize(&argc, argv);
-   benchmark::RunSpecifiedBenchmarks();
+    setupInput();
+    benchmark::Initialize(&argc, argv);
+    benchmark::RunSpecifiedBenchmarks();
+    // sanity check
+    // if it's correct for 1 window size, it's probably correct for all
+    assert(st_outputs == mset_outputs);
+    assert(st_outputs == naive_outputs);
+    std::cout << "Passed Asserts!" << std::endl;
 }
