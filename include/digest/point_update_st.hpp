@@ -31,7 +31,7 @@ struct SegTree {
     }
 
     SegTree(const SegTree& copy) : len(copy.len) {
-        this->segtree = std::vector<std::pair<uint64_t, size_t>>(copy.segtree);
+        this->segtree = copy.segtree;
     }
 
     SegTree& operator=(const SegTree& copy){

@@ -60,7 +60,6 @@ namespace digest{
         // the following initializes a hash if we managed to fill the deque
         if(c_outs.size() == k){
             std::string temp(c_outs.begin(), c_outs.end());
-            unsigned locn_useless;
             // nthash::ntc64(temp.c_str(), k, fhash, rhash, chash, locn_useless);
             fhash = base_forward_hash(temp.c_str(), k);
             rhash = base_reverse_hash(temp.c_str(), k);
@@ -78,7 +77,6 @@ namespace digest{
 
     bool Digester::init_hash(){
         c_outs.clear();
-        unsigned locn_useless;
         while(end-1 < len){
             bool works = true;
             for(size_t i = start; i < end; i++){

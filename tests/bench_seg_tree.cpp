@@ -77,13 +77,16 @@ static void BM_SegTree(benchmark::State& state){
         while(ind < INPUT_SIZE){
             st_outputs.push_back(st.segtree[1]);
             st.set(kick, inputs[ind]);
+            
             kick += 1;
             if(kick == k) kick = 0;
+            
+            //kick = (kick+1)%k;
             ind++;
         }
 	}
 }
-BENCHMARK(BM_SegTree)->RangeMultiplier(2)->Range(1<<2, 1<<8);
+BENCHMARK(BM_SegTree)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 static void BM_mset(benchmark::State& state){
     for(auto _ : state) {
@@ -110,7 +113,7 @@ static void BM_mset(benchmark::State& state){
         }
 	}
 }
-BENCHMARK(BM_mset)->RangeMultiplier(2)->Range(1<<2, 1<<8);
+BENCHMARK(BM_mset)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 static void BM_naive(benchmark::State& state){
     for(auto _ : state) {
@@ -129,7 +132,7 @@ static void BM_naive(benchmark::State& state){
         }
 	}
 }
-BENCHMARK(BM_naive)->RangeMultiplier(2)->Range(1<<2, 1<<8);
+BENCHMARK(BM_naive)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 int main(int argc, char** argv)
 {

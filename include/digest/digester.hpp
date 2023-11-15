@@ -60,7 +60,7 @@ class Digester{
 
         Digester(const Digester& copy){
             copyOver(copy);
-            this->c_outs = std::deque<char>(copy.c_outs);
+            this->c_outs = copy.c_outs;
         }
 
         Digester& operator=(const Digester& copy){

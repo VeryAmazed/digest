@@ -26,7 +26,11 @@ namespace digest{
                 st.set(st_index, std::make_pair(rhash, get_pos()));
             }
             st_size++;
-            st_index = (st_index + 1) % large_wind_kmer_am;
+            //st_index = (st_index + 1) % large_wind_kmer_am;
+            
+            st_index += 1;
+            if(st_index == large_wind_kmer_am) st_index = 0;
+            
             roll_one();
         }
     }
