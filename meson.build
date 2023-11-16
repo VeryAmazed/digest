@@ -19,12 +19,17 @@ digest_lib = static_library(
 	include_directories: include_dirs,
 	dependencies: nthash_dep,
 	install: true,
-    install_dir: 'lib',
+	install_dir: 'lib',
 )
 install_headers(
 	'include/digest/digester.hpp', 'include/digest/mod_minimizer.hpp',
 	'include/digest/syncmer.hpp', 'include/digest/window_minimizer.hpp',
+	'include/digest/point_update_st.hpp',
 	install_dir: 'include/digest'
+)
+install_headers(
+	'include/nthash/kmer.hpp', 'include/nthash/internal.hpp',
+	install_dir: 'include/nthash'
 )
 
 digest_dep = declare_dependency(
