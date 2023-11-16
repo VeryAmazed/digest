@@ -38,11 +38,6 @@ static void random(const benchmark::State& state) {
 	s = bench_strs[0].substr(0, 1e7);
 }
 
-// static void ecoli(const benchmark::State& state) {
-// 	s = bench_strs[1].substr(0, state.range(0));
-// }
-
-
 // construction sanity check grouping
 /*
 static void BM_NtHashConstruction(benchmark::State& state){
@@ -113,19 +108,22 @@ BENCHMARK(BM_SyncmerConstructionFixLen)->Range(1<<6, 1<<18)->Setup(random)->Comp
 static void BM_NtHashRoll(benchmark::State& state) {
 	for(auto _ : state) {
 		state.PauseTiming();
-		nthash::NtHash dig(s, 1, DEFAULT_KMER_LEN);
+		nthash::NtHash dig(s, 1, state.range(0));
 		state.ResumeTiming();
 		while (dig.roll())
 			;
 			// benchmark::DoNotOptimize(*dig.hashes());
 	}
 }
-BENCHMARK(BM_NtHashRoll)->Setup(random)->Complexity();
+BENCHMARK(BM_NtHashRoll)->Setup(random)
+    ->Args({4}) // spumoni2
+    ->Args({15}) // minimap
+    ->Args({31}); // kraken v1
 
 static void BM_ModMinRoll(benchmark::State& state) {
 	for(auto _ : state) {
 		state.PauseTiming();
-		digest::ModMin dig(s, DEFAULT_KMER_LEN, 17);
+		digest::ModMin dig(s, state.range(0), 17);
 		std::vector<size_t> vec;
 		// vec.reserve(1e5);
 		state.ResumeTiming();
@@ -136,9 +134,9 @@ static void BM_ModMinRoll(benchmark::State& state) {
 	}
 }
 BENCHMARK(BM_ModMinRoll)->Setup(random)
-    ->Args({15, 10}) // minimap
-    ->Args({4, 11}) // spumoni2
-    ->Args({31, 15}); // kraken v1
+    ->Args({4}) // spumoni2
+    ->Args({15}) // minimap
+    ->Args({31}); // kraken v1
 
 static void BM_WindowMinRollFixWind(benchmark::State& state) {
     for(auto _ : state){
@@ -154,16 +152,18 @@ static void BM_WindowMinRollFixWind(benchmark::State& state) {
     }
 }
 BENCHMARK(BM_WindowMinRollFixWind)->Setup(random)
-    ->Args({15, 10}) // minimap
     ->Args({4, 11}) // spumoni2
+    ->Args({15, 10}) // minimap
     ->Args({31, 15}); // kraken v1
 
 
 static void BM_SyncmerRollFixWind(benchmark::State& state){
     for(auto _ : state){
-        digest::Syncmer dig(s, DEFAULT_KMER_LEN,DEFAULT_LARGE_WIND);
+		state.PauseTiming();
+        digest::Syncmer dig(s, state.range(0), state.range(1));
         std::vector<size_t> vec;
         // vec.reserve(1e5);
+		state.ResumeTiming();
 
 		benchmark::DoNotOptimize(vec);
         dig.roll_minimizer(1e7, vec);
@@ -171,8 +171,8 @@ static void BM_SyncmerRollFixWind(benchmark::State& state){
     }
 }
 BENCHMARK(BM_SyncmerRollFixWind)->Setup(random)
-    ->Args({15, 11}) // minimap
     ->Args({4, 12}) // spumoni2
+    ->Args({15, 11}) // minimap
     ->Args({31, 16}); // kraken v1
 
 
