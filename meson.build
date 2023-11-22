@@ -48,7 +48,16 @@ executable(
 ### benchmark ###
 bench = dependency('benchmark')
 executable(
-	'benchmarks',
+	'bench',
 	'tests/benchmark.cpp',
 	dependencies : [bench, digest_dep],
 )
+
+### benchmark segment tree ###
+
+executable(
+	'bench_seg_tree',
+	'tests/bench_seg_tree.cpp',
+	dependencies : [bench],
+)
+

@@ -148,7 +148,7 @@ void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	uint64_t dig_fhash;
 	uint64_t dig_rhash;
 	bool worked = tHash.roll();
-	while(worked = tHash.roll()){
+	while ((worked = tHash.roll())){
 		dig.roll_one();
 		CHECK(dig.get_is_valid_hash() == worked);
 		if(worked){
@@ -211,7 +211,7 @@ void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned
 	std::pair<uint64_t, size_t> prev;
 	for(size_t i =0; i + large_wind_kmer_am <= hashes.size(); i++){
 		std::pair<uint64_t, size_t> temp_pair = hashes[i];
-		for(int j = 1; j < large_wind_kmer_am; j++){
+		for(uint j = 1; j < large_wind_kmer_am; j++){
 			std::pair<uint64_t, size_t> curr = hashes[i+j];
 			if(curr.first < temp_pair.first){
 				temp_pair = curr;
@@ -259,7 +259,7 @@ void Syncmer_roll_minimizer(digest::Syncmer& dig, std::string& str, unsigned k, 
 	for(size_t i =0; i + large_wind_kmer_am <= hashes.size(); i++){
 		uint64_t minAm = hashes[i].first;
 
-		for(int j = 1; j < large_wind_kmer_am; j++){
+		for(uint j = 1; j < large_wind_kmer_am; j++){
 			minAm = std::min(minAm, hashes[i+j].first);
 		}
 
@@ -481,7 +481,7 @@ TEST_CASE("Digester Testing"){
 			delete dig;
 		}
 
-		for(int i =0; i < test_strs.size(); i++){
+		for(uint i =0; i < test_strs.size(); i++){
 			for(int j =0; j < 8; j++){
 				k = ks[j];
 				for(int l =0; l < 16; l++){
@@ -575,7 +575,7 @@ TEST_CASE("Digester Testing"){
 
 	
 	SECTION("Testing new_seq()"){
-		unsigned k, minimized_h;
+		unsigned k;
 		std::string str;
 		// string is length 1, k = 4
 		str = "A";
@@ -591,7 +591,7 @@ TEST_CASE("Digester Testing"){
 		CHECK_THROWS_AS(dig1->new_seq(test_strs[0], 500), digest::BadConstructionException);
 		delete dig1;
 
-		for(int i =0; i < test_strs.size(); i += 2){
+		for(uint i =0; i < test_strs.size(); i += 2){
 			for(int j = 0; j < 32; j += 8){
 				digest::ModMin* dig = new digest::ModMin(test_strs[1], ks[3], 1e9+7, 0, 0, 0);
 				dig->new_seq(test_strs[i], j);
@@ -600,7 +600,7 @@ TEST_CASE("Digester Testing"){
 			}
 		}
 
-		for(int i =0; i < test_strs.size(); i += 2){
+		for(uint i =0; i < test_strs.size(); i += 2){
 			for(int l = 13; l <= 78; l +=13 ){
 				digest::ModMin* dig = new digest::ModMin(test_strs[5], ks[3], 1e9+7, 0, 0, 0);
 				int ind = 0;
@@ -765,7 +765,7 @@ TEST_CASE("WindowMin Testing"){
 		large_wind_kmer_am = 0;
 		CHECK_THROWS_AS((dig1 = new digest::WindowMin(str, k, large_wind_kmer_am, pos, minimized_h)), digest::BadWindowSizeException);
 
-		for(int i =0; i < test_strs.size(); i++){
+		for(uint i =0; i < test_strs.size(); i++){
 			for(int j =1; j <= 64; j++){
 				k = 4;
 				pos = 0;
@@ -891,7 +891,7 @@ TEST_CASE("Syncmer Testing"){
 		large_wind_kmer_am = 0;
 		CHECK_THROWS_AS((dig1 = new digest::Syncmer(str, k, large_wind_kmer_am, pos, minimized_h)), digest::BadWindowSizeException);
 
-		for(int i =0; i < test_strs.size(); i++){
+		for(uint i =0; i < test_strs.size(); i++){
 			for(int j =1; j <= 64; j++){
 				k = 4;
 				pos = 0;

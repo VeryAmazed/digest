@@ -17,18 +17,20 @@ Window Minimizer classifies a kmer as a minimizer if it is the smallest in the u
 Syncmer classifies a large window as a minimizer if its smallest value is equal to the value of the hashes of the leftmost or rightmost kmer in the window (doesn't care if the smallest hash value is not unique). Because of how the large window is defined and how this library handles skipping over non-ACTG characters, if your sequence has non-ACTG characters, it is possible for this large window to have varying lengths in terms of number of characters.  
 
 # Install
-We use [Meson](https://mesonbuild.com). Older version will not work.
+We use [Meson](https://mesonbuild.com). (Very) old version will not work.
 
-PREFIX is an absolute path to install location.
+PREFIX is an absolute path to install location. If excluded, will install to system libraries.
 ```
 meson setup --prefix=PREFIX build
 meson install -C build
 ```
-This will generate include/ and lib/ folders.
+This will generate `include/` and `lib/` folders.
 
 # Usage
 * Headers at `#include <digest/___.hpp>`
 * Classes are in `digest` namespace
+* example compile: `g++ file.cpp -IPREFIX/include -LPREFIX/lib -ldigest`
+* may need `std=c++17`
 
 # Todo
 License  

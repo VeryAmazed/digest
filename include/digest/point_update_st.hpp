@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <vector>
 #include <utility>
+#include <stdint.h>
 
 
 namespace segtree{
@@ -20,27 +21,26 @@ struct SegTree {
     const std::pair<uint64_t, size_t> DEFAULT = std::make_pair(uint64_t_MAX, 0);
 
     // array representation of complete binary tree
-	std::vector<std::pair<uint64_t, size_t>>* segtree;
+	std::vector<std::pair<uint64_t, size_t>> segtree;
 	
     // number of leaves
     int len;
 
     SegTree(int len) : len(len){
-        segtree = new std::vector<std::pair<uint64_t, size_t>>(len * 2, DEFAULT);
+        segtree = std::vector<std::pair<uint64_t, size_t>>(len * 2, DEFAULT);
     }
 
     SegTree(const SegTree& copy) : len(copy.len) {
-        this->segtree = new std::vector<std::pair<uint64_t, size_t>>(*(copy.segtree));
+        this->segtree = copy.segtree;
     }
 
     SegTree& operator=(const SegTree& copy){
         this->len = copy.len;
-        (this->segtree)->assign((copy.segtree)->begin(), (copy.segtree)->end());
+        segtree.assign(copy.segtree.begin(), copy.segtree.end());
         return *this;
     }
 
     ~SegTree(){
-        delete segtree;
     }
 
     /** 
@@ -76,9 +76,9 @@ struct SegTree {
 	void set(size_t ind, std::pair<uint64_t, size_t> val) {
 		// assert(0 <= ind && ind < len);
 		ind += len;
-		(*segtree)[ind] = val;
+		segtree[ind] = val;
 		for (; ind > 1; ind /= 2) {
-			(*segtree)[ind >> 1] = comb((*segtree)[ind], (*segtree)[ind ^ 1]);
+			segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
 		}
 	}
 
@@ -87,15 +87,15 @@ struct SegTree {
      * @param start the 0-indexed indice indicating the inclusive left point of the range
      * @param end the 0-indexed indice indicating the exclusive right point of the range
      */
-	std::pair<uint64_t, size_t> query(size_t start, size_t end) {
-		// assert(0 <= start && start < len && 0 < end && end <= len);
-		std::pair<uint64_t, size_t> minAm = DEFAULT;
-		for (start += len, end += len; start < end; start /= 2, end /= 2) {
-			if ((start & 1) != 0) { minAm = comb(minAm, (*segtree)[start++]); }
-			if ((end & 1) != 0) { minAm = comb(minAm, (*segtree)[--end]); }
-		}
-		return minAm;
-	}
+	// std::pair<uint64_t, size_t> query(size_t start, size_t end) {
+	// 	// assert(0 <= start && start < len && 0 < end && end <= len);
+	// 	std::pair<uint64_t, size_t> minAm = DEFAULT;
+	// 	for (start += len, end += len; start < end; start /= 2, end /= 2) {
+	// 		if ((start & 1) != 0) { minAm = comb(minAm, (*segtree)[start++]); }
+	// 		if ((end & 1) != 0) { minAm = comb(minAm, (*segtree)[--end]); }
+	// 	}
+	// 	return minAm;
+	// }
 };
 
 }

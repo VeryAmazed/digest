@@ -39,11 +39,10 @@ class Digester{
          *      or if the starting position is not at least k-1 from the end of the string
          */
         Digester(const char* seq, size_t len, unsigned k, size_t start = 0, unsigned minimized_h = 0) 
-            : seq(seq), len(len), offset(0), start(start), end(start+k), k(k), minimized_h(minimized_h), fhash(0), chash(0), rhash(0) {
+            : seq(seq), len(len), offset(0), start(start), end(start+k), chash(0), fhash(0), rhash(0), k(k), minimized_h(minimized_h) {
                 if(k < 4 ||start >= len || minimized_h > 2){
                     throw BadConstructionException();
                 }
-                this->c_outs = new std::deque<char>;
                 init_hash();
             }
         
@@ -61,17 +60,16 @@ class Digester{
 
         Digester(const Digester& copy){
             copyOver(copy);
-            this->c_outs = new std::deque<char>(*(copy.c_outs));
+            this->c_outs = copy.c_outs;
         }
 
         Digester& operator=(const Digester& copy){
             copyOver(copy);
-            (this->c_outs)->assign((copy.c_outs)->begin(), (copy.c_outs)->end());
+            this->c_outs.assign(copy.c_outs.begin(), copy.c_outs.end());
             return *this;
         }
 
         virtual ~Digester(){
-            delete c_outs;
         }
         
         /**
@@ -112,7 +110,7 @@ class Digester{
          *         k-mer is at index 4, 0-indexed, in the second string, then it will return 14
          */
         size_t get_pos(){
-            return offset + start - c_outs->size();
+            return offset + start - c_outs.size();
         }
 
         uint64_t get_chash(){
@@ -233,8 +231,7 @@ class Digester{
          * @return bool, true if in is an upper or lowercase ACTG character, false otherwise
          */
         bool is_ACTG(char in){
-            in = toupper(in);
-            if(in == 'A' || in == 'C' || in == 'T' || in == 'G'){
+            if(in == 'a' || in == 'A' || in == 'c' || in == 'C' || in == 't' || in == 'T' || in == 'g' || in == 'G'){
                 return true;
             }
             return false;
@@ -276,8 +273,8 @@ class Digester{
         // length of kmer
         unsigned k;
         
-        // deque of characters to be rolled out in the rolling hash from left to right, memory is owned by the object
-        std::deque<char>* c_outs;
+        // deque of characters to be rolled out in the rolling hash from left to right
+        std::deque<char> c_outs;
         
         //Hash value to be minimized, 0 for canonical, 1 for forward, 2 for reverse
         unsigned minimized_h;
