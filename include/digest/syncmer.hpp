@@ -18,7 +18,7 @@ class Syncmer : public WindowMin{
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        Syncmer(const char* seq, size_t len, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, unsigned minimized_h = 0)
+        Syncmer(const char* seq, size_t len, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
         :  WindowMin(seq, len, k, large_wind_kmer_am, start, minimized_h)
         {}
 
@@ -32,7 +32,7 @@ class Syncmer : public WindowMin{
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        Syncmer(const std::string& seq, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, unsigned minimized_h = 0) :
+        Syncmer(const std::string& seq, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             Syncmer(seq.c_str(), seq.size(), k, large_wind_kmer_am, start, minimized_h)
         {}
 

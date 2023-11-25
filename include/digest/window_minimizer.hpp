@@ -26,7 +26,7 @@ class WindowMin : public Digester{
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        WindowMin(const char* seq, size_t len, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, unsigned minimized_h = 0)
+        WindowMin(const char* seq, size_t len, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
         :  Digester(seq, len, k, start, minimized_h), st(segtree::SegTree(large_wind_kmer_am)), large_wind_kmer_am(large_wind_kmer_am), st_index(0), st_size(0), is_minimized(false)
         {	
             if(large_wind_kmer_am == 0){
@@ -43,7 +43,7 @@ class WindowMin : public Digester{
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        WindowMin(const std::string& seq, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, unsigned minimized_h = 0) :
+        WindowMin(const std::string& seq, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             WindowMin(seq.c_str(), seq.size(), k, large_wind_kmer_am, start, minimized_h)
         {}
 

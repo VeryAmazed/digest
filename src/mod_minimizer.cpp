@@ -4,7 +4,7 @@ namespace digest{
     void ModMin::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
         if(!is_valid_hash) return;
 
-		if(get_minimized_h() == 0) {
+		if(get_minimized_h() == digest::MinimizedHashType::CANON) {
 			do {
                 if(chash % mod == congruence){
                     vec.push_back(get_pos());
@@ -13,7 +13,7 @@ namespace digest{
 			return;
 		}
 
-        if(get_minimized_h() == 1) {
+        if(get_minimized_h() == digest::MinimizedHashType::FORWARD) {
 			do {
                 if(fhash % mod == congruence){
                     vec.push_back(get_pos());

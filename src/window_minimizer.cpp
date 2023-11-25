@@ -18,9 +18,9 @@ namespace digest{
 
     void WindowMin::fill_st(){
         while((st_size < large_wind_kmer_am) && is_valid_hash){
-            if(get_minimized_h() == 0){
+            if(get_minimized_h() == digest::MinimizedHashType::CANON){
                 st.set(st_index, std::make_pair(chash, get_pos()));
-            }else if(get_minimized_h() == 1){
+            }else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
                 st.set(st_index, std::make_pair(fhash, get_pos()));
             }else{
                 st.set(st_index, std::make_pair(rhash, get_pos()));

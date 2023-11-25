@@ -29,7 +29,7 @@ void setupStrings(){
 	}
 }
 
-void base_constructor(digest::Digester& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h){
+void base_constructor(digest::Digester& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h){
 	INFO("String is: " << str);
 	INFO("K is: " << k);
 	INFO("Pos is: " << dig.get_pos());
@@ -76,13 +76,13 @@ void base_dig_roll(digest::Digester& dig1, digest::Digester& dig2){
 	CHECK(dig1.get_is_valid_hash() == dig2.get_is_valid_hash());
 }
 
-void ModMin_constructor(digest::ModMin& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h, uint64_t mod, uint64_t congruence){
+void ModMin_constructor(digest::ModMin& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h, uint64_t mod, uint64_t congruence){
 	base_constructor(dig, str, k, pos, minimized_h);
 	CHECK(dig.get_mod() ==  mod);
 	CHECK(dig.get_congruence() == congruence);
 }
 
-void WindowMin_constructor(digest::WindowMin& dig, std::string& str, unsigned k, size_t pos, unsigned minimized_h, unsigned large_wind_kmer_am){
+void WindowMin_constructor(digest::WindowMin& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h, unsigned large_wind_kmer_am){
 	base_constructor(dig, str, k, pos, minimized_h);
 	CHECK(dig.get_large_wind_kmer_am() == large_wind_kmer_am);
 	CHECK(dig.get_st_index() == 0);
@@ -165,15 +165,15 @@ void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	CHECK(dig.get_is_valid_hash() == worked);
 }
 
-void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, unsigned minimized_h, uint64_t prime){
+void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, uint64_t prime){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<size_t> positions;
 	std::vector<uint64_t> hashes;
 	while(tHash.roll()){
 		uint64_t temp;
-		if(minimized_h == 0){
+		if(minimized_h == digest::MinimizedHashType::CANON){
 			temp = *(tHash.hashes());
-		}else if(minimized_h == 1){
+		}else if(minimized_h == digest::MinimizedHashType::FORWARD){
 			temp = tHash.get_forward_hash();
 		}else{
 			temp = tHash.get_reverse_hash();
@@ -192,14 +192,14 @@ void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, un
 	}
 }
 
-void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned k, unsigned minimized_h, unsigned large_wind_kmer_am){
+void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, unsigned large_wind_kmer_am){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<std::pair<uint64_t, size_t>> hashes;
 	while(tHash.roll()){
 		uint64_t temp;
-		if(minimized_h == 0){
+		if(minimized_h == digest::MinimizedHashType::CANON){
 			temp = *(tHash.hashes());
-		}else if(minimized_h == 1){
+		}else if(minimized_h == digest::MinimizedHashType::FORWARD){
 			temp = tHash.get_forward_hash();
 		}else{
 			temp = tHash.get_reverse_hash();
@@ -240,14 +240,14 @@ void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned
 	}
 }
 
-void Syncmer_roll_minimizer(digest::Syncmer& dig, std::string& str, unsigned k, unsigned minimized_h, unsigned large_wind_kmer_am){
+void Syncmer_roll_minimizer(digest::Syncmer& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, unsigned large_wind_kmer_am){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<std::pair<uint64_t, size_t>> hashes;
 	while(tHash.roll()){
 		uint64_t temp;
-		if(minimized_h == 0){
+		if(minimized_h == digest::MinimizedHashType::CANON){
 			temp = *(tHash.hashes());
-		}else if(minimized_h == 1){
+		}else if(minimized_h == digest::MinimizedHashType::FORWARD){
 			temp = tHash.get_forward_hash();
 		}else{
 			temp = tHash.get_reverse_hash();
@@ -376,23 +376,23 @@ void append_seq_small_cases(){
 	std::string str4 = "ANCCTT";
 	std::string str5 = "A";
 
-	digest::Digester* dig = new digest::ModMin(str1, 4, 17, 0, 0, 0);
+	digest::Digester* dig = new digest::ModMin(str1, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str1, str3, *dig, 4);
 	delete dig;
 
-	dig = new digest::ModMin(str2, 4, 17, 0, 0, 0);
+	dig = new digest::ModMin(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str2, str4, *dig, 4);
 	delete dig;
 
-	dig = new digest::ModMin(str2, 4, 17, 0, 0, 0);
+	dig = new digest::ModMin(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str2, str3, *dig, 4);
 	delete dig;
 
-	dig = new digest::ModMin(str2, 4, 17, 0, 0, 0);
+	dig = new digest::ModMin(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str2, str5, *dig, 4);
 	delete dig;
 
-	dig = new digest::ModMin(str1, 4, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str1, str5, *dig, 4);
 	delete dig;
 }
@@ -410,31 +410,31 @@ void append_seq_small_cases2(){
 	std::string str3_good = "CAACGACCGC";
 	std::string str3_badCh = "NCAACGACCGC";
 
-	digest::Digester* dig = new digest::ModMin(str1_good, 6, 17, 0, 0, 0);
+	digest::Digester* dig = new digest::ModMin(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_good, str2_good, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_good, str2_badCh, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_good, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_short, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_short, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_short, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_badCh, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_badCh, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_badCh, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_good, str2_short, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_short, 6, 17, 0, 0, 0);
+	dig = new digest::ModMin(str1_short, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_short, str2A, str3_badCh, *dig, 6);
 	delete dig;
 }
@@ -448,7 +448,8 @@ TEST_CASE("Digester Testing"){
 	// These use the ModMinimizer Class because Digester can't be instantiated, but correctness
 	// doesn't depend on any of the fields of functions in the ModMinimizer Class
 	SECTION("Base Constructor Special Cases"){
-		unsigned k, minimized_h;
+		unsigned k;
+		digest::MinimizedHashType minimized_h;
 		uint64_t mod, congruence;
 		size_t pos;
 		std::string str;
@@ -459,7 +460,7 @@ TEST_CASE("Digester Testing"){
 		k = 4;
 		pos = 0;
 		for(int i =0; i < 3; i++){
-			minimized_h = i;
+			minimized_h = static_cast<digest::MinimizedHashType>(i);
 			mod = 2;
 			congruence = 1;
 			digest::ModMin* dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h);
@@ -473,7 +474,7 @@ TEST_CASE("Digester Testing"){
 		k = ks[1];
 		pos = 0;
 		for(int i =0; i < 3; i++){
-			minimized_h = i;
+			minimized_h = static_cast<digest::MinimizedHashType>(i);
 			mod = 2;
 			congruence = 1;
 			digest::ModMin* dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h);
@@ -487,7 +488,7 @@ TEST_CASE("Digester Testing"){
 				for(int l =0; l < 16; l++){
 					pos = l;
 					for(int p =0; p < 3; p++){
-						minimized_h = p;
+						minimized_h = static_cast<digest::MinimizedHashType>(p);
 						mod = 1e9+7;
 						congruence = 0;
 						digest::ModMin* dig = new digest::ModMin(test_strs[i], k, mod, congruence, pos, minimized_h);
@@ -506,7 +507,7 @@ TEST_CASE("Digester Testing"){
 		str = "ACTGACTG";
 		k = 4;
 		pos = 0;
-		minimized_h = 0;
+		minimized_h = digest::MinimizedHashType::CANON;
 		mod = 1e9+7;
 		congruence = 0;
 
@@ -520,16 +521,18 @@ TEST_CASE("Digester Testing"){
 		CHECK_THROWS_AS(dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
 		pos = 0;
 
+		/*
 		// minimized_h > 2
 		minimized_h = 3;
 		CHECK_THROWS_AS(dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h), digest::BadConstructionException);
-		minimized_h = 0;	
+		minimized_h = 0;
+		*/	
 	}
 	
 	SECTION("Testing roll_one"){
 		for(int i =0; i < 7; i++){
 			for(int j =0; j < 8; j++){
-				digest::ModMin* dig = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, 0, 1);
+				digest::ModMin* dig = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
 				roll_one(*dig, test_strs[i], ks[j]);
 				delete dig;
 			}
@@ -549,7 +552,7 @@ TEST_CASE("Digester Testing"){
 				for(int l = 15; l < 91; l += 15){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
-					digest::ModMin* dig = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
+					digest::ModMin* dig = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
 					append_seq_compare(str1, str2, *dig, ks[j]);
 					delete dig;
 				}
@@ -563,7 +566,7 @@ TEST_CASE("Digester Testing"){
 						std::string str1 = test_strs[i].substr(0, l);
 						std::string str2 = test_strs[i].substr(l, r);
 						std::string str3 = test_strs[i].substr(l+r, 75);
-						digest::ModMin* dig = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
+						digest::ModMin* dig = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
 						append_seq_compare3(str1, str2, str3, *dig, ks[j]);
 						delete dig;
 					}
@@ -581,41 +584,41 @@ TEST_CASE("Digester Testing"){
 		str = "A";
 		k = ks[1];
 			
-		digest::ModMin* dig1 = new digest::ModMin(test_strs[0], k, 1e9+7, 0, 0, 0);
+		digest::ModMin* dig1 = new digest::ModMin(test_strs[0], k, 1e9+7, 0, 0, digest::MinimizedHashType::CANON);
 		dig1->new_seq(str, 0);
-		base_constructor(*dig1, str, k, 0, 0);
+		base_constructor(*dig1, str, k, 0, digest::MinimizedHashType::CANON);
 		delete dig1;
 		
 		// Throw BadConstructionException()
-		dig1 = new digest::ModMin(test_strs[0], k, 1e9+7, 0, 0, 0);
+		dig1 = new digest::ModMin(test_strs[0], k, 1e9+7, 0, 0, digest::MinimizedHashType::CANON);
 		CHECK_THROWS_AS(dig1->new_seq(test_strs[0], 500), digest::BadConstructionException);
 		delete dig1;
 
 		for(uint i =0; i < test_strs.size(); i += 2){
 			for(int j = 0; j < 32; j += 8){
-				digest::ModMin* dig = new digest::ModMin(test_strs[1], ks[3], 1e9+7, 0, 0, 0);
+				digest::ModMin* dig = new digest::ModMin(test_strs[1], ks[3], 1e9+7, 0, 0, digest::MinimizedHashType::CANON);
 				dig->new_seq(test_strs[i], j);
-				base_constructor(*dig, test_strs[i], ks[3], j, 0);
+				base_constructor(*dig, test_strs[i], ks[3], j, digest::MinimizedHashType::CANON);
 				delete dig;
 			}
 		}
 
 		for(uint i =0; i < test_strs.size(); i += 2){
 			for(int l = 13; l <= 78; l +=13 ){
-				digest::ModMin* dig = new digest::ModMin(test_strs[5], ks[3], 1e9+7, 0, 0, 0);
+				digest::ModMin* dig = new digest::ModMin(test_strs[5], ks[3], 1e9+7, 0, 0, digest::MinimizedHashType::CANON);
 				int ind = 0;
 				while(ind < l && dig->roll_one()){
 					ind++;
 				}
 				dig->new_seq(test_strs[i], 0);
-				base_constructor(*dig, test_strs[i], ks[3], 0, 0);
+				base_constructor(*dig, test_strs[i], ks[3], 0, digest::MinimizedHashType::CANON);
 				delete dig;
 			}
 			
 		}
 		
 		// new_seq when deque has stuff in it
-		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, 0);
+		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, digest::MinimizedHashType::CANON);
 		std::vector<size_t> vec;
 		dig1->roll_minimizer(1000, vec);
 		vec.clear();
@@ -623,19 +626,19 @@ TEST_CASE("Digester Testing"){
 		dig1->roll_minimizer(1000, vec);
 		vec.clear();
 		dig1->new_seq(test_strs[4], 0);
-		base_constructor(*dig1, test_strs[4], 8, 0, 0);
+		base_constructor(*dig1, test_strs[4], 8, 0, digest::MinimizedHashType::CANON);
 		delete dig1;
 
 		// new_seq when deque has stuff in it and a new hash can't be properly initialized
 		std::string bad_str = "TTACTNGTACCTG";
-		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, 0);
+		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, digest::MinimizedHashType::CANON);
 		dig1->roll_minimizer(1000, vec);
 		vec.clear();
 		dig1->append_seq(test_strs[2]);
 		dig1->roll_minimizer(1000, vec);
 		vec.clear();
 		dig1->new_seq(bad_str, 0);
-		base_constructor(*dig1, bad_str, 8, 0, 0);
+		base_constructor(*dig1, bad_str, 8, 0, digest::MinimizedHashType::CANON);
 		delete dig1;
 	}
 }
@@ -644,7 +647,8 @@ TEST_CASE("ModMin Testing"){
 	setupStrings();
 
 	SECTION("Testing Constructors"){
-		unsigned k, minimized_h;
+		unsigned k;
+		digest::MinimizedHashType minimized_h;
 		uint64_t mod, congruence;
 		size_t pos;
 		std::string str;
@@ -657,7 +661,7 @@ TEST_CASE("ModMin Testing"){
 		str = "ACTGACTG";
 		k = 4;
 		pos = 0;
-		minimized_h = 0;
+		minimized_h = digest::MinimizedHashType::CANON;
 		digest::ModMin* dig;
 
 		// mod >= congruence
@@ -673,8 +677,8 @@ TEST_CASE("ModMin Testing"){
 		for(int i =0; i < 7; i += 2){
 			for(int j =0; j < 8; j++){
 				for(int l = 0; l < 3; l++){
-					digest::ModMin* dig = new digest::ModMin(test_strs[i], ks[j], prime, 0, 0, l);
-					ModMin_roll_minimizer(*dig, test_strs[i], ks[j], l, prime);
+					digest::ModMin* dig = new digest::ModMin(test_strs[i], ks[j], prime, 0, 0, static_cast<digest::MinimizedHashType>(l));
+					ModMin_roll_minimizer(*dig, test_strs[i], ks[j], static_cast<digest::MinimizedHashType>(l), prime);
 					delete dig;
 				}
 				
@@ -686,7 +690,7 @@ TEST_CASE("ModMin Testing"){
 		for(int i =0; i < 7; i +=2){
 			for(int j =0; j < 8; j++){
 				for(int l = 15; l < 91; l += 15){
-					digest::ModMin* dig1 = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, l, 1);
+					digest::ModMin* dig1 = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, l, digest::MinimizedHashType::FORWARD);
 					digest::ModMin* dig2 = new digest::ModMin(*dig1);
 					ModMin_dig_comp(*dig1, *dig2);
 					delete dig1;
@@ -700,7 +704,7 @@ TEST_CASE("ModMin Testing"){
 				for(int l = 15; l < 91; l += 15){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
-					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
+					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
 					std::vector<size_t> vec;
 					dig1->roll_minimizer(1000, vec);
 					dig1->append_seq(str2);
@@ -717,8 +721,8 @@ TEST_CASE("ModMin Testing"){
 		for(int i =0; i < 7; i +=2){
 			for(int j =0; j < 8; j++){
 				for(int l = 15; l < 91; l += 15){
-					digest::ModMin* dig1 = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, l, 1);
-					digest::ModMin* dig2 = new digest::ModMin(test_strs[1], 99, 98765, 3, 0, 2);
+					digest::ModMin* dig1 = new digest::ModMin(test_strs[i], ks[j], 1e9+7, 0, l, digest::MinimizedHashType::FORWARD);
+					digest::ModMin* dig2 = new digest::ModMin(test_strs[1], 99, 98765, 3, 0, digest::MinimizedHashType::REVERSE);
 					*dig2 = *dig1;
 					ModMin_dig_comp(*dig1, *dig2);
 					delete dig1;
@@ -732,11 +736,11 @@ TEST_CASE("ModMin Testing"){
 				for(int l = 15; l < 91; l += 15){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
-					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, 1);
+					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
 					std::vector<size_t> vec;
 					dig1->roll_minimizer(1000, vec);
 					dig1->append_seq(str2);
-					digest::ModMin* dig2 = new digest::ModMin(test_strs[1], 99, 98765, 3, 0, 2);
+					digest::ModMin* dig2 = new digest::ModMin(test_strs[1], 99, 98765, 3, 0, digest::MinimizedHashType::REVERSE);
 					*dig2 = *dig1;
 					ModMin_dig_comp(*dig1, *dig2);
 					delete dig1;
@@ -749,7 +753,8 @@ TEST_CASE("ModMin Testing"){
 
 TEST_CASE("WindowMin Testing"){
 	SECTION("Constructor Testing"){
-		unsigned k, minimized_h, large_wind_kmer_am;
+		unsigned k, large_wind_kmer_am;
+		digest::MinimizedHashType minimized_h;
 		size_t pos;
 		std::string str;
 
@@ -760,7 +765,7 @@ TEST_CASE("WindowMin Testing"){
 		str = "ACTGACTG";
 		k = 4;
 		pos = 0;
-		minimized_h = 0;
+		minimized_h = digest::MinimizedHashType::CANON;
 		digest::WindowMin* dig1;
 		large_wind_kmer_am = 0;
 		CHECK_THROWS_AS((dig1 = new digest::WindowMin(str, k, large_wind_kmer_am, pos, minimized_h)), digest::BadWindowSizeException);
@@ -769,7 +774,7 @@ TEST_CASE("WindowMin Testing"){
 			for(int j =1; j <= 64; j++){
 				k = 4;
 				pos = 0;
-				minimized_h = 0;
+				minimized_h = digest::MinimizedHashType::CANON;
 				
 				digest::WindowMin* dig = new digest::WindowMin(test_strs[i], k, j, pos, minimized_h);
 				WindowMin_constructor(*dig, test_strs[i], k, pos, minimized_h, j);
@@ -784,8 +789,8 @@ TEST_CASE("WindowMin Testing"){
 			for(int j =0; j < 8; j++){
 				for(int m = 1; m <= 32; m++){
 					for(int l = 0; l < 3; l++){
-						digest::WindowMin* dig = new digest::WindowMin(test_strs[i], ks[j], m, 0, l);
-						WindowMin_roll_minimizer(*dig, test_strs[i], ks[j], l, m);
+						digest::WindowMin* dig = new digest::WindowMin(test_strs[i], ks[j], m, 0, static_cast<digest::MinimizedHashType>(l));
+						WindowMin_roll_minimizer(*dig, test_strs[i], ks[j], static_cast<digest::MinimizedHashType>(l), m);
 						delete dig;
 					}
 				}				
@@ -801,7 +806,7 @@ TEST_CASE("WindowMin Testing"){
 			for(int j =0; j < 8; j++){
 				for(int l = 15; l < 91; l += 15){
 					for(int m = 1; m <= 32; m++){
-						digest::WindowMin* dig1 = new digest::WindowMin(test_strs[i], ks[j], m, l, 1);
+						digest::WindowMin* dig1 = new digest::WindowMin(test_strs[i], ks[j], m, l, digest::MinimizedHashType::FORWARD);
 						digest::WindowMin* dig2 = new digest::WindowMin(*dig1);
 						WindowMin_dig_comp(*dig1, *dig2);
 						delete dig1;
@@ -817,7 +822,7 @@ TEST_CASE("WindowMin Testing"){
 					for(int m =1; m <= 32; m++){
 						std::string str1 = test_strs[i].substr(0, l);
 						std::string str2 = test_strs[i].substr(l, 100);
-						digest::WindowMin* dig1 = new digest::WindowMin(str1, ks[j], m, 0, 1);
+						digest::WindowMin* dig1 = new digest::WindowMin(str1, ks[j], m, 0, digest::MinimizedHashType::FORWARD);
 						std::vector<size_t> vec;
 						dig1->roll_minimizer(1000, vec);
 						dig1->append_seq(str2);
@@ -837,8 +842,8 @@ TEST_CASE("WindowMin Testing"){
 			for(int j =0; j < 8; j++){
 				for(int l = 15; l < 91; l += 15){
 					for(int m =1; m <= 32; m++){
-						digest::WindowMin* dig1 = new digest::WindowMin(test_strs[i], ks[j], m, l, 1);
-						digest::WindowMin* dig2 = new digest::WindowMin(test_strs[1], 99, 35, 0, 2);
+						digest::WindowMin* dig1 = new digest::WindowMin(test_strs[i], ks[j], m, l, digest::MinimizedHashType::FORWARD);
+						digest::WindowMin* dig2 = new digest::WindowMin(test_strs[1], 99, 35, 0, digest::MinimizedHashType::REVERSE);
 						*dig2 = *dig1;
 						WindowMin_dig_comp(*dig1, *dig2);
 						delete dig1;
@@ -855,11 +860,11 @@ TEST_CASE("WindowMin Testing"){
 					for(int m =1; m<= 32; m++){
 						std::string str1 = test_strs[i].substr(0, l);
 						std::string str2 = test_strs[i].substr(l, 100);
-						digest::WindowMin* dig1 = new digest::WindowMin(str1, ks[j], m, 0, 1);
+						digest::WindowMin* dig1 = new digest::WindowMin(str1, ks[j], m, 0, digest::MinimizedHashType::FORWARD);
 						std::vector<size_t> vec;
 						dig1->roll_minimizer(1000, vec);
 						dig1->append_seq(str2);
-						digest::WindowMin* dig2 = new digest::WindowMin(test_strs[1], 35, 3, 0, 2);
+						digest::WindowMin* dig2 = new digest::WindowMin(test_strs[1], 35, 3, 0, digest::MinimizedHashType::REVERSE);
 						*dig2 = *dig1;
 						WindowMin_dig_comp(*dig1, *dig2);
 						delete dig1;
@@ -875,7 +880,8 @@ TEST_CASE("Syncmer Testing"){
 	// Syncmer and WindowMinimizers have all the same class members so I can just use the WindowMin tests for Constructor and be ok
 	SECTION("Constructor Testing"){
 		
-		unsigned k, minimized_h, large_wind_kmer_am;
+		unsigned k, large_wind_kmer_am;
+		digest::MinimizedHashType minimized_h;
 		size_t pos;
 		std::string str;
 
@@ -886,7 +892,7 @@ TEST_CASE("Syncmer Testing"){
 		str = "ACTGACTG";
 		k = 4;
 		pos = 0;
-		minimized_h = 0;
+		minimized_h = digest::MinimizedHashType::CANON;
 		digest::Syncmer* dig1;
 		large_wind_kmer_am = 0;
 		CHECK_THROWS_AS((dig1 = new digest::Syncmer(str, k, large_wind_kmer_am, pos, minimized_h)), digest::BadWindowSizeException);
@@ -895,7 +901,7 @@ TEST_CASE("Syncmer Testing"){
 			for(int j =1; j <= 64; j++){
 				k = 4;
 				pos = 0;
-				minimized_h = 0;
+				minimized_h = digest::MinimizedHashType::CANON;
 				
 				digest::Syncmer* dig = new digest::Syncmer(test_strs[i], k, j, pos, minimized_h);
 				WindowMin_constructor(*dig, test_strs[i], k, pos, minimized_h, j);
@@ -910,8 +916,8 @@ TEST_CASE("Syncmer Testing"){
 			for(int j =0; j < 8; j++){
 				for(int m = 1; m <= 32; m++){
 					for(int l = 0; l < 3; l++){
-						digest::Syncmer* dig = new digest::Syncmer(test_strs[i], ks[j], m, 0, l);
-						Syncmer_roll_minimizer(*dig, test_strs[i], ks[j], l, m);
+						digest::Syncmer* dig = new digest::Syncmer(test_strs[i], ks[j], m, 0, static_cast<digest::MinimizedHashType>(l));
+						Syncmer_roll_minimizer(*dig, test_strs[i], ks[j], static_cast<digest::MinimizedHashType>(l), m);
 						delete dig;
 					}
 				}				
@@ -928,7 +934,7 @@ TEST_CASE("Syncmer Testing"){
 			for(int j =0; j < 8; j++){
 				for(int l = 15; l < 91; l += 15){
 					for(int m = 1; m <= 32; m++){
-						digest::Syncmer* dig1 = new digest::Syncmer(test_strs[i], ks[j], m, l, 1);
+						digest::Syncmer* dig1 = new digest::Syncmer(test_strs[i], ks[j], m, l, digest::MinimizedHashType::FORWARD);
 						digest::Syncmer* dig2 = new digest::Syncmer(*dig1);
 						Syncmer_dig_comp(*dig1, *dig2);
 						delete dig1;
@@ -944,7 +950,7 @@ TEST_CASE("Syncmer Testing"){
 					for(int m =1; m <= 32; m++){
 						std::string str1 = test_strs[i].substr(0, l);
 						std::string str2 = test_strs[i].substr(l, 100);
-						digest::Syncmer* dig1 = new digest::Syncmer(str1, ks[j], m, 0, 1);
+						digest::Syncmer* dig1 = new digest::Syncmer(str1, ks[j], m, 0, digest::MinimizedHashType::FORWARD);
 						std::vector<size_t> vec;
 						dig1->roll_minimizer(1000, vec);
 						dig1->append_seq(str2);
@@ -964,8 +970,8 @@ TEST_CASE("Syncmer Testing"){
 			for(int j =0; j < 8; j++){
 				for(int l = 15; l < 91; l += 15){
 					for(int m =1; m <= 32; m++){
-						digest::Syncmer* dig1 = new digest::Syncmer(test_strs[i], ks[j], m, l, 1);
-						digest::Syncmer* dig2 = new digest::Syncmer(test_strs[1], 99, 35, 0, 2);
+						digest::Syncmer* dig1 = new digest::Syncmer(test_strs[i], ks[j], m, l, digest::MinimizedHashType::FORWARD);
+						digest::Syncmer* dig2 = new digest::Syncmer(test_strs[1], 99, 35, 0, digest::MinimizedHashType::REVERSE);
 						*dig2 = *dig1;
 						Syncmer_dig_comp(*dig1, *dig2);
 						delete dig1;
@@ -982,11 +988,11 @@ TEST_CASE("Syncmer Testing"){
 					for(int m =1; m<= 32; m++){
 						std::string str1 = test_strs[i].substr(0, l);
 						std::string str2 = test_strs[i].substr(l, 100);
-						digest::Syncmer* dig1 = new digest::Syncmer(str1, ks[j], m, 0, 1);
+						digest::Syncmer* dig1 = new digest::Syncmer(str1, ks[j], m, 0, digest::MinimizedHashType::FORWARD);
 						std::vector<size_t> vec;
 						dig1->roll_minimizer(1000, vec);
 						dig1->append_seq(str2);
-						digest::Syncmer* dig2 = new digest::Syncmer(test_strs[1], 35, 3, 0, 2);
+						digest::Syncmer* dig2 = new digest::Syncmer(test_strs[1], 35, 3, 0, digest::MinimizedHashType::REVERSE);
 						*dig2 = *dig1;
 						Syncmer_dig_comp(*dig1, *dig2);
 						delete dig1;

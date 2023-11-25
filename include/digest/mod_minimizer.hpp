@@ -27,7 +27,7 @@ class ModMin : public Digester{
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        ModMin(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, unsigned minimized_h = 0)
+        ModMin(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
         :  Digester(seq, len, k, start, minimized_h), mod(mod), congruence(congruence)
         {
             if(congruence >= mod){
@@ -46,7 +46,7 @@ class ModMin : public Digester{
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        ModMin(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, unsigned minimized_h = 0) :
+        ModMin(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             ModMin(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
         {}
         

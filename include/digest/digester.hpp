@@ -25,6 +25,10 @@ class NotRolledTillEndException : public std::exception
     }
 };
 
+enum class MinimizedHashType{
+    CANON, FORWARD, REVERSE
+};
+
 // Only supports characters in DNA and N, upper or lower case
 class Digester{
     public:
@@ -38,9 +42,9 @@ class Digester{
          * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
          *      or if the starting position is not at least k-1 from the end of the string
          */
-        Digester(const char* seq, size_t len, unsigned k, size_t start = 0, unsigned minimized_h = 0) 
+        Digester(const char* seq, size_t len, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) 
             : seq(seq), len(len), offset(0), start(start), end(start+k), chash(0), fhash(0), rhash(0), k(k), minimized_h(minimized_h) {
-                if(k < 4 ||start >= len || minimized_h > 2){
+                if(k < 4 ||start >= len){
                     throw BadConstructionException();
                 }
                 init_hash();
@@ -55,7 +59,7 @@ class Digester{
          * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
          *      or if the starting position is not at least k-1 from the end of the string
          */
-        Digester(const std::string& seq, unsigned k, size_t start = 0, unsigned minimized_h = 0) :
+        Digester(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             Digester(seq.c_str(), seq.size(), k, start, minimized_h) {}
 
         Digester(const Digester& copy){
@@ -191,7 +195,7 @@ class Digester{
         /**
          * @return unsigned, a number representing the hash you are minimizing, 0 for canoncial, 1 for forward, 2 for reverse 
          */
-        unsigned get_minimized_h(){
+        MinimizedHashType get_minimized_h(){
             return minimized_h;
         }
 
@@ -277,7 +281,7 @@ class Digester{
         std::deque<char> c_outs;
         
         //Hash value to be minimized, 0 for canonical, 1 for forward, 2 for reverse
-        unsigned minimized_h;
+        MinimizedHashType minimized_h;
 
         // bool representing whether the current hash is meaningful, i.e. corresponds to the k-mer at get_pos()
         bool is_valid_hash = false;
