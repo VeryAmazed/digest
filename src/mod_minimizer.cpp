@@ -22,6 +22,7 @@ namespace digest{
 			return;
 		}
 
+		// reverse
 		do {
 			if(rhash % mod == congruence){
 				vec.push_back(get_pos());
