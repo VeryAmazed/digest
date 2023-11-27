@@ -11,7 +11,7 @@ project(
 nthash = subproject('ntHash')
 nthash_dep = nthash.get_variable('lib_dep')
 include_dirs = [include_directories('include'), nthash.get_variable('include_dirs')]
-sources = ['src/digester.cpp', 'src/mod_minimizer.cpp', 'src/syncmer.cpp', 'src/window_minimizer.cpp']
+sources = ['src/digester.cpp', 'src/mod_minimizer.cpp', 'src/syncmer.cpp', 'src/window_minimizer.cpp', 'src/thread_out.cpp']
 
 digest_lib = static_library(
 	'digest',
@@ -24,7 +24,7 @@ digest_lib = static_library(
 install_headers(
 	'include/digest/digester.hpp', 'include/digest/mod_minimizer.hpp',
 	'include/digest/syncmer.hpp', 'include/digest/window_minimizer.hpp',
-	'include/digest/point_update_st.hpp',
+	'include/digest/point_update_st.hpp', 'include/digest/thread_out.hpp',
 	install_dir: 'include/digest'
 )
 install_headers(

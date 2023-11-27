@@ -13,7 +13,7 @@ class BadConstructionException : public std::exception
 {
 	const char * what () const throw ()
     {
-    	return "minimized_h must be either 0, 1, or 2, k must be greater than 3, start must be less than len";
+    	return "k must be greater than 3, start must be less than len";
     }
 };
 
