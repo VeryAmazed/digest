@@ -458,7 +458,7 @@ BENCHMARK(BM_monoqueue_template)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 template <int k>
 class MinSegmentTree {
 	int i = 0;
-	__int128 segtree[k];
+	__int128 segtree[2*k];
 public:
 	void set(uint64_t hash, int index) {
 		int ind = i + k;
@@ -525,7 +525,7 @@ BENCHMARK(BM_SegTree_template_unroll)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 template <int k>
 class MinSegmentTree0 {
 	int i = 0;
-	__int128 segtree[k];
+	__int128 segtree[2*k];
 public:
 	void set(uint64_t hash, int index) {
 		int ind = i + k;
