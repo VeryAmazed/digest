@@ -5,10 +5,9 @@ project(
 	default_options : [
 		'cpp_std=c++17',
 		'optimization=3',
+        'b_sanitize=thread',
 	]
 )
-
-add_global_arguments('-b_sanitize=thread', language : 'cpp')
 
 nthash = subproject('ntHash')
 nthash_dep = nthash.get_variable('lib_dep')
@@ -48,27 +47,27 @@ executable(
 )
 
 ### benchmark ###
-bench = dependency('benchmark')
-executable(
-	'bench',
-	'tests/benchmark.cpp',
-	dependencies : [bench, digest_dep],
-)
+# bench = dependency('benchmark')
+# executable(
+# 	'bench',
+# 	'tests/benchmark.cpp',
+# 	dependencies : [bench, digest_dep],
+# )
 
 ### benchmark segment tree ###
 
-executable(
-	'bench_seg_tree',
-	'tests/bench_seg_tree.cpp',
-	dependencies : [bench],
-)
+# executable(
+# 	'bench_seg_tree',
+# 	'tests/bench_seg_tree.cpp',
+# 	dependencies : [bench],
+# )
 
 ###
-if meson.get_compiler('cpp').get_id() == 'gcc'
-  extra_args = ['-fsanitize=thread']
-else
-  extra_args = []
-endif
+# if meson.get_compiler('cpp').get_id() == 'gcc'
+#   extra_args = ['-fsanitize=thread']
+# else
+#   extra_args = []
+# endif
 ###
 
 ### test thread functions ###
@@ -76,6 +75,6 @@ executable(
 	'test_thread',
 	'tests/test_thread.cpp',
 	dependencies : [catch2, digest_dep],
-	cpp_args : extra_args
+	# cpp_args : extra_args
 )
 
