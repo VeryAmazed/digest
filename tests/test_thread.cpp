@@ -101,21 +101,21 @@ TEST_CASE("thread_out function testing"){
             std::string str = test_strs[i].substr(start, 99);
             test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
         }
-        std::cout << "Pass 1 thread" << std::endl;
+        //std::cout << "Pass 1 thread" << std::endl;
         // each thread gets 1 kmer
         thread_count = 96;
         for(int i = 0; i < 5; i += 2){
             std::string str = test_strs[i].substr(start, 99);
             test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
         }
-        std::cout << "Pass 1 kmer per thread" << std::endl;
+        //std::cout << "Pass 1 kmer per thread" << std::endl;
         // some threads get 2 kmers, the rest get 1
         thread_count = 50;
         for(int i = 0; i < 5; i += 2){
             std::string str = test_strs[i].substr(start, 99);
             test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
         }
-        std::cout << "pass some kmers get 2" << std::endl;
+        //std::cout << "pass some kmers get 2" << std::endl;
     }
 
     SECTION("Full Testing"){
