@@ -41,7 +41,7 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
     const std::string& seq, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
-void worker_roll(digest::Digester& dig, std::vector<size_t>& vec, unsigned& amount);
+void worker_roll(digest::Digester& dig, std::vector<size_t>& vec, unsigned amount);
 
 }
 

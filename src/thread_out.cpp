@@ -20,17 +20,17 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
         for(unsigned i = 0; i < thread_count; i++){
             // issue is here
             // this will lead to a leak
-            unsigned* assigned_kmer_am = new unsigned(kmers_per_thread);
+            unsigned assigned_kmer_am = kmers_per_thread;
             if(extras > 0){
-                ++(*assigned_kmer_am);
+                ++(assigned_kmer_am);
                 extras--;
             }
-            digest::ModMin* dig = new digest::ModMin(seq, ind + *assigned_kmer_am+k-1, k, mod, congruence, ind, minimized_h);
+            digest::ModMin* dig = new digest::ModMin(seq, ind + assigned_kmer_am+k-1, k, mod, congruence, ind, minimized_h);
             dig_vec.push_back(dig);
             //std::cout << "before thread" << std::endl;
-            thread_vector.push_back(std::thread(worker_roll, std::ref(*dig), std::ref(vec[i]), std::ref(*assigned_kmer_am)));
+            thread_vector.emplace_back(std::thread(worker_roll, std::ref(*dig), std::ref(vec[i]), assigned_kmer_am));
             //std::cout << "after thread" << std::endl;
-            ind += *assigned_kmer_am;
+            ind += assigned_kmer_am;
         }
         for(auto& t: thread_vector)
         {
@@ -49,7 +49,7 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
 
 
 // small issue, thread args have to be copied in
-void worker_roll(digest::Digester& dig, std::vector<size_t>& vec, unsigned& amount){
+void worker_roll(digest::Digester& dig, std::vector<size_t>& vec, unsigned amount){
     dig.roll_minimizer(amount, vec);
 }
 
