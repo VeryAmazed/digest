@@ -7,7 +7,7 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
     const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence, size_t start, 
     digest::MinimizedHashType minimized_h){
         int num_kmers = (int)len - (int)start - (int)k + 1;
-        if(k < 4 ||start >= len || num_kmers < 0 || num_kmers < (int)thread_count){
+        if(k < 4 ||start >= len || num_kmers < 0 || (unsigned)num_kmers < thread_count){
             throw BadThreadOutParams();
         }
         unsigned kmers_per_thread = num_kmers/thread_count;
@@ -21,14 +21,17 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
                 ++assigned_kmer_am;
                 extras--;
             }
-            digest::ModMin dig(seq, assigned_kmer_am+k-1, k, mod, congruence, ind, minimized_h);
+            digest::ModMin dig(seq, ind + assigned_kmer_am+k-1, k, mod, congruence, ind, minimized_h);
+            std::cout << "before thread" << std::endl;
             thread_vector.push_back(std::thread(worker_roll, std::ref(dig), std::ref(vec[i]), std::ref(assigned_kmer_am)));
+            std::cout << "after thread" << std::endl;
             ind += assigned_kmer_am;
         }
         for(auto& t: thread_vector)
         {
             t.join();
         }
+        std::cout << "exit thread_mod" << std::endl;
     }
 void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
     const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence, size_t start, 

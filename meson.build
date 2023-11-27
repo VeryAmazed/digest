@@ -8,6 +8,8 @@ project(
 	]
 )
 
+add_global_arguments('-b_sanitize=thread', language : 'cpp')
+
 nthash = subproject('ntHash')
 nthash_dep = nthash.get_variable('lib_dep')
 include_dirs = [include_directories('include'), nthash.get_variable('include_dirs')]
@@ -59,5 +61,21 @@ executable(
 	'bench_seg_tree',
 	'tests/bench_seg_tree.cpp',
 	dependencies : [bench],
+)
+
+###
+if meson.get_compiler('cpp').get_id() == 'gcc'
+  extra_args = ['-fsanitize=thread']
+else
+  extra_args = []
+endif
+###
+
+### test thread functions ###
+executable(
+	'test_thread',
+	'tests/test_thread.cpp',
+	dependencies : [catch2, digest_dep],
+	cpp_args : extra_args
 )
 
