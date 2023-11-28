@@ -39,8 +39,8 @@ class Digester{
          * @param start 0-indexed position in seq to start hashing from. 
          * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
          * 
-         * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
-         *      or if the starting position is not at least k-1 from the end of the string
+         * @throws BadConstructionException Thrown if k is less than 4,
+         *      or if the starting position is after the end of the string
          */
         Digester(const char* seq, size_t len, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) 
             : seq(seq), len(len), offset(0), start(start), end(start+k), chash(0), fhash(0), rhash(0), k(k), minimized_h(minimized_h) {
@@ -56,8 +56,8 @@ class Digester{
          * @param start 0-indexed position in seq to start hashing from. 
          * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
          * 
-         * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
-         *      or if the starting position is not at least k-1 from the end of the string
+         * @throws BadConstructionException Thrown if k is less than 4,
+         *      or if the starting position is after the end of the string
          */
         Digester(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             Digester(seq.c_str(), seq.size(), k, start, minimized_h) {}

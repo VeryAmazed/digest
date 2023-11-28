@@ -43,15 +43,7 @@ void test_thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& ve
     dig.roll_minimizer(str.size(), single_thread);
     thread_out::thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
     std::vector<size_t> multi_thread = multi_to_single_vec(vec);
-    std::cout << single_thread.size() << " " << multi_thread.size() << std::endl;
-    for(size_t i = 0; i < single_thread.size(); i++){
-		std::cout << single_thread[i] << " ";
-	}
-    std::cout << std::endl;
-    for(size_t i = 0; i < multi_thread.size(); i++){
-		std::cout << multi_thread[i] << " ";
-	}
-    std::cout << std::endl;
+    
     REQUIRE(single_thread.size() == multi_thread.size());
 	for(size_t i = 0; i < single_thread.size(); i++){
 		CHECK(single_thread[i] == multi_thread[i]);
@@ -97,25 +89,30 @@ TEST_CASE("thread_out function testing"){
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         // only 1 thread
         thread_count = 1;
-        for(int i = 0; i < 5; i += 2){
-            std::string str = test_strs[i].substr(start, 99);
-            test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
+        for(int i = 0; i < 10; i++){
+            for(int i = 0; i < 5; i += 2){
+                std::string str = test_strs[i].substr(start, 99);
+                test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
+            }
         }
-        //std::cout << "Pass 1 thread" << std::endl;
+
         // each thread gets 1 kmer
         thread_count = 96;
-        for(int i = 0; i < 5; i += 2){
-            std::string str = test_strs[i].substr(start, 99);
-            test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
+        for(int i =0; i < 10; i++){
+            for(int i = 0; i < 5; i += 2){
+                std::string str = test_strs[i].substr(start, 99);
+                test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
+            }
         }
-        //std::cout << "Pass 1 kmer per thread" << std::endl;
+
         // some threads get 2 kmers, the rest get 1
         thread_count = 50;
-        for(int i = 0; i < 5; i += 2){
-            std::string str = test_strs[i].substr(start, 99);
-            test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
+        for(int i = 0; i < 10; i++){
+            for(int i = 0; i < 5; i += 2){
+                std::string str = test_strs[i].substr(start, 99);
+                test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
+            }
         }
-        //std::cout << "pass some kmers get 2" << std::endl;
     }
 
     SECTION("Full Testing"){
@@ -129,12 +126,14 @@ TEST_CASE("thread_out function testing"){
         // the string changes
         // thread_count changes
         // start changes
-        for(int i = 0; i < 5; i += 2){
-            for(int j = 4; j <= 64; j += 4){
-                thread_count = j;
-                for(int l = 0; l <= 96; l += 13){
-                    start = l;
-                    test_thread_mod(thread_count, vec, test_strs[i], k, mod, congruence, start, minimized_h);
+        for(int i =0; i < 4; i++){
+            for(int i = 0; i < 5; i += 2){
+                for(int j = 4; j <= 64; j += 4){
+                    thread_count = j;
+                    for(int l = 0; l <= 96; l += 13){
+                        start = l;
+                        test_thread_mod(thread_count, vec, test_strs[i], k, mod, congruence, start, minimized_h);
+                    }
                 }
             }
         }
