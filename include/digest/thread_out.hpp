@@ -11,6 +11,14 @@
     The key thing to note is basically by carefully telling where each digester should start digesting
     you can make it so each kmer is only considered once.
     I have very little experience with threading, so you could probably thread this out better than me
+
+    IMPORTANT: This approach will not generate correct results for sequences that contain non-ACTG
+    characters. 
+    Take this example, seq = ACTGANACNACTGA, k = 4, l_wind = 4, thread_count = 2, there
+    is a total of 4 valid kmers in this sequence, and thus only 1 valid large window, but we 
+    can't know this until it actually goes through the sequence, so it's going to try to partition the
+    sequence into ACTGANACNA, and ANACNACTGA and feed it into 2 digester objects which now each have 0
+    valid large windows
 */
 namespace thread_out{
 
@@ -42,7 +50,7 @@ class BadThreadOutParams : public std::exception
  *      or the number of threads exceeds the number of possible kmers in the string
  */
 void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, 
+    const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 /**
@@ -64,7 +72,7 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  *      or the number of threads exceeds the number of possible kmers in the string
  */
 void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, 
+    const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
@@ -85,7 +93,7 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
 
 // function that's passed to the thread for ModMinmizers
 void thread_mod_roll(std::vector<size_t>& vec, const char* seq, 
-    size_t ind, unsigned k, uint64_t mod, uint64_t congruence, 
+    size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
 }

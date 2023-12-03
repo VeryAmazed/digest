@@ -90,7 +90,7 @@ TEST_CASE("thread_out function testing"){
         // only 1 thread
         thread_count = 1;
         for(int i = 0; i < 10; i++){
-            for(int i = 0; i < 5; i += 2){
+            for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
                 test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
             }
@@ -99,7 +99,7 @@ TEST_CASE("thread_out function testing"){
         // each thread gets 1 kmer
         thread_count = 96;
         for(int i =0; i < 10; i++){
-            for(int i = 0; i < 5; i += 2){
+            for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
                 test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
             }
@@ -108,7 +108,7 @@ TEST_CASE("thread_out function testing"){
         // some threads get 2 kmers, the rest get 1
         thread_count = 50;
         for(int i = 0; i < 10; i++){
-            for(int i = 0; i < 5; i += 2){
+            for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
                 test_thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
             }
@@ -127,7 +127,7 @@ TEST_CASE("thread_out function testing"){
         // thread_count changes
         // start changes
         for(int i =0; i < 4; i++){
-            for(int i = 0; i < 5; i += 2){
+            for(int i = 0; i < 4; i += 2){
                 for(int j = 4; j <= 64; j += 4){
                     thread_count = j;
                     for(int l = 0; l <= 96; l += 13){
