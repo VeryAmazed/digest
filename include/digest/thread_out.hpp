@@ -27,7 +27,8 @@ class BadThreadOutParams : public std::exception
 	const char * what () const throw ()
     {
     	return "k must be greater than 3, start must be less than len, \
-        and num threads must be greater or equal to the number of kmers";
+        and num threads must be greater or equal to the number of kmers/large windows \
+        large_wind_kmer_am can't be 0";
     }
 };
 
@@ -96,6 +97,13 @@ void thread_mod_roll(std::vector<size_t>& vec, const char* seq,
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
+void thread_wind_roll(std::vector<size_t>& vec, const char* seq, 
+    size_t ind, unsigned k, unsigned large_wind_kmer_am, 
+    digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
+
+
 }
+
+
 
 #endif
