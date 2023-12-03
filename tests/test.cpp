@@ -165,12 +165,12 @@ void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	CHECK(dig.get_is_valid_hash() == worked);
 }
 
-void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, uint64_t prime){
+void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, uint32_t prime){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<size_t> positions;
-	std::vector<uint64_t> hashes;
+	std::vector<uint32_t> hashes;
 	while(tHash.roll()){
-		uint64_t temp;
+		uint32_t temp;
 		if(minimized_h == digest::MinimizedHashType::CANON){
 			temp = *(tHash.hashes());
 		}else if(minimized_h == digest::MinimizedHashType::FORWARD){
@@ -194,9 +194,9 @@ void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, di
 
 void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, unsigned large_wind_kmer_am){
 	nthash::NtHash tHash(str, 1, k, 0);
-	std::vector<std::pair<uint64_t, size_t>> hashes;
+	std::vector<std::pair<uint32_t, size_t>> hashes;
 	while(tHash.roll()){
-		uint64_t temp;
+		uint32_t temp;
 		if(minimized_h == digest::MinimizedHashType::CANON){
 			temp = *(tHash.hashes());
 		}else if(minimized_h == digest::MinimizedHashType::FORWARD){
@@ -207,12 +207,12 @@ void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned
 		hashes.push_back(std::make_pair(temp, tHash.get_pos()));
 	}
 
-	std::vector<std::pair<uint64_t, size_t>> answers;
-	std::pair<uint64_t, size_t> prev;
+	std::vector<std::pair<uint32_t, size_t>> answers;
+	std::pair<uint32_t, size_t> prev;
 	for(size_t i =0; i + large_wind_kmer_am <= hashes.size(); i++){
-		std::pair<uint64_t, size_t> temp_pair = hashes[i];
+		std::pair<uint32_t, size_t> temp_pair = hashes[i];
 		for(uint j = 1; j < large_wind_kmer_am; j++){
-			std::pair<uint64_t, size_t> curr = hashes[i+j];
+			std::pair<uint32_t, size_t> curr = hashes[i+j];
 			if(curr.first < temp_pair.first){
 				temp_pair = curr;
 			}else if(curr.first == temp_pair.first){
@@ -242,9 +242,9 @@ void WindowMin_roll_minimizer(digest::WindowMin& dig, std::string& str, unsigned
 
 void Syncmer_roll_minimizer(digest::Syncmer& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, unsigned large_wind_kmer_am){
 	nthash::NtHash tHash(str, 1, k, 0);
-	std::vector<std::pair<uint64_t, size_t>> hashes;
+	std::vector<std::pair<uint32_t, size_t>> hashes;
 	while(tHash.roll()){
-		uint64_t temp;
+		uint32_t temp;
 		if(minimized_h == digest::MinimizedHashType::CANON){
 			temp = *(tHash.hashes());
 		}else if(minimized_h == digest::MinimizedHashType::FORWARD){
@@ -257,7 +257,7 @@ void Syncmer_roll_minimizer(digest::Syncmer& dig, std::string& str, unsigned k, 
 
 	std::vector<std::pair<size_t, size_t>> answers;
 	for(size_t i =0; i + large_wind_kmer_am <= hashes.size(); i++){
-		uint64_t minAm = hashes[i].first;
+		uint32_t minAm = hashes[i].first;
 
 		for(uint j = 1; j < large_wind_kmer_am; j++){
 			minAm = std::min(minAm, hashes[i+j].first);
@@ -450,7 +450,7 @@ TEST_CASE("Digester Testing"){
 	SECTION("Base Constructor Special Cases"){
 		unsigned k;
 		digest::MinimizedHashType minimized_h;
-		uint64_t mod, congruence;
+		uint32_t mod, congruence;
 		size_t pos;
 		std::string str;
 		// string is length 1, k = 1
@@ -649,7 +649,7 @@ TEST_CASE("ModMin Testing"){
 	SECTION("Testing Constructors"){
 		unsigned k;
 		digest::MinimizedHashType minimized_h;
-		uint64_t mod, congruence;
+		uint32_t mod, congruence;
 		size_t pos;
 		std::string str;
 
@@ -673,7 +673,7 @@ TEST_CASE("ModMin Testing"){
 	
 	// maybe move this into an entirely new test case, and make this big thing just tests for the Dig class
 	SECTION("Testing roll_minimizer(). The one that takes no parameters"){
-		uint64_t prime = 17;
+		uint32_t prime = 17;
 		for(int i =0; i < 7; i += 2){
 			for(int j =0; j < 8; j++){
 				for(int l = 0; l < 3; l++){
