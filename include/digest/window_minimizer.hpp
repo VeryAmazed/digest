@@ -108,7 +108,7 @@ class WindowMin : public Digester{
 		bool is_minimized;
 
 		// internal pair representing the previous minimizer, a minimizer is only a new minimizer if it is different from the previous minimizer
-		std::pair<uint64_t, size_t> prev_mini;
+		std::pair<uint32_t, size_t> prev_mini;
 
 		/**
 		 * @brief helper function which handles adding new elements into the segment tree when it is not full

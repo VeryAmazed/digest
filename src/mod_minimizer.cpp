@@ -6,7 +6,7 @@ namespace digest{
 
 		if(get_minimized_h() == digest::MinimizedHashType::CANON) {
 			do {
-                if(chash % mod == congruence){
+                if((uint32_t)chash % mod == congruence){
                     vec.push_back(get_pos());
                 }
 			} while(roll_one() && vec.size() < amount);
@@ -15,15 +15,16 @@ namespace digest{
 
         if(get_minimized_h() == digest::MinimizedHashType::FORWARD) {
 			do {
-                if(fhash % mod == congruence){
+                if((uint32_t)fhash % mod == congruence){
                     vec.push_back(get_pos());
                 }
 			} while(roll_one() && vec.size() < amount);
 			return;
 		}
 
+		// reverse
 		do {
-			if(rhash % mod == congruence){
+			if((uint32_t)rhash % mod == congruence){
 				vec.push_back(get_pos());
 			}
         } while(roll_one() && vec.size() < amount);

@@ -27,7 +27,7 @@ class ModMin : public Digester{
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        ModMin(const char* seq, size_t len, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
+        ModMin(const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
         :  Digester(seq, len, k, start, minimized_h), mod(mod), congruence(congruence)
         {
             if(congruence >= mod){
@@ -46,7 +46,7 @@ class ModMin : public Digester{
          * 
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
-        ModMin(const std::string& seq, unsigned k, uint64_t mod, uint64_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
+        ModMin(const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             ModMin(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
         {}
         
@@ -70,22 +70,22 @@ class ModMin : public Digester{
         void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;    
 
         /**
-         * @return uint64_t, the mod space being used
+         * @return uint32_t, the mod space being used
          */
-        uint64_t get_mod(){
+        uint32_t get_mod(){
             return mod;
         }
 
         /**
-         * @return uint64_t, the value the minimized hash must be congruent to
+         * @return uint32_t, the value the minimized hash must be congruent to
          */
-        uint64_t get_congruence(){
+        uint32_t get_congruence(){
             return congruence;
         } 
     
     private:
-        uint64_t mod;
-        uint64_t congruence;
+        uint32_t mod;
+        uint32_t congruence;
 
 };
 

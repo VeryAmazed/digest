@@ -55,12 +55,25 @@ executable(
 # )
 
 ### benchmark segment tree ###
-
 # executable(
 # 	'bench_seg_tree',
 # 	'tests/bench_seg_tree.cpp',
 # 	dependencies : [bench],
 # )
+
+### Expected Density ACTG ###
+executable(
+	'expected_ACTG',
+	'Expected_Density/ACTG.cpp',
+	dependencies : [digest_dep]
+)
+
+### Expected Density non-ACTG ###
+executable(
+	'expected_non-ACTG',
+	'Expected_Density/non-ACTG.cpp',
+	dependencies : [digest_dep]
+)
 
 ###
 # if meson.get_compiler('cpp').get_id() == 'gcc'
@@ -71,6 +84,7 @@ executable(
 ###
 
 ### test thread functions ###
+
 executable(
 	'test_thread',
 	'tests/test_thread.cpp',

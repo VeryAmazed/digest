@@ -24,9 +24,9 @@
 #include <stack>
 #include <functional>
 
-#include "mod_minimizer.hpp"
-#include "window_minimizer.hpp"
-#include "syncmer.hpp"
+#include "digest/mod_minimizer.hpp"
+#include "digest/window_minimizer.hpp"
+#include "digest/syncmer.hpp"
 
 
 typedef long long ll;
@@ -60,7 +60,7 @@ int main() {
     std::string str;
     
     std::vector<std::string> strs;
-    freopen("../non-ACTG.txt", "r", stdin);
+    freopen("non-ACTG.txt", "r", stdin);
     for(int i =0; i < 100; i++){
         std::cin >> str;
         strs.pb(str);
@@ -92,15 +92,15 @@ int main() {
             }
             start++;
         }
-        std::cout << kmers[i] << " ";
+        //std::cout << kmers[i] << " ";
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
 
 
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::ModMin mm(strs[j], 16, mods[i], 0, 0, 0);
+            digest::ModMin mm(strs[j], 16, mods[i], 0, 0, digest::MinimizedHashType::CANON);
             std::vector<size_t> temp;
             mm.roll_minimizer(100000, temp);
             double am = temp.size();
@@ -112,7 +112,7 @@ int main() {
     
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::WindowMin wm(strs[j], 16, l_winds[i], 0, 0);
+            digest::WindowMin wm(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
             std::vector<size_t> temp;
             wm.roll_minimizer(100000, temp);
             double am = temp.size();
@@ -124,7 +124,7 @@ int main() {
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::Syncmer syn(strs[j], 16, l_winds[i], 0, 0);
+            digest::Syncmer syn(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
             std::vector<size_t> temp;
             syn.roll_minimizer(100000, temp);
             double am = temp.size();
