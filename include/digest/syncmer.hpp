@@ -5,43 +5,36 @@
 
 namespace digest{
 
-class Syncmer : public WindowMin{
+// number of k-mer to be considered in the large window
+template <int32_t large_window>
+class Syncmer : public WindowMin<large_window> {
     public:
       /**
          * 
          * @param seq 
          * @param len
          * @param k 
-         * @param large_wind_kmer_am number of kmers to be considered at a time
          * @param start
          * @param minimized_h 
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        Syncmer(const char* seq, size_t len, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  WindowMin(seq, len, k, large_wind_kmer_am, start, minimized_h)
+        Syncmer(const char* seq, size_t len, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
+        :  WindowMin<large_window>(seq, len, k, start, minimized_h)
         {}
 
         /**
          * 
          * @param seq 
          * @param k 
-         * @param large_wind_kmer_am number of kmers to be considered at a time
          * @param start
          * @param minimized_h 
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        Syncmer(const std::string& seq, unsigned k, unsigned large_wind_kmer_am, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
-            Syncmer(seq.c_str(), seq.size(), k, large_wind_kmer_am, start, minimized_h)
+        Syncmer(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
+            Syncmer(seq.c_str(), seq.size(), k, start, minimized_h)
         {}
-
-        Syncmer(const Syncmer& copy) : WindowMin(copy){}
-
-        Syncmer& operator=(const Syncmer& copy){
-            WindowMin::operator=(copy);
-            return *this;
-        }
 
         /**
          * @brief adds up to amount of positions of syncmers into vec, here a large window is considered a syncmer if the smallest hash in the large window is at the leftmost or rightmost position 
@@ -83,4 +76,5 @@ class Syncmer : public WindowMin{
 
 }
 
+#include "syncmer.tpp"
 #endif

@@ -62,16 +62,16 @@ class Digester{
         Digester(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             Digester(seq.c_str(), seq.size(), k, start, minimized_h) {}
 
-        Digester(const Digester& copy){
-            copyOver(copy);
-            this->c_outs = copy.c_outs;
-        }
-
-        Digester& operator=(const Digester& copy){
-            copyOver(copy);
-            this->c_outs.assign(copy.c_outs.begin(), copy.c_outs.end());
-            return *this;
-        }
+        // Digester(const Digester& copy){
+        //     copyOver(copy);
+        //     this->c_outs = copy.c_outs;
+        // }
+        //
+        // Digester& operator=(const Digester& copy){
+        //     copyOver(copy);
+        //     this->c_outs.assign(copy.c_outs.begin(), copy.c_outs.end());
+        //     return *this;
+        // }
 
         virtual ~Digester(){
         }
@@ -212,21 +212,21 @@ class Digester{
          * 
          * @param copy, Digester object you want to copy from 
          */
-        void copyOver(const Digester& copy){
-            this->seq = copy.seq;
-            this->len = copy.len;
-            this->k = copy.k;
-            this->offset = copy.offset;
-            this->start = copy.start;
-            this->end = copy.end;
-            this->is_valid_hash = copy.is_valid_hash;
-            this->minimized_h = copy.minimized_h;
-            if(this->is_valid_hash){
-                this->chash = copy.chash;
-                this->rhash = copy.rhash;
-                this->fhash = copy.fhash;
-            }
-        }
+        // void copyOver(const Digester& copy){
+        //     this->seq = copy.seq;
+        //     this->len = copy.len;
+        //     this->k = copy.k;
+        //     this->offset = copy.offset;
+        //     this->start = copy.start;
+        //     this->end = copy.end;
+        //     this->is_valid_hash = copy.is_valid_hash;
+        //     this->minimized_h = copy.minimized_h;
+        //     if(this->is_valid_hash){
+        //         this->chash = copy.chash;
+        //         this->rhash = copy.rhash;
+        //         this->fhash = copy.fhash;
+        //     }
+        // }
 
         /**
          * Helper function

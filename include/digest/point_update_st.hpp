@@ -13,89 +13,40 @@ namespace segtree{
 // https://codeforces.com/blog/entry/18051 (USACO.guide was probably heavily inspired by this)
 /** A data structure that can answer point update & range minimum queries. */
 
+// k is size of segtree
+template <int32_t k>
 struct SegTree {
-    // Max possible value for uint32_t
-    const uint32_t uint32_t_MAX = 0xFFFFFFFF;
-    
-    // Default value, loses to everything
-    const std::pair<uint32_t, size_t> DEFAULT = std::make_pair(uint32_t_MAX, 0);
+	int i = 0;
+	std::array<uint64_t,2*k> segtree;
 
-    // array representation of complete binary tree
-	std::vector<std::pair<uint32_t, size_t>> segtree;
-	
-    // number of leaves
-    int len;
-
-    SegTree(int len) : len(len){
-        segtree = std::vector<std::pair<uint32_t, size_t>>(len * 2, DEFAULT);
-    }
-
-    SegTree(const SegTree& copy) : len(copy.len) {
-        this->segtree = copy.segtree;
-    }
-
-    SegTree& operator=(const SegTree& copy){
-        this->len = copy.len;
-        segtree.assign(copy.segtree.begin(), copy.segtree.end());
-        return *this;
-    }
-
-    ~SegTree(){
-    }
-
-    /** 
-     * 
-     * @param a the left value to be considered
-     * @param b the right value to be considered
-     * 
-     * @return the object a and b with the minimum hash value (uint32_t), ties broken with the larger index
-     *         ties are broken this way because we need default to always lose, but size_t doesn't have a well
-     *         defined maximum value, so this allows us to make the default size_t value 0
-	 */
-	std::pair<uint32_t, size_t> comb(std::pair<uint32_t, size_t> a, std::pair<uint32_t, size_t> b) { 
-		if(a.first < b.first){
-            return a;
-        }else if(a.first > b.first){
-            return b;
-        }else{
-            if(a.second >= b.second){
-                return a;
-            }else{
-                return b;
-            }
-        }
+	// ceil(log2(k))
+	constexpr int log2() {
+		int ans = 31 - __builtin_clz(k-1); // floor(log2(k-1))
+		return ans + 1;
 	}
 
-	// look at ASSERTS to see how you should be indexing things
-	/** 
-     * @brief sets the value at ind to val. 
-     * 
-     * @param ind the index within the original sequence to be considered
-     * @param val the value to set to
-     */
-	void set(size_t ind, std::pair<uint32_t, size_t> val) {
-		// assert(0 <= ind && ind < len);
-		ind += len;
-		segtree[ind] = val;
-		for (; ind > 1; ind /= 2) {
-			segtree[ind >> 1] = comb(segtree[ind], segtree[ind ^ 1]);
+	void set(uint32_t hash, int32_t index) {
+		int ind = i + k; 
+		if (++i == k) i = 0;
+
+		segtree[ind] = (uint64_t)hash << 32 | (uint32_t)(-(index+1));
+		for (int rep = log2(); rep > 0; rep--) {
+			segtree[ind >> 1] = std::min(segtree[ind], segtree[ind ^ 1]);
+			ind >>= 1;
 		}
 	}
 
-	/** 
-     * queries the range [start, end) 
-     * @param start the 0-indexed indice indicating the inclusive left point of the range
-     * @param end the 0-indexed indice indicating the exclusive right point of the range
-     */
-	// std::pair<uint32_t, size_t> query(size_t start, size_t end) {
-	// 	// assert(0 <= start && start < len && 0 < end && end <= len);
-	// 	std::pair<uint32_t, size_t> minAm = DEFAULT;
-	// 	for (start += len, end += len; start < end; start /= 2, end /= 2) {
-	// 		if ((start & 1) != 0) { minAm = comb(minAm, (*segtree)[start++]); }
-	// 		if ((end & 1) != 0) { minAm = comb(minAm, (*segtree)[--end]); }
-	// 	}
-	// 	return minAm;
-	// }
+	// ties are won by rightmost index
+	int32_t min() {
+		return -(int32_t)segtree[1]-1;
+	}
+
+	uint32_t get_hash(int actual_index) {
+		return segtree[actual_index] >> 32;
+	}
+	int32_t get_index(int actual_index) {
+		return -(int32_t)segtree[actual_index]-1;
+	}
 };
 
 }

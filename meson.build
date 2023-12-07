@@ -11,7 +11,7 @@ project(
 nthash = subproject('ntHash')
 nthash_dep = nthash.get_variable('lib_dep')
 include_dirs = [include_directories('include'), nthash.get_variable('include_dirs')]
-sources = ['src/digester.cpp', 'src/mod_minimizer.cpp', 'src/syncmer.cpp', 'src/window_minimizer.cpp']
+sources = ['src/digester.cpp', 'src/mod_minimizer.cpp']
 
 digest_lib = static_library(
 	'digest',
@@ -25,6 +25,7 @@ install_headers(
 	'include/digest/digester.hpp', 'include/digest/mod_minimizer.hpp',
 	'include/digest/syncmer.hpp', 'include/digest/window_minimizer.hpp',
 	'include/digest/point_update_st.hpp',
+    'include/digest/syncmer.tpp', 'include/digest/window_minimizer.tpp',
 	install_dir: 'include/digest'
 )
 install_headers(
@@ -54,23 +55,23 @@ executable(
 )
 
 ### benchmark segment tree ###
-executable(
-	'bench_seg_tree',
-	'tests/seg_tree/bench_seg_tree.cpp',
-	dependencies : [bench],
-)
+# executable(
+# 	'bench_seg_tree',
+# 	'tests/seg_tree/bench_seg_tree.cpp',
+# 	dependencies : [bench],
+# )
 
 ### Expected Density ACTG ###
-executable(
-	'expected_ACTG',
-	'Expected_Density/ACTG.cpp',
-	dependencies : [digest_dep]
-)
+# executable(
+# 	'expected_ACTG',
+# 	'Expected_Density/ACTG.cpp',
+# 	dependencies : [digest_dep]
+# )
 
 ### Expected Density non-ACTG ###
-executable(
-	'expected_non-ACTG',
-	'Expected_Density/non-ACTG.cpp',
-	dependencies : [digest_dep]
-)
+# executable(
+# 	'expected_non-ACTG',
+# 	'Expected_Density/non-ACTG.cpp',
+# 	dependencies : [digest_dep]
+# )
 
