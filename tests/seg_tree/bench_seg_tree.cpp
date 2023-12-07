@@ -21,19 +21,21 @@ uint64_t inputs[INPUT_SIZE];
 std::vector<int> st_outputs;
 // std::vector<int> st_outputs2;
 // std::vector<int> st_outputs3;
-std::vector<int> st_outputs4;
-std::vector<int> mset_outputs;
+// std::vector<int> st_outputs4;
+// std::vector<int> st_outputs5;
+std::vector<int> st_outputs6;
+// std::vector<int> mset_outputs;
 // std::vector<int> naive_outputs;
-std::vector<int> naive_outputs2;
+// std::vector<int> naive_outputs2;
 // std::vector<int> monoqueue_outputs;
 // std::vector<int> monoqueue_outputs2;
 // std::vector<int> monoqueue_outputs3;
 // std::vector<int> monoqueue_outputs4;
 // std::vector<int> monoqueue_outputs5;
-std::vector<int> monoqueue_outputs6;
+// std::vector<int> monoqueue_outputs6;
 
 void setupInput(){
-    std::string path = "../tests/benchmark_seg_tree_input/nums2.txt";
+    std::string path = "../tests/seg_tree/nums2.txt";
     std::ifstream ifs(path);
     ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     for(int i = 0; i < INPUT_SIZE; i++){
@@ -231,39 +233,43 @@ void setupInput(){
 //  	}
 // };
 
-template<int k>
-class MonoQueue6 {
- 	int head = 0, tail = 0, i = 0;
-	int index[k];
-	uint64_t hash[k];
-
- 	// cannot call this while full
- 	inline bool empty() {
- 		return head == tail;
- 	}
-
-public:
- 	void add (uint64_t hash) {
- 		while (!empty() and this->hash[tail == 0 ? k - 1 : tail - 1] >= hash) {
-			if (--tail == -1) {
-				tail = k - 1;
-			}
- 		}
- 		if (!empty() and index[head] == i - k) {
-			if (++head == k) {
-				head = 0;
-			}
- 		}
-
-		this->hash[tail] = hash;
-		index[tail] = i++;
- 		if (++tail == k) tail = 0;
- 	}
-
- 	int min() {
- 		return index[head];
- 	}
-};
+// template<int k>
+// struct MonoQueue6 {
+//  	int head = 0, tail = 0;
+// 	uint64_t queue[k];
+//
+// 	int timestamp[k];
+// 	int time = 0;
+//
+//  	// cannot call this while full
+//  	inline bool empty() {
+//  		return head == tail;
+//  	}
+//
+//  	void add (uint32_t index, uint32_t hash) {
+// 		uint64_t q = (uint64_t)hash << 32 | index;
+//  		while (!empty() and this->queue[tail == 0 ? k - 1 : tail - 1] >= q) {
+// 			if (--tail == -1) {
+// 				tail = k - 1;
+// 			}
+//  		}
+//
+//  		if (!empty() and this->timestamp[head] == time - k) {
+// 			if (++head == k) {
+// 				head = 0;
+// 			}
+//  		}
+//
+// 		this->queue[tail] = q;
+// 		this->timestamp[tail] = time++;
+//
+//  		if (++tail == k) tail = 0;
+//  	}
+//
+//  	uint32_t min() {
+//  		return queue[head];
+//  	}
+// };
 
 
 // static void BM_monoqueue_array(benchmark::State& state) {
@@ -387,62 +393,64 @@ public:
 // }
 // BENCHMARK(BM_monoqueue_two_arrays)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
-static void BM_monoqueue_template(benchmark::State& state) {
-    for(auto _ : state) {
-        state.PauseTiming();
-        monoqueue_outputs6.clear();
-        monoqueue_outputs6.reserve(INPUT_SIZE);
-		int k = state.range(0);
-        state.ResumeTiming();
-
-		# define MONO() \
+// static void BM_monoqueue_template(benchmark::State& state) {
+//     for(auto _ : state) {
+//         state.PauseTiming();
+//         monoqueue_outputs6.clear();
+//         monoqueue_outputs6.reserve(INPUT_SIZE);
+// 		int k = state.range(0);
+//         state.ResumeTiming();
+//
+/*
+		 # define MONO() \
 			int i = 0; \
-			while (i < k) { \
-				mq.add(inputs[i++]); \
+			for (; i < k; i++) { \
+				mq.add(i, inputs[i]); \
 			} \
 			for (; i < INPUT_SIZE; i++){ \
 				monoqueue_outputs6.push_back(mq.min()); \
-				mq.add(inputs[i]); \
+				mq.add(i, inputs[i]); \
 			} \
 			monoqueue_outputs6.push_back(mq.min());
-
-		switch (k) {
-			case 2: {
-				MonoQueue6<2> mq;
-				MONO()
-				break;
-			}
-			case 4: {
-				MonoQueue6<4> mq;
-				MONO()
-				break;
-			}
-			case 8: {
-				MonoQueue6<8> mq;
-				MONO()
-				break;
-			}
-			case 16: {
-				MonoQueue6<16> mq;
-				MONO()
-				break;
-			}
-			case 32: {
-				MonoQueue6<32> mq;
-				MONO()
-				break;
-			}
-			case 64: {
-				MonoQueue6<64> mq;
-				MONO()
-				break;
-			}
-			default:
-				throw std::runtime_error("monoqueue template");
-		}
-	}
-}
-BENCHMARK(BM_monoqueue_template)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+*/
+//
+// 		switch (k) {
+// 			case 2: {
+// 				MonoQueue6<2> mq;
+// 				MONO()
+// 				break;
+// 			}
+// 			case 4: {
+// 				MonoQueue6<4> mq;
+// 				MONO()
+// 				break;
+// 			}
+// 			case 8: {
+// 				MonoQueue6<8> mq;
+// 				MONO()
+// 				break;
+// 			}
+// 			case 16: {
+// 				MonoQueue6<16> mq;
+// 				MONO()
+// 				break;
+// 			}
+// 			case 32: {
+// 				MonoQueue6<32> mq;
+// 				MONO()
+// 				break;
+// 			}
+// 			case 64: {
+// 				MonoQueue6<64> mq;
+// 				MONO()
+// 				break;
+// 			}
+// 			default:
+// 				throw std::runtime_error("monoqueue template");
+// 		}
+// 	}
+// }
+// BENCHMARK(BM_monoqueue_template)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 
 
@@ -458,20 +466,24 @@ BENCHMARK(BM_monoqueue_template)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 template <int k>
 class MinSegmentTree {
 	int i = 0;
-	__int128 segtree[2*k];
+	uint64_t segtree[2*k];
+
+	constexpr int log2() {
+		return std::ceil(std::log2(k));
+	}
 public:
-	void set(uint64_t hash, int index) {
+	void set(uint32_t hash, int index) {
 		int ind = i + k;
 		if (++i == k) i = 0;
 
-		segtree[ind] = (__int128)hash << 32 | index;
-		for (int rep = std::ceil(std::log2(k)); rep >= 0; rep--) {
+		segtree[ind] = (uint64_t)hash << 32 | index;
+		for (int rep = log2(); rep >= 0; rep--) {
 			segtree[ind >> 1] = std::min(segtree[ind], segtree[ind ^ 1]);
 			ind >>= 1;
 		}
 	}
 
-	int min() {
+	uint32_t min() {
 		return segtree[1];
 	}
 };
@@ -515,39 +527,51 @@ static void BM_SegTree_template_unroll(benchmark::State& state){
 		} else if (k == 64) {
 			MinSegmentTree<64> st;
 			SEG()
+		} else if (k == 128) {
+			MinSegmentTree<128> st;
+			SEG()
 		} else {
 			throw std::runtime_error("undeclared k-mer seg tree");
 		}
+
+		benchmark::DoNotOptimize(st_outputs);
+		benchmark::DoNotOptimize(st_outputs.data());
+		benchmark::ClobberMemory();
 	}
 }
-BENCHMARK(BM_SegTree_template_unroll)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+BENCHMARK(BM_SegTree_template_unroll)->RangeMultiplier(2)->Range(1<<2, 1<<7);
 
 template <int k>
-class MinSegmentTree0 {
+class ArraySegTree {
 	int i = 0;
-	__int128 segtree[2*k];
+	std::array<uint64_t,2*k> segtree;
+
+	constexpr int log2() {
+		return std::ceil(std::log2(k));
+	}
 public:
-	void set(uint64_t hash, int index) {
+	void set(uint32_t hash, int index) {
 		int ind = i + k;
 		if (++i == k) i = 0;
 
-		segtree[ind] = (__int128)hash << 32 | index;
-		for (; ind > 1; ) {
+		segtree[ind] = (uint64_t)hash << 32 | index;
+		for (int rep = log2(); rep >= 0; rep--) {
 			segtree[ind >> 1] = std::min(segtree[ind], segtree[ind ^ 1]);
 			ind >>= 1;
 		}
 	}
 
-	int min() {
+	uint32_t min() {
 		return segtree[1];
 	}
 };
 
-static void BM_SegTree_template(benchmark::State& state){
+
+static void BM_SegTree_array(benchmark::State& state){
     for(auto _ : state) {
         state.PauseTiming();
-        st_outputs.clear();
-        st_outputs.reserve(INPUT_SIZE);
+        st_outputs6.clear();
+        st_outputs6.reserve(INPUT_SIZE);
 		const int k = state.range(0);
 
 		// THIS IS A MACRO LOOK AWAY
@@ -558,35 +582,113 @@ static void BM_SegTree_template(benchmark::State& state){
 				ind++; \
 			} \
 			while(ind < INPUT_SIZE){ \
-				st_outputs.push_back(st.min()); \
+				st_outputs6.push_back(st.min()); \
 				st.set(inputs[ind], ind); \
 				ind++; \
 			} \
-			st_outputs.push_back(st.min());
+			st_outputs6.push_back(st.min());
 
         state.ResumeTiming();
 
 		if (k == 4) {
-			MinSegmentTree<4> st;
+			ArraySegTree<4> st;
 			SEG()
 		} else if (k == 8) {
-			MinSegmentTree<8> st;
+			ArraySegTree<8> st;
 			SEG()
 		} else if (k == 16) {
-			MinSegmentTree<16> st;
+			ArraySegTree<16> st;
 			SEG()
 		} else if (k == 32) {
-			MinSegmentTree<32> st;
+			ArraySegTree<32> st;
 			SEG()
 		} else if (k == 64) {
-			MinSegmentTree<64> st;
+			ArraySegTree<64> st;
+			SEG()
+		} else if (k == 128) {
+			ArraySegTree<128> st;
 			SEG()
 		} else {
 			throw std::runtime_error("undeclared k-mer seg tree");
 		}
+
+		benchmark::DoNotOptimize(st_outputs);
+		benchmark::DoNotOptimize(st_outputs.data());
+		benchmark::ClobberMemory();
 	}
 }
-BENCHMARK(BM_SegTree_template)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+BENCHMARK(BM_SegTree_array)->RangeMultiplier(2)->Range(1<<2, 1<<7);
+
+// template <int k>
+// class MinSegmentTree0 {
+// 	int i = 0;
+// 	uint64_t segtree[2*k];
+// public:
+// 	void set(uint32_t hash, int index) {
+// 		int ind = i + k;
+// 		if (++i == k) i = 0;
+//
+// 		segtree[ind] = (uint64_t)hash << 32 | index;
+// 		for (; ind > 1; ) {
+// 			segtree[ind >> 1] = std::min(segtree[ind], segtree[ind ^ 1]);
+// 			ind >>= 1;
+// 		}
+// 	}
+//
+// 	uint32_t min() {
+// 		return segtree[1];
+// 	}
+// };
+//
+// static void BM_SegTree_template(benchmark::State& state){
+//     for(auto _ : state) {
+//         state.PauseTiming();
+//         st_outputs5.clear();
+//         st_outputs5.reserve(INPUT_SIZE);
+// 		const int k = state.range(0);
+//
+// 		// THIS IS A MACRO LOOK AWAY
+/*
+		# define SEG() \
+			int ind = 0; \
+			while(ind < k){ \
+				st.set(inputs[ind], ind); \
+				ind++; \
+			} \
+			while(ind < INPUT_SIZE){ \
+				st_outputs5.push_back(st.min()); \
+				st.set(inputs[ind], ind); \
+				ind++; \
+			} \
+			st_outputs5.push_back(st.min());
+*/
+//
+//         state.ResumeTiming();
+//
+// 		if (k == 4) {
+// 			MinSegmentTree<4> st;
+// 			SEG()
+// 		} else if (k == 8) {
+// 			MinSegmentTree<8> st;
+// 			SEG()
+// 		} else if (k == 16) {
+// 			MinSegmentTree<16> st;
+// 			SEG()
+// 		} else if (k == 32) {
+// 			MinSegmentTree<32> st;
+// 			SEG()
+// 		} else if (k == 64) {
+// 			MinSegmentTree<64> st;
+// 			SEG()
+// 		} else if (k == 128) {
+// 			MinSegmentTree<128> st;
+// 			SEG()
+// 		} else {
+// 			throw std::runtime_error("undeclared k-mer seg tree");
+// 		}
+// 	}
+// }
+// BENCHMARK(BM_SegTree_template)->RangeMultiplier(2)->Range(1<<2, 1<<7);
 
 // class MinSegmentTree2 {
 // 	int i = 0;
@@ -638,53 +740,53 @@ BENCHMARK(BM_SegTree_template)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 // BENCHMARK(BM_SegTree_128_unroll)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 
-class MinSegmentTree4 {
-	int i = 0;
-	const int k;
-	__int128 segtree[128];
-public:
-	MinSegmentTree4(int k) : k(k) {}
+// class MinSegmentTree4 {
+// 	int i = 0;
+// 	const int k;
+// 	uint64_t segtree[128];
+// public:
+// 	MinSegmentTree4(int k) : k(k) {}
+//
+// 	void set(uint32_t left, int right) {
+// 		int ind = i + k;
+// 		if (++i == k) i = 0;
+//
+// 		segtree[ind] = (uint64_t)left << 32 | right ;
+// 		for (; ind > 1; ind >>= 1) {
+// 			segtree[ind >> 1] = std::min(segtree[ind], segtree[ind ^ 1]);
+// 		}
+// 	}
+//
+// 	uint32_t min() {
+// 		return segtree[1];
+// 	}
+// };
 
-	void set(uint64_t left, int right) {
-		int ind = i + k;
-		if (++i == k) i = 0;
-
-		segtree[ind] = (__int128)left << 32 | right ;
-		for (; ind > 1; ind >>= 1) {
-			segtree[ind >> 1] = std::min(segtree[ind], segtree[ind ^ 1]);
-		}
-	}
-
-	int min() {
-		return segtree[1];
-	}
-};
 
 
-
-static void BM_SegTree_128(benchmark::State& state){
-    for(auto _ : state) {
-        state.PauseTiming();
-        st_outputs4.clear();
-        st_outputs4.reserve(INPUT_SIZE);
-		const int k = state.range(0);
-        state.ResumeTiming();
-
-        int ind = 0;
-        MinSegmentTree4 st(k);
-        while(ind < k){
-            st.set(inputs[ind], ind);
-            ind++;
-        }
-        while(ind < INPUT_SIZE){
-            st_outputs4.push_back(st.min());
-            st.set(inputs[ind], ind);
-            ind++;
-        }
-		st_outputs4.push_back(st.min());
-	}
-}
-BENCHMARK(BM_SegTree_128)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+// static void BM_SegTree_128(benchmark::State& state){
+//     for(auto _ : state) {
+//         state.PauseTiming();
+//         st_outputs4.clear();
+//         st_outputs4.reserve(INPUT_SIZE);
+// 		const int k = state.range(0);
+//         state.ResumeTiming();
+//
+//         int ind = 0;
+//         MinSegmentTree4 st(k);
+//         while(ind < k){
+//             st.set(inputs[ind], ind);
+//             ind++;
+//         }
+//         while(ind < INPUT_SIZE){
+//             st_outputs4.push_back(st.min());
+//             st.set(inputs[ind], ind);
+//             ind++;
+//         }
+// 		st_outputs4.push_back(st.min());
+// 	}
+// }
+// BENCHMARK(BM_SegTree_128)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 // class MinSegmentTree3 {
 // 	int i = 0;
@@ -804,29 +906,37 @@ BENCHMARK(BM_SegTree_128)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 // BENCHMARK(BM_naive)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 
-static void BM_naive2(benchmark::State& state){
-    for(auto _ : state) {
-        state.PauseTiming();
-        naive_outputs2.clear();
-        naive_outputs2.reserve(INPUT_SIZE);
-		const int k = state.range(0);
-        state.ResumeTiming();
-
-        for(int i = 0, next = i; i+k <= INPUT_SIZE; i++){
-            uint64_t minAm = inputs[next];
-            for(int j = next+1; j < i + k; j++){
-				if (inputs[j] < minAm) {
-					minAm = inputs[j];
-					next = j;
-				}
-            }
-            naive_outputs2.push_back(next);
-
-			if (next == i) next++;
-        }
-	}
-}
-BENCHMARK(BM_naive2)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+// static void BM_naive2(benchmark::State& state){
+//     for(auto _ : state) {
+//         state.PauseTiming();
+//         naive_outputs2.clear();
+//         naive_outputs2.reserve(INPUT_SIZE);
+// 		const int k = state.range(0);
+//         state.ResumeTiming();
+//
+// 		int cur = 0;
+// 		for (int i = 0; i < k-1; i++) {
+// 			if (inputs[i] < inputs[cur]) {
+// 				cur = i;
+// 			}
+// 		}
+//         for(int i = 0; i+k <= INPUT_SIZE; i++){
+// 			if (inputs[i+k-1] < inputs[cur]) {
+// 				cur = i+k-1;
+// 			}
+// 			if (cur == i-1) {
+// 				cur++;
+// 				for(int j = cur+1; j < i + k; j++){
+// 					if (inputs[j] < inputs[cur]) {
+// 						cur = j;
+// 					}
+// 				}
+// 			}
+//             naive_outputs2.push_back(cur);
+//         }
+// 	}
+// }
+// BENCHMARK(BM_naive2)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 
 
@@ -846,15 +956,17 @@ int main(int argc, char** argv)
     // if it's correct for 1 window size, it's probably correct for all
     //assert(st_outputs == mset_outputs);
     // assert(st_outputs == naive_outputs);
-    assert(st_outputs == naive_outputs2);
+    // assert(st_outputs == naive_outputs2);
     // assert(st_outputs == monoqueue_outputs);
     // assert(st_outputs == st_outputs2);
     // assert(st_outputs == st_outputs3);
-    assert(st_outputs == st_outputs4);
+    // assert(st_outputs == st_outputs4);
+    // assert(st_outputs == st_outputs5);
+    assert(st_outputs == st_outputs6);
     // assert(st_outputs == monoqueue_outputs2);
     // assert(st_outputs == monoqueue_outputs3);
     // assert(st_outputs == monoqueue_outputs4);
     // assert(st_outputs == monoqueue_outputs5);
-    assert(st_outputs == monoqueue_outputs6);
+    // assert(st_outputs == monoqueue_outputs6);
     std::cout << "Passed Asserts!" << std::endl;
 }

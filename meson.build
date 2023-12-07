@@ -56,7 +56,7 @@ executable(
 ### benchmark segment tree ###
 executable(
 	'bench_seg_tree',
-	'tests/bench_seg_tree.cpp',
+	'tests/seg_tree/bench_seg_tree.cpp',
 	dependencies : [bench],
 )
 
