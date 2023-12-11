@@ -62,20 +62,6 @@ class Digester{
         Digester(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             Digester(seq.c_str(), seq.size(), k, start, minimized_h) {}
 
-        // Digester(const Digester& copy){
-        //     copyOver(copy);
-        //     this->c_outs = copy.c_outs;
-        // }
-        //
-        // Digester& operator=(const Digester& copy){
-        //     copyOver(copy);
-        //     this->c_outs.assign(copy.c_outs.begin(), copy.c_outs.end());
-        //     return *this;
-        // }
-
-        virtual ~Digester(){
-        }
-        
         /**
          * @return bool, true if values of the 3 hashes are meaningful, false otherwise, i.e. the object wasn't able to initialize with a valid hash or roll_one() was called when already at end of sequence
          */
@@ -207,26 +193,24 @@ class Digester{
         }
         
     protected:
-        /**
-         * Helper function
-         * 
-         * @param copy, Digester object you want to copy from 
-         */
-        // void copyOver(const Digester& copy){
-        //     this->seq = copy.seq;
-        //     this->len = copy.len;
-        //     this->k = copy.k;
-        //     this->offset = copy.offset;
-        //     this->start = copy.start;
-        //     this->end = copy.end;
-        //     this->is_valid_hash = copy.is_valid_hash;
-        //     this->minimized_h = copy.minimized_h;
-        //     if(this->is_valid_hash){
-        //         this->chash = copy.chash;
-        //         this->rhash = copy.rhash;
-        //         this->fhash = copy.fhash;
-        //     }
-        // }
+		std::array<bool,256> actg = {
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // all in hex:
+			0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,0, // 41 = 'A', 43 = 'C', 47 = 'G'
+			0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0, // 54 = 'T'
+			0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,0, // 61 = 'a', 63 = 'c',	67 = 'g'
+			0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0, // 74 = 't'
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		};
 
         /**
          * Helper function
@@ -235,10 +219,7 @@ class Digester{
          * @return bool, true if in is an upper or lowercase ACTG character, false otherwise
          */
         bool is_ACTG(char in){
-            if(in == 'a' || in == 'A' || in == 'c' || in == 'C' || in == 't' || in == 'T' || in == 'g' || in == 'G'){
-                return true;
-            }
-            return false;
+			return actg[in];
         }
 
         /**

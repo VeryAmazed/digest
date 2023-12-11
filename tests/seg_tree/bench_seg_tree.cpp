@@ -24,15 +24,15 @@ std::vector<int> st_outputs;
 // std::vector<int> st_outputs4;
 // std::vector<int> st_outputs5;
 std::vector<int> st_outputs6;
-// std::vector<int> mset_outputs;
-// std::vector<int> naive_outputs;
+std::vector<int> mset_outputs;
+std::vector<int> naive_outputs;
 // std::vector<int> naive_outputs2;
 // std::vector<int> monoqueue_outputs;
 // std::vector<int> monoqueue_outputs2;
 // std::vector<int> monoqueue_outputs3;
 // std::vector<int> monoqueue_outputs4;
 // std::vector<int> monoqueue_outputs5;
-// std::vector<int> monoqueue_outputs6;
+std::vector<int> monoqueue_outputs6;
 
 void setupInput(){
     std::string path = "../tests/seg_tree/nums2.txt";
@@ -233,43 +233,43 @@ void setupInput(){
 //  	}
 // };
 
-// template<int k>
-// struct MonoQueue6 {
-//  	int head = 0, tail = 0;
-// 	uint64_t queue[k];
-//
-// 	int timestamp[k];
-// 	int time = 0;
-//
-//  	// cannot call this while full
-//  	inline bool empty() {
-//  		return head == tail;
-//  	}
-//
-//  	void add (uint32_t index, uint32_t hash) {
-// 		uint64_t q = (uint64_t)hash << 32 | index;
-//  		while (!empty() and this->queue[tail == 0 ? k - 1 : tail - 1] >= q) {
-// 			if (--tail == -1) {
-// 				tail = k - 1;
-// 			}
-//  		}
-//
-//  		if (!empty() and this->timestamp[head] == time - k) {
-// 			if (++head == k) {
-// 				head = 0;
-// 			}
-//  		}
-//
-// 		this->queue[tail] = q;
-// 		this->timestamp[tail] = time++;
-//
-//  		if (++tail == k) tail = 0;
-//  	}
-//
-//  	uint32_t min() {
-//  		return queue[head];
-//  	}
-// };
+template<int k>
+struct MonoQueue6 {
+ 	int head = 0, tail = 0;
+	std::array<uint64_t,k> queue;
+
+	int timestamp[k];
+	int time = 0;
+
+ 	// cannot call this while full
+ 	inline bool empty() {
+ 		return head == tail;
+ 	}
+
+ 	void add (uint32_t index, uint32_t hash) {
+		uint64_t q = (uint64_t)hash << 32 | (0xffffffff ^ index);
+ 		while (!empty() and this->queue[tail == 0 ? k - 1 : tail - 1] >= q) {
+			if (--tail == -1) {
+				tail = k - 1;
+			}
+ 		}
+
+ 		if (!empty() and this->timestamp[head] == time - k) {
+			if (++head == k) {
+				head = 0;
+			}
+ 		}
+
+		this->queue[tail] = q;
+		this->timestamp[tail] = time++;
+
+ 		if (++tail == k) tail = 0;
+ 	}
+
+ 	uint32_t min() {
+ 		return queue[head];
+ 	}
+};
 
 
 // static void BM_monoqueue_array(benchmark::State& state) {
@@ -393,15 +393,14 @@ void setupInput(){
 // }
 // BENCHMARK(BM_monoqueue_two_arrays)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
-// static void BM_monoqueue_template(benchmark::State& state) {
-//     for(auto _ : state) {
-//         state.PauseTiming();
-//         monoqueue_outputs6.clear();
-//         monoqueue_outputs6.reserve(INPUT_SIZE);
-// 		int k = state.range(0);
-//         state.ResumeTiming();
-//
-/*
+static void BM_monoqueue_template(benchmark::State& state) {
+    for(auto _ : state) {
+        state.PauseTiming();
+        monoqueue_outputs6.clear();
+        monoqueue_outputs6.reserve(INPUT_SIZE);
+		int k = state.range(0);
+        state.ResumeTiming();
+
 		 # define MONO() \
 			int i = 0; \
 			for (; i < k; i++) { \
@@ -412,45 +411,44 @@ void setupInput(){
 				mq.add(i, inputs[i]); \
 			} \
 			monoqueue_outputs6.push_back(mq.min());
-*/
-//
-// 		switch (k) {
-// 			case 2: {
-// 				MonoQueue6<2> mq;
-// 				MONO()
-// 				break;
-// 			}
-// 			case 4: {
-// 				MonoQueue6<4> mq;
-// 				MONO()
-// 				break;
-// 			}
-// 			case 8: {
-// 				MonoQueue6<8> mq;
-// 				MONO()
-// 				break;
-// 			}
-// 			case 16: {
-// 				MonoQueue6<16> mq;
-// 				MONO()
-// 				break;
-// 			}
-// 			case 32: {
-// 				MonoQueue6<32> mq;
-// 				MONO()
-// 				break;
-// 			}
-// 			case 64: {
-// 				MonoQueue6<64> mq;
-// 				MONO()
-// 				break;
-// 			}
-// 			default:
-// 				throw std::runtime_error("monoqueue template");
-// 		}
-// 	}
-// }
-// BENCHMARK(BM_monoqueue_template)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+
+		switch (k) {
+			case 2: {
+				MonoQueue6<2> mq;
+				MONO()
+				break;
+			}
+			case 4: {
+				MonoQueue6<4> mq;
+				MONO()
+				break;
+			}
+			case 8: {
+				MonoQueue6<8> mq;
+				MONO()
+				break;
+			}
+			case 16: {
+				MonoQueue6<16> mq;
+				MONO()
+				break;
+			}
+			case 32: {
+				MonoQueue6<32> mq;
+				MONO()
+				break;
+			}
+			case 64: {
+				MonoQueue6<64> mq;
+				MONO()
+				break;
+			}
+			default:
+				throw std::runtime_error("monoqueue template");
+		}
+	}
+}
+BENCHMARK(BM_monoqueue_template)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 
 
@@ -854,56 +852,56 @@ BENCHMARK(BM_SegTree_array)->RangeMultiplier(2)->Range(1<<2, 1<<7);
 
 
 
-// static void BM_mset(benchmark::State& state){
-//     for(auto _ : state) {
-//         state.PauseTiming();
-//         mset_outputs.clear();
-//         mset_outputs.reserve(INPUT_SIZE);
-// 		int k = state.range(0);
-//         int ind = 0;
-//         std::multiset<std::pair<int,int>> mset;
-//         std::deque<decltype(mset)::iterator> vec;
-//         while(ind < k){
-//             vec.push_back(mset.emplace(inputs[ind], ind));
-//             ind++;
-//         }
-//         int kick = 0;
-//         state.ResumeTiming();
-//         while(ind < INPUT_SIZE){
-//             mset_outputs.push_back(mset.begin()->second);
-//             mset.erase(vec[kick]);
-//             vec[kick] = mset.emplace(inputs[ind], ind);
-//             kick += 1;
-//             if(kick == k) kick = 0;
-//             ind++;
-//         }
-// 		mset_outputs.push_back(mset.begin()->second);
-// 	}
-// }
-//BENCHMARK(BM_mset)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+static void BM_mset(benchmark::State& state){
+    for(auto _ : state) {
+        state.PauseTiming();
+        mset_outputs.clear();
+        mset_outputs.reserve(INPUT_SIZE);
+		int k = state.range(0);
+        int ind = 0;
+        std::multiset<std::pair<uint32_t,uint32_t>> mset;
+        std::deque<decltype(mset)::iterator> vec;
+        while(ind < k){
+            vec.push_back(mset.emplace(inputs[ind], -ind));
+            ind++;
+        }
+        int kick = 0;
+        state.ResumeTiming();
+        while(ind < INPUT_SIZE){
+            mset_outputs.push_back(-mset.begin()->second);
+            mset.erase(vec[kick]);
+            vec[kick] = mset.emplace(inputs[ind], -ind);
+            kick += 1;
+            if(kick == k) kick = 0;
+            ind++;
+        }
+		mset_outputs.push_back(-mset.begin()->second);
+	}
+}
+BENCHMARK(BM_mset)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
-// static void BM_naive(benchmark::State& state){
-//     for(auto _ : state) {
-//         state.PauseTiming();
-//         naive_outputs.clear();
-//         naive_outputs.reserve(INPUT_SIZE);
-// 		int k = state.range(0);
-//         state.ResumeTiming();
-//
-//         for(int i = 0; i+k <= INPUT_SIZE; i++){
-//             uint64_t minAm = inputs[i];
-// 			int ind = i;
-//             for(int j = i+1; j < i + k; j++){
-// 				if (inputs[j] < minAm) {
-// 					minAm = inputs[j];
-// 					ind = j;
-// 				}
-//             }
-//             naive_outputs.push_back(ind);
-//         }
-// 	}
-// }
-// BENCHMARK(BM_naive)->RangeMultiplier(2)->Range(1<<2, 1<<6);
+static void BM_naive(benchmark::State& state){
+    for(auto _ : state) {
+        state.PauseTiming();
+        naive_outputs.clear();
+        naive_outputs.reserve(INPUT_SIZE);
+		int k = state.range(0);
+        state.ResumeTiming();
+
+        for(int i = 0; i+k <= INPUT_SIZE; i++){
+            uint64_t minAm = inputs[i];
+			int ind = i;
+            for(int j = i+1; j < i + k; j++){
+				if (inputs[j] < minAm) {
+					minAm = inputs[j];
+					ind = j;
+				}
+            }
+            naive_outputs.push_back(ind);
+        }
+	}
+}
+BENCHMARK(BM_naive)->RangeMultiplier(2)->Range(1<<2, 1<<6);
 
 
 // static void BM_naive2(benchmark::State& state){
@@ -954,8 +952,8 @@ int main(int argc, char** argv)
     benchmark::RunSpecifiedBenchmarks();
     // sanity check
     // if it's correct for 1 window size, it's probably correct for all
-    //assert(st_outputs == mset_outputs);
-    // assert(st_outputs == naive_outputs);
+    assert(st_outputs == mset_outputs);
+    assert(st_outputs == naive_outputs);
     // assert(st_outputs == naive_outputs2);
     // assert(st_outputs == monoqueue_outputs);
     // assert(st_outputs == st_outputs2);
@@ -967,6 +965,6 @@ int main(int argc, char** argv)
     // assert(st_outputs == monoqueue_outputs3);
     // assert(st_outputs == monoqueue_outputs4);
     // assert(st_outputs == monoqueue_outputs5);
-    // assert(st_outputs == monoqueue_outputs6);
+    assert(st_outputs == monoqueue_outputs6);
     std::cout << "Passed Asserts!" << std::endl;
 }

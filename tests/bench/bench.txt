@@ -1,3 +1,30 @@
+2023-12-11T15:47:57-05:00
+Running ./bench
+Run on (8 X 4800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x4)
+  L1 Instruction 32 KiB (x4)
+  L2 Unified 1280 KiB (x4)
+  L3 Unified 12288 KiB (x1)
+Load Average: 0.68, 0.62, 0.64
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+-----------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+-----------------------------------------------------------------
+BM_NtHashRoll/4            466500 ns       466134 ns         1507
+BM_NtHashRoll/15           478790 ns       477792 ns         1474
+BM_NtHashRoll/31           539076 ns       538138 ns         1311
+BM_ModMinRoll/4            724896 ns       723550 ns          972
+BM_ModMinRoll/15           733357 ns       732183 ns          955
+BM_ModMinRoll/31           841692 ns       841140 ns          833
+BM_WindowMinRoll/4/11     1315641 ns      1315563 ns          534
+BM_WindowMinRoll/15/10    1191722 ns      1191788 ns          589
+BM_WindowMinRoll/31/15    1254855 ns      1254931 ns          562
+BM_SyncmerRoll/4/12       1293254 ns      1293325 ns          543
+BM_SyncmerRoll/15/11      1428691 ns      1428804 ns          490
+BM_SyncmerRoll/31/16      1352013 ns      1349660 ns          503
+
+
 Run on (20 X 2918.4 MHz CPU s)
 CPU Caches:
   L1 Data 48 KiB (x10)

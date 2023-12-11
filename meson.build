@@ -42,7 +42,7 @@ digest_dep = declare_dependency(
 catch2 = dependency('catch2-with-main')
 executable(
 	'tests',
-	'tests/test.cpp',
+	'tests/test/test.cpp',
 	dependencies : [catch2, digest_dep],
 )
 
