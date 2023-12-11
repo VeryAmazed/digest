@@ -50,28 +50,28 @@ executable(
 bench = dependency('benchmark')
 executable(
 	'bench',
-	'tests/benchmark.cpp',
+	'tests/bench/benchmark.cpp',
 	dependencies : [bench, digest_dep],
 )
 
 ### benchmark segment tree ###
-# executable(
-# 	'bench_seg_tree',
-# 	'tests/seg_tree/bench_seg_tree.cpp',
-# 	dependencies : [bench],
-# )
+executable(
+	'bench_seg_tree',
+	'tests/seg_tree/bench_seg_tree.cpp',
+	dependencies : [bench],
+)
 
 ### Expected Density ACTG ###
 # executable(
 # 	'expected_ACTG',
-# 	'Expected_Density/ACTG.cpp',
+# 	'tests/density/ACTG.cpp',
 # 	dependencies : [digest_dep]
 # )
 
 ### Expected Density non-ACTG ###
 # executable(
 # 	'expected_non-ACTG',
-# 	'Expected_Density/non-ACTG.cpp',
+# 	'tests/density/non-ACTG.cpp',
 # 	dependencies : [digest_dep]
 # )
 

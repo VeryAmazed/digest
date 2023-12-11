@@ -22,7 +22,7 @@ std::string s2;
 
 void setupStrings(){
 	std::string files[] = {
-		"../tests/benchmark_strings/ACTG.txt",
+		"../tests/bench/ACTG.txt",
 	};
 	
 	for (auto& file : files) {

@@ -575,7 +575,7 @@ static void BM_SegTree_array(benchmark::State& state){
 		const int k = state.range(0);
 
 		// THIS IS A MACRO LOOK AWAY
-		# define SEG() \
+		# define SEG1() \
 			int ind = 0; \
 			while(ind < k){ \
 				st.set(inputs[ind], ind); \
@@ -592,22 +592,22 @@ static void BM_SegTree_array(benchmark::State& state){
 
 		if (k == 4) {
 			ArraySegTree<4> st;
-			SEG()
+			SEG1()
 		} else if (k == 8) {
 			ArraySegTree<8> st;
-			SEG()
+			SEG1()
 		} else if (k == 16) {
 			ArraySegTree<16> st;
-			SEG()
+			SEG1()
 		} else if (k == 32) {
 			ArraySegTree<32> st;
-			SEG()
+			SEG1()
 		} else if (k == 64) {
 			ArraySegTree<64> st;
-			SEG()
+			SEG1()
 		} else if (k == 128) {
 			ArraySegTree<128> st;
-			SEG()
+			SEG1()
 		} else {
 			throw std::runtime_error("undeclared k-mer seg tree");
 		}
