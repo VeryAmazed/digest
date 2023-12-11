@@ -47,23 +47,6 @@ class WindowMin : public Digester{
             WindowMin(seq.c_str(), seq.size(), k, start, minimized_h)
         {}
 
-		// WindowMin(const WindowMin& copy) : Digester(copy), st(copy.st), st_size(copy.st_size), is_minimized(copy.is_minimized), prev_mini(copy.prev_mini)
-		// {
-		// }
-
-		// WindowMin& operator=(const WindowMin& copy){
-		// 	// this->large_wind_kmer_am = copy.large_wind_kmer_am;
-		// 	this->st_size = copy.st_size;
-		// 	this->is_minimized = copy.is_minimized;
-		// 	this->prev_mini = copy.prev_mini;
-		// 	st = copy.st;
-		// 	Digester::operator=(copy);
-		// 	return *this;
-		// }
-
-		// virtual ~WindowMin(){
-		// }
-
 		/**
 		 * @brief adds up to amount of positions of minimizers into vec, here a k-mer is considered a minimizer if its hash is the smallest in the large window, using rightmost index wins in ties 
          *        Time Complexity: O(log(large_wind_kmer_am)) per k-mer tested

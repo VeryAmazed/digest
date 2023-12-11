@@ -50,16 +50,6 @@ class ModMin : public Digester{
             ModMin(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
         {}
         
-        ModMin(const ModMin& copy) : Digester(copy), mod(copy.mod), congruence(copy.congruence)
-        {}
-        
-        ModMin& operator=(const ModMin& copy){
-            this->mod = copy.mod;
-            this->congruence = copy.congruence;
-            Digester::operator=(copy);
-            return *this;
-        }
-
         /**
          * @brief adds up to amount of positions of minimizers into vec, here a k-mer is considered a minimizer if its hash is congruent to congruence in the mod space 
          *        Time Complexity: O(1) per k-mer tested

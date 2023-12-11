@@ -1,7 +1,7 @@
-#ifndef SEG_TREE_HPP
-#define SEG_TREE_HPP
+#pragma once
 
 #include <algorithm>
+#include <cassert>
 #include <vector>
 #include <utility>
 #include <stdint.h>
@@ -14,40 +14,41 @@ namespace segtree{
 /** A data structure that can answer point update & range minimum queries. */
 
 // k is size of segtree
-template <int32_t k>
+template <uint32_t k>
 struct SegTree {
 	int i = 0;
 	std::array<uint64_t,2*k> segtree;
 
 	// ceil(log2(k))
 	constexpr int log2() {
+		assert(k > 0);
 		int ans = 31 - __builtin_clz(k-1); // floor(log2(k-1))
 		return ans + 1;
 	}
 
-	void set(uint32_t hash, int32_t index) {
+	void set(uint32_t hash, uint32_t index) {
 		int ind = i + k; 
 		if (++i == k) i = 0;
 
-		segtree[ind] = (uint64_t)hash << 32 | (uint32_t)(-(index+1));
-		for (int rep = log2(); rep > 0; rep--) {
+		// we store the xor of the index so larger indices are favored
+		segtree[ind] = (uint64_t)hash << 32 | (0xffffffff ^ index);
+		for (int rep = 0; rep < log2(); rep++) {
 			segtree[ind >> 1] = std::min(segtree[ind], segtree[ind ^ 1]);
 			ind >>= 1;
 		}
 	}
 
 	// ties are won by rightmost index
-	int32_t min() {
-		return -(int32_t)segtree[1]-1;
+	uint32_t min() {
+		return segtree[1] ^ 0xffffffff;
 	}
 
-	uint32_t get_hash(int actual_index) {
+	uint32_t get_hash(uint32_t actual_index) {
 		return segtree[actual_index] >> 32;
 	}
-	int32_t get_index(int actual_index) {
-		return -(int32_t)segtree[actual_index]-1;
+	int32_t get_index(uint32_t actual_index) {
+		return segtree[actual_index] ^ 0xffffffff;
 	}
 };
 
 }
-#endif
