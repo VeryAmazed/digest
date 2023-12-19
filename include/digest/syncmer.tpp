@@ -2,7 +2,7 @@
 
 namespace digest{
 
-	template <int32_t large_window>
+	template <uint32_t large_window>
     void Syncmer<large_window>::check1(std::vector<size_t>& vec){
         //size_t right = (st.i + large_window - 1) % large_window;
         size_t right = (this->st.i + large_window - 1);
@@ -14,7 +14,7 @@ namespace digest{
         }
     }
 
-	template <int32_t large_window>
+	template <uint32_t large_window>
     void Syncmer<large_window>::check2(std::vector<std::pair<size_t, size_t>>& vec){
         //size_t right = (st.i + large_window - 1) % large_window;
         size_t right = (this->st.i + large_window - 1);
@@ -26,7 +26,7 @@ namespace digest{
         }
     }
 
-	template <int32_t large_window>
+	template <uint32_t large_window>
     void Syncmer<large_window>::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
         while(this->is_valid_hash){
             // -------------------
@@ -41,7 +41,7 @@ namespace digest{
         }
     }
 
-	template <int32_t large_window>
+	template <uint32_t large_window>
     void Syncmer<large_window>::roll_minimizer(unsigned amount, std::vector<std::pair<size_t, size_t>>& vec){
         while(this->is_valid_hash){
             // -------------------

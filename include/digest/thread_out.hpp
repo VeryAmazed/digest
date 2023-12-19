@@ -76,7 +76,7 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  * 
  * @throws BadThreadOutParams 
  */
-template <int32_t large_wind_kmer_am>
+template <uint32_t large_wind_kmer_am>
 void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
     const char* seq, size_t len, unsigned k, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -84,7 +84,7 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
 /**
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  */
-template <int32_t large_wind_kmer_am>
+template <uint32_t large_wind_kmer_am>
 void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
     const std::string& seq, unsigned k, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -105,7 +105,7 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  * 
  * @throws BadThreadOutParams 
  */
-template <int32_t large_wind_kmer_am>
+template <uint32_t large_wind_kmer_am>
 void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
     const char* seq, size_t len, unsigned k, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -113,7 +113,7 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
 /**
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  */
-template <int32_t large_wind_kmer_am>
+template <uint32_t large_wind_kmer_am>
 void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
     const std::string& seq, unsigned k, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -126,13 +126,13 @@ void thread_mod_roll(std::vector<size_t>& vec, const char* seq,
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
 // function that's passed to the thread for WindowMinimizers
-template <int32_t large_wind_kmer_am>
+template <uint32_t large_wind_kmer_am>
 void thread_wind_roll(std::vector<size_t>& vec, const char* seq, 
     size_t ind, unsigned k, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 // function that's passed to the thread for Syncmers
-template <int32_t large_wind_kmer_am>
+template <uint32_t large_wind_kmer_am>
 void thread_sync_roll(std::vector<size_t>& vec, const char* seq, 
     size_t ind, unsigned k,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);

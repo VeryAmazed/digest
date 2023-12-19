@@ -50,7 +50,7 @@ void test_thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& ve
 	}
 }
 
-template <int32_t large_wind_kmer_am>
+template <uint32_t large_wind_kmer_am>
 void test_thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
     std::string str, unsigned k, size_t start, 
     digest::MinimizedHashType minimized_h){
@@ -66,7 +66,7 @@ void test_thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& v
 	}
 }
 
-template <int32_t large_wind_kmer_am>
+template <uint32_t large_wind_kmer_am>
 void test_thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
     std::string str, unsigned k, size_t start, 
     digest::MinimizedHashType minimized_h){
@@ -179,7 +179,7 @@ TEST_CASE("thread_wind function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        const int32_t large_wind_kmer_am = 4;
+        const uint32_t large_wind_kmer_am = 4;
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         // large_wind_kmer_am is 0
@@ -198,7 +198,7 @@ TEST_CASE("thread_wind function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        const int32_t large_wind_kmer_am = 8; 
+        const uint32_t large_wind_kmer_am = 8; 
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         
@@ -235,7 +235,7 @@ TEST_CASE("thread_wind function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        const int32_t large_wind_kmer_am = 8;
+        const uint32_t large_wind_kmer_am = 8;
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         // the string changes
@@ -261,7 +261,7 @@ TEST_CASE("thread_sync function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        const int32_t large_wind_kmer_am = 8; 
+        const uint32_t large_wind_kmer_am = 8; 
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         
