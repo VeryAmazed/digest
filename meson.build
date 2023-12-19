@@ -12,7 +12,7 @@ project(
 nthash = subproject('ntHash')
 nthash_dep = nthash.get_variable('lib_dep')
 include_dirs = [include_directories('include'), nthash.get_variable('include_dirs')]
-sources = ['src/digester.cpp', 'src/mod_minimizer.cpp', 'src/syncmer.cpp', 'src/window_minimizer.cpp', 'src/thread_out.cpp']
+sources = ['src/digester.cpp', 'src/mod_minimizer.cpp', 'src/thread_out.cpp']
 
 digest_lib = static_library(
 	'digest',
@@ -25,7 +25,9 @@ digest_lib = static_library(
 install_headers(
 	'include/digest/digester.hpp', 'include/digest/mod_minimizer.hpp',
 	'include/digest/syncmer.hpp', 'include/digest/window_minimizer.hpp',
-	'include/digest/point_update_st.hpp', 'include/digest/thread_out.hpp',
+	'include/digest/point_update_st.hpp',
+  'include/digest/syncmer.tpp', 'include/digest/window_minimizer.tpp',
+	'include/digest/thread_out.hpp',
 	install_dir: 'include/digest'
 )
 install_headers(
@@ -42,38 +44,39 @@ digest_dep = declare_dependency(
 catch2 = dependency('catch2-with-main')
 executable(
 	'tests',
-	'tests/test.cpp',
+	'tests/test/test.cpp',
 	dependencies : [catch2, digest_dep],
 )
 
 ### benchmark ###
-# bench = dependency('benchmark')
-# executable(
-# 	'bench',
-# 	'tests/benchmark.cpp',
-# 	dependencies : [bench, digest_dep],
-# )
+bench = dependency('benchmark')
+executable(
+	'bench',
+	'tests/bench/benchmark.cpp',
+	dependencies : [bench, digest_dep],
+)
 
 ### benchmark segment tree ###
-# executable(
-# 	'bench_seg_tree',
-# 	'tests/bench_seg_tree.cpp',
-# 	dependencies : [bench],
-# )
+executable(
+	'bench_seg_tree',
+	'tests/seg_tree/bench_seg_tree.cpp',
+	dependencies : [bench],
+)
+
 
 ### Expected Density ACTG ###
-executable(
-	'expected_ACTG',
-	'Expected_Density/ACTG.cpp',
-	dependencies : [digest_dep]
-)
+# executable(
+# 	'expected_ACTG',
+# 	'tests/density/ACTG.cpp',
+# 	dependencies : [digest_dep]
+# )
 
 ### Expected Density non-ACTG ###
-executable(
-	'expected_non-ACTG',
-	'Expected_Density/non-ACTG.cpp',
-	dependencies : [digest_dep]
-)
+# executable(
+# 	'expected_non-ACTG',
+# 	'tests/density/non-ACTG.cpp',
+# 	dependencies : [digest_dep]
+# )
 
 ###
 # if meson.get_compiler('cpp').get_id() == 'gcc'

@@ -22,7 +22,7 @@ std::string s2;
 
 void setupStrings(){
 	std::string files[] = {
-		"../tests/benchmark_strings/ACTG.txt",
+		"../tests/bench/ACTG.txt",
 	};
 	
 	for (auto& file : files) {
@@ -111,8 +111,7 @@ static void BM_NtHashRoll(benchmark::State& state) {
 		nthash::NtHash dig(s, 1, state.range(0));
 		state.ResumeTiming();
 		while (dig.roll())
-			;
-			// benchmark::DoNotOptimize(*dig.hashes());
+			benchmark::DoNotOptimize(*dig.hashes());
 	}
 }
 BENCHMARK(BM_NtHashRoll)->Setup(random)
@@ -141,14 +140,22 @@ BENCHMARK(BM_ModMinRoll)->Setup(random)
 static void BM_WindowMinRoll(benchmark::State& state) {
     for(auto _ : state){
 		state.PauseTiming();
-		digest::WindowMin dig(s, state.range(0), state.range(1));
-		std::vector<size_t> vec;
-		vec.reserve(DEFAULT_STR_LEN);
-		state.ResumeTiming();
+		# define WINDOW(k) \
+			digest::WindowMin<k> dig(s, state.range(0)); \
+			std::vector<size_t> vec; \
+			vec.reserve(DEFAULT_STR_LEN); \
+			state.ResumeTiming(); \
+			benchmark::DoNotOptimize(vec); \
+			dig.roll_minimizer(DEFAULT_STR_LEN, vec); \
+			benchmark::ClobberMemory(); \
 
-		benchmark::DoNotOptimize(vec);
-        dig.roll_minimizer(DEFAULT_STR_LEN, vec);
-		benchmark::ClobberMemory();
+		if (state.range(1) == 11) {
+			WINDOW(11)
+		} else if (state.range(1) == 10) {
+			WINDOW(10)
+		} else if (state.range(1) == 15) {
+			WINDOW(15)
+		}
     }
 }
 BENCHMARK(BM_WindowMinRoll)->Setup(random)
@@ -160,14 +167,22 @@ BENCHMARK(BM_WindowMinRoll)->Setup(random)
 static void BM_SyncmerRoll(benchmark::State& state){
     for(auto _ : state){
 		state.PauseTiming();
-        digest::Syncmer dig(s, state.range(0), state.range(1));
-        std::vector<size_t> vec;
-        vec.reserve(DEFAULT_STR_LEN);
-		state.ResumeTiming();
+		# define SYNCMER(k) \
+			digest::Syncmer<k> dig(s, state.range(0)); \
+			std::vector<size_t> vec; \
+			vec.reserve(DEFAULT_STR_LEN); \
+			state.ResumeTiming(); \
+			benchmark::DoNotOptimize(vec); \
+			dig.roll_minimizer(DEFAULT_STR_LEN, vec); \
+			benchmark::ClobberMemory();
 
-		benchmark::DoNotOptimize(vec);
-        dig.roll_minimizer(DEFAULT_STR_LEN, vec);
-		benchmark::ClobberMemory();
+		if (state.range(1) == 12) {
+			SYNCMER(12)
+		} else if (state.range(1) == 11) {
+			SYNCMER(11)
+		} else if (state.range(1) == 16) {
+			SYNCMER(16)
+		}
     }
 }
 BENCHMARK(BM_SyncmerRoll)->Setup(random)

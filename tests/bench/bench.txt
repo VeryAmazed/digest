@@ -1,0 +1,47 @@
+2023-12-11T15:47:57-05:00
+Running ./bench
+Run on (8 X 4800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x4)
+  L1 Instruction 32 KiB (x4)
+  L2 Unified 1280 KiB (x4)
+  L3 Unified 12288 KiB (x1)
+Load Average: 0.68, 0.62, 0.64
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+-----------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+-----------------------------------------------------------------
+BM_NtHashRoll/4            466500 ns       466134 ns         1507
+BM_NtHashRoll/15           478790 ns       477792 ns         1474
+BM_NtHashRoll/31           539076 ns       538138 ns         1311
+BM_ModMinRoll/4            724896 ns       723550 ns          972
+BM_ModMinRoll/15           733357 ns       732183 ns          955
+BM_ModMinRoll/31           841692 ns       841140 ns          833
+BM_WindowMinRoll/4/11     1315641 ns      1315563 ns          534
+BM_WindowMinRoll/15/10    1191722 ns      1191788 ns          589
+BM_WindowMinRoll/31/15    1254855 ns      1254931 ns          562
+BM_SyncmerRoll/4/12       1293254 ns      1293325 ns          543
+BM_SyncmerRoll/15/11      1428691 ns      1428804 ns          490
+BM_SyncmerRoll/31/16      1352013 ns      1349660 ns          503
+
+
+Run on (20 X 2918.4 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x10)
+  L1 Instruction 32 KiB (x10)
+  L2 Unified 1280 KiB (x10)
+  L3 Unified 24576 KiB (x1)
+Load Average: 0.96, 0.33, 0.12
+------------------------------------------------------------------------
+Benchmark                              Time             CPU   Iterations
+------------------------------------------------------------------------
+BM_NtHashRoll                  140124083 ns    129347186 ns            7
+BM_ModMinRoll/15/10            215836823 ns    199036575 ns            4
+BM_ModMinRoll/4/11             194084485 ns    179153800 ns            3
+BM_ModMinRoll/31/15            232174873 ns    214317725 ns            4
+BM_WindowMinRollFixWind/15/10  530975342 ns    490133400 ns            2
+BM_WindowMinRollFixWind/4/11   500135899 ns    461327200 ns            2
+BM_WindowMinRollFixWind/31/15  516394854 ns    476670050 ns            2
+BM_SyncmerRollFixWind/15/11    481604099 ns    444142750 ns            2
+BM_SyncmerRollFixWind/4/12     488803029 ns    451203650 ns            2
+BM_SyncmerRollFixWind/31/16    471771598 ns    434749150 ns            2
