@@ -140,5 +140,5 @@ void thread_sync_roll(std::vector<size_t>& vec, const char* seq,
 }
 
 
-
+#include "thread_out.tpp"
 #endif

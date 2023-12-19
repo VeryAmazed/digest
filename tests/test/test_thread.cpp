@@ -7,13 +7,13 @@ std::vector<std::string> test_strs;
 
 void setupStrings(){
 	std::string files[] = {
-		"../tests/test_strings/A.txt",
-		"../tests/test_strings/a_lowercase.txt",
-		"../tests/test_strings/salmonella_enterica.txt",
-		"../tests/test_strings/salmonella_lowercase.txt",
-		"../tests/test_strings/random.txt",
-		"../tests/test_strings/random_lowercase.txt",
-		"../tests/test_strings/N.txt",
+		"../tests/test/A.txt",
+		"../tests/test/a_lowercase.txt",
+		"../tests/test/salmonella_enterica.txt",
+		"../tests/test/salmonella_lowercase.txt",
+		"../tests/test/random.txt",
+		"../tests/test/random_lowercase.txt",
+		"../tests/test/N.txt",
 	};
 	
 	for (auto& file : files) {
