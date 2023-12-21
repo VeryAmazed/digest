@@ -128,7 +128,7 @@ BENCHMARK(BM_SyncmerRoll)->Setup(random)
 
 
 // thread benchmarking ---------------------------------------------------------------------
-static void BM_ModMinRoll(benchmark::State& state) {
+static void BM_ThreadMod(benchmark::State& state) {
 	for(auto _ : state) {
 		state.PauseTiming();
 		std::vector<std::vector<size_t>> vec(state.range(0), std::vector<size_t>());
@@ -142,9 +142,9 @@ static void BM_ModMinRoll(benchmark::State& state) {
 		benchmark::ClobberMemory();
 	}
 }
-BENCHMARK(BM_ModMinRoll)->Setup(random)->Range(1, 32);
+BENCHMARK(BM_ThreadMod)->Setup(random)->Range(1, 32);
 
-static void BM_WindowMinRoll(benchmark::State& state) {
+static void BM_ThreadWind(benchmark::State& state) {
     for(auto _ : state){
 		state.PauseTiming();
 		std::vector<std::vector<size_t>> vec(state.range(0), std::vector<size_t>());
@@ -158,10 +158,10 @@ static void BM_WindowMinRoll(benchmark::State& state) {
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_WindowMinRoll)->Setup(random)->Range(1, 32);
+BENCHMARK(BM_ThreadWind)->Setup(random)->Range(1, 32);
 
 
-static void BM_SyncmerRoll(benchmark::State& state){
+static void BM_ThreadSync(benchmark::State& state){
     for(auto _ : state){
 		state.PauseTiming();
 		std::vector<std::vector<size_t>> vec(state.range(0), std::vector<size_t>());
@@ -175,7 +175,7 @@ static void BM_SyncmerRoll(benchmark::State& state){
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_SyncmerRoll)->Setup(random)->Range(1, 32);
+BENCHMARK(BM_ThreadSync)->Setup(random)->Range(1, 32);
 
 
 
