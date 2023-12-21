@@ -131,10 +131,7 @@ BENCHMARK(BM_SyncmerRoll)->Setup(random)
 static void BM_ThreadMod(benchmark::State& state) {
 	for(auto _ : state) {
 		state.PauseTiming();
-		std::vector<std::vector<size_t>> vec(state.range(0), std::vector<size_t>());
-		for(int i = 0; i < state.range(0); i++){
-			vec[i].reserve(DEFAULT_STR_LEN/state.range(0) + 1);
-		}
+		std::vector<std::vector<size_t>> vec;
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
@@ -147,10 +144,7 @@ BENCHMARK(BM_ThreadMod)->Setup(random)->Range(1, 32);
 static void BM_ThreadWind(benchmark::State& state) {
     for(auto _ : state){
 		state.PauseTiming();
-		std::vector<std::vector<size_t>> vec(state.range(0), std::vector<size_t>());
-		for(int i = 0; i < state.range(0); i++){
-			vec[i].reserve(DEFAULT_STR_LEN/state.range(0) + 1);
-		}
+		std::vector<std::vector<size_t>> vec;
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
@@ -164,10 +158,7 @@ BENCHMARK(BM_ThreadWind)->Setup(random)->Range(1, 32);
 static void BM_ThreadSync(benchmark::State& state){
     for(auto _ : state){
 		state.PauseTiming();
-		std::vector<std::vector<size_t>> vec(state.range(0), std::vector<size_t>());
-		for(int i = 0; i < state.range(0); i++){
-			vec[i].reserve(DEFAULT_STR_LEN/state.range(0) + 1);
-		}
+		std::vector<std::vector<size_t>> vec;
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
