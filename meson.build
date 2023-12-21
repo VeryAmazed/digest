@@ -63,7 +63,6 @@ executable(
 	dependencies : [bench],
 )
 
-
 ### Expected Density ACTG ###
 # executable(
 # 	'expected_ACTG',
@@ -77,14 +76,6 @@ executable(
 # 	'tests/density/non-ACTG.cpp',
 # 	dependencies : [digest_dep]
 # )
-
-###
-# if meson.get_compiler('cpp').get_id() == 'gcc'
-#   extra_args = ['-fsanitize=thread']
-# else
-#   extra_args = []
-# endif
-###
 
 ### test thread functions ###
 
