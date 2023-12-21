@@ -71,7 +71,8 @@ static void BM_ModMinRoll(benchmark::State& state) {
 BENCHMARK(BM_ModMinRoll)->Setup(random)
     ->Args({4}) // spumoni2
     ->Args({15}) // minimap
-    ->Args({31}); // kraken v1
+    ->Args({31}) // kraken v1
+	->Args({16}); // comparison for threads
 
 static void BM_WindowMinRoll(benchmark::State& state) {
     for(auto _ : state){
@@ -91,13 +92,16 @@ static void BM_WindowMinRoll(benchmark::State& state) {
 			WINDOW(10)
 		} else if (state.range(1) == 15) {
 			WINDOW(15)
+		}else if(state.range(1) == 16){
+			WINDOW(16)
 		}
     }
 }
 BENCHMARK(BM_WindowMinRoll)->Setup(random)
     ->Args({4, 11}) // spumoni2
     ->Args({15, 10}) // minimap
-    ->Args({31, 15}); // kraken v1
+    ->Args({31, 15}) // kraken v1
+	->Args({16, 16}); // comparison for threads
 
 
 static void BM_SyncmerRoll(benchmark::State& state){
@@ -124,7 +128,8 @@ static void BM_SyncmerRoll(benchmark::State& state){
 BENCHMARK(BM_SyncmerRoll)->Setup(random)
     ->Args({4, 12}) // spumoni2
     ->Args({15, 11}) // minimap
-    ->Args({31, 16}); // kraken v1
+    ->Args({31, 16}) // kraken v1
+	->Args({16, 16}); // comparison for threads
 
 
 // thread benchmarking ---------------------------------------------------------------------
@@ -139,7 +144,7 @@ static void BM_ThreadMod(benchmark::State& state) {
 		benchmark::ClobberMemory();
 	}
 }
-BENCHMARK(BM_ThreadMod)->Setup(random)->Range(1, 32);
+BENCHMARK(BM_ThreadMod)->Setup(random)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
 
 static void BM_ThreadWind(benchmark::State& state) {
     for(auto _ : state){
@@ -152,7 +157,7 @@ static void BM_ThreadWind(benchmark::State& state) {
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_ThreadWind)->Setup(random)->Range(1, 32);
+BENCHMARK(BM_ThreadWind)->Setup(random)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
 
 
 static void BM_ThreadSync(benchmark::State& state){
@@ -166,7 +171,7 @@ static void BM_ThreadSync(benchmark::State& state){
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_ThreadSync)->Setup(random)->Range(1, 32);
+BENCHMARK(BM_ThreadSync)->Setup(random)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
 
 
 
