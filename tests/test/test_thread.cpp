@@ -7,13 +7,13 @@ std::vector<std::string> test_strs;
 
 void setupStrings(){
 	std::string files[] = {
-		"../tests/test_strings/A.txt",
-		"../tests/test_strings/a_lowercase.txt",
-		"../tests/test_strings/salmonella_enterica.txt",
-		"../tests/test_strings/salmonella_lowercase.txt",
-		"../tests/test_strings/random.txt",
-		"../tests/test_strings/random_lowercase.txt",
-		"../tests/test_strings/N.txt",
+		"../tests/test/A.txt",
+		"../tests/test/a_lowercase.txt",
+		"../tests/test/salmonella_enterica.txt",
+		"../tests/test/salmonella_lowercase.txt",
+		"../tests/test/random.txt",
+		"../tests/test/random_lowercase.txt",
+		"../tests/test/N.txt",
 	};
 	
 	for (auto& file : files) {
@@ -50,13 +50,14 @@ void test_thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& ve
 	}
 }
 
+template <uint32_t large_wind_kmer_am>
 void test_thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    std::string str, unsigned k, unsigned large_wind_kmer_am, size_t start, 
+    std::string str, unsigned k, size_t start, 
     digest::MinimizedHashType minimized_h){
     std::vector<size_t> single_thread;
-    digest::WindowMin dig(str, k, large_wind_kmer_am, start, minimized_h);
+    digest::WindowMin<large_wind_kmer_am> dig(str, k, start, minimized_h);
     dig.roll_minimizer(str.size(), single_thread);
-    thread_out::thread_wind(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+    thread_out::thread_wind<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h);
     std::vector<size_t> multi_thread = multi_to_single_vec(vec);
     
     REQUIRE(single_thread.size() == multi_thread.size());
@@ -65,13 +66,14 @@ void test_thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& v
 	}
 }
 
+template <uint32_t large_wind_kmer_am>
 void test_thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    std::string str, unsigned k, unsigned large_wind_kmer_am, size_t start, 
+    std::string str, unsigned k, size_t start, 
     digest::MinimizedHashType minimized_h){
     std::vector<size_t> single_thread;
-    digest::Syncmer dig(str, k, large_wind_kmer_am, start, minimized_h);
+    digest::Syncmer<large_wind_kmer_am> dig(str, k, start, minimized_h);
     dig.roll_minimizer(str.size(), single_thread);
-    thread_out::thread_sync(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+    thread_out::thread_sync<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h);
     std::vector<size_t> multi_thread = multi_to_single_vec(vec);
     
     REQUIRE(single_thread.size() == multi_thread.size());
@@ -177,20 +179,18 @@ TEST_CASE("thread_wind function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        unsigned large_wind_kmer_am = 4;
+        const uint32_t large_wind_kmer_am = 4;
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         // large_wind_kmer_am is 0
-        large_wind_kmer_am = 0;
-        CHECK_THROWS_AS(thread_out::thread_wind(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h), thread_out::BadThreadOutParams);
-        large_wind_kmer_am = 4;
+        CHECK_THROWS_AS(thread_out::thread_wind<0>(thread_count, vec, str, k, start, minimized_h), thread_out::BadThreadOutParams);
         // num_lwinds is negative
         start = 9;
-        CHECK_THROWS_AS(thread_out::thread_wind(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h), thread_out::BadThreadOutParams);
+        CHECK_THROWS_AS(thread_out::thread_wind<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h), thread_out::BadThreadOutParams);
         start = 0;
         // num_lwinds < thread_count
         thread_count = 8;
-        CHECK_THROWS_AS(thread_out::thread_wind(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h), thread_out::BadThreadOutParams);
+        CHECK_THROWS_AS(thread_out::thread_wind<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h), thread_out::BadThreadOutParams);
         thread_count = 4;
     }
 
@@ -198,7 +198,7 @@ TEST_CASE("thread_wind function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        unsigned large_wind_kmer_am = 8; 
+        const uint32_t large_wind_kmer_am = 8; 
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         
@@ -207,7 +207,7 @@ TEST_CASE("thread_wind function testing"){
         for(int i = 0; i < 10; i++){
             for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
-                test_thread_wind(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+                test_thread_wind<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h);
             }
         }
         
@@ -216,7 +216,7 @@ TEST_CASE("thread_wind function testing"){
         for(int i =0; i < 10; i++){
             for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
-                test_thread_wind(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+                test_thread_wind<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h);
             }
         }
         
@@ -225,7 +225,7 @@ TEST_CASE("thread_wind function testing"){
         for(int i = 0; i < 10; i++){
             for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
-                test_thread_wind(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+                test_thread_wind<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h);
             }
         }
         
@@ -235,7 +235,7 @@ TEST_CASE("thread_wind function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        unsigned large_wind_kmer_am = 8;
+        const uint32_t large_wind_kmer_am = 8;
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         // the string changes
@@ -247,7 +247,7 @@ TEST_CASE("thread_wind function testing"){
                     thread_count = j;
                     for(int l = 0; l <= 96; l += 13){
                         start = l;
-                        test_thread_wind(thread_count, vec, test_strs[i], k, large_wind_kmer_am, start, minimized_h);
+                        test_thread_wind<large_wind_kmer_am>(thread_count, vec, test_strs[i], k, start, minimized_h);
                     }
                 }
             }
@@ -261,7 +261,7 @@ TEST_CASE("thread_sync function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        unsigned large_wind_kmer_am = 8; 
+        const uint32_t large_wind_kmer_am = 8; 
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         
@@ -270,7 +270,7 @@ TEST_CASE("thread_sync function testing"){
         for(int i = 0; i < 10; i++){
             for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
-                test_thread_sync(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+                test_thread_sync<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h);
             }
         }
         
@@ -279,7 +279,7 @@ TEST_CASE("thread_sync function testing"){
         for(int i =0; i < 10; i++){
             for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
-                test_thread_sync(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+                test_thread_sync<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h);
             }
         }
         
@@ -288,7 +288,7 @@ TEST_CASE("thread_sync function testing"){
         for(int i = 0; i < 10; i++){
             for(int i = 0; i < 4; i += 2){
                 std::string str = test_strs[i].substr(start, 99);
-                test_thread_sync(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+                test_thread_sync<large_wind_kmer_am>(thread_count, vec, str, k, start, minimized_h);
             }
         }
         
@@ -298,7 +298,7 @@ TEST_CASE("thread_sync function testing"){
         unsigned thread_count = 4;
         std::vector<std::vector<size_t>> vec;
         unsigned k = 4;
-        unsigned large_wind_kmer_am = 8;
+        const int32_t large_wind_kmer_am = 8;
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
         // the string changes
@@ -310,7 +310,7 @@ TEST_CASE("thread_sync function testing"){
                     thread_count = j;
                     for(int l = 0; l <= 96; l += 13){
                         start = l;
-                        test_thread_sync(thread_count, vec, test_strs[i], k, large_wind_kmer_am, start, minimized_h);
+                        test_thread_sync<large_wind_kmer_am>(thread_count, vec, test_strs[i], k, start, minimized_h);
                     }
                 }
             }

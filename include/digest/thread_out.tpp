@@ -49,8 +49,9 @@ void thread_mod_roll(std::vector<size_t>& vec, const char* seq,
         dig.roll_minimizer(assigned_kmer_am, vec);
     }
 
+template <uint32_t large_wind_kmer_am>
 void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const char* seq, size_t len, unsigned k, unsigned large_wind_kmer_am, size_t start, 
+    const char* seq, size_t len, unsigned k, size_t start, 
     digest::MinimizedHashType minimized_h){
         int num_lwinds = (int)len - (int)start - (int)(k+large_wind_kmer_am)+2;
         if(large_wind_kmer_am == 0 || k < 4 ||start >= len || num_lwinds < 0 || (unsigned)num_lwinds < thread_count){
@@ -71,8 +72,8 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
                 extras--;
             }
 
-            thread_vector.emplace_back(std::thread(thread_wind_roll, std::ref(vec[i]), 
-                seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
+            thread_vector.emplace_back(std::thread(thread_wind_roll<large_wind_kmer_am>, std::ref(vec[i]), 
+                seq, ind, k, minimized_h, assigned_lwind_am));
 
             ind += assigned_lwind_am;
         }
@@ -93,21 +94,24 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
         }
     }
 
+template <uint32_t large_wind_kmer_am>
 void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const std::string& seq, unsigned k, unsigned large_wind_kmer_am, size_t start, 
+    const std::string& seq, unsigned k, size_t start, 
     digest::MinimizedHashType minimized_h){
-        thread_wind(thread_count, vec, seq.c_str(), seq.size(), k, large_wind_kmer_am, start, minimized_h);
+        thread_wind<large_wind_kmer_am>(thread_count, vec, seq.c_str(), seq.size(), k, start, minimized_h);
     }
 
+template <uint32_t large_wind_kmer_am>
 void thread_wind_roll(std::vector<size_t>& vec, const char* seq, 
-    size_t ind, unsigned k, unsigned large_wind_kmer_am, 
+    size_t ind, unsigned k, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am){
-        digest::WindowMin dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, large_wind_kmer_am, ind, minimized_h);
+        digest::WindowMin<large_wind_kmer_am> dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, ind, minimized_h);
         dig.roll_minimizer(assigned_lwind_am, vec);
     }
 
+template <uint32_t large_wind_kmer_am>
 void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const char* seq, size_t len, unsigned k, unsigned large_wind_kmer_am, size_t start, 
+    const char* seq, size_t len, unsigned k, size_t start, 
     digest::MinimizedHashType minimized_h){
         int num_lwinds = (int)len - (int)start - (int)(k+large_wind_kmer_am)+2;
         if(large_wind_kmer_am == 0 || k < 4 ||start >= len || num_lwinds < 0 || (unsigned)num_lwinds < thread_count){
@@ -128,8 +132,8 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
                 extras--;
             }
 
-            thread_vector.emplace_back(std::thread(thread_sync_roll, std::ref(vec[i]), 
-                seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
+            thread_vector.emplace_back(std::thread(thread_sync_roll<large_wind_kmer_am>, std::ref(vec[i]), 
+                seq, ind, k, minimized_h, assigned_lwind_am));
 
             ind += assigned_lwind_am;
         }
@@ -140,16 +144,18 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
         
     }
 
+template <uint32_t large_wind_kmer_am>
 void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const std::string& seq, unsigned k, unsigned large_wind_kmer_am, size_t start, 
+    const std::string& seq, unsigned k, size_t start, 
     digest::MinimizedHashType minimized_h){
-        thread_sync(thread_count, vec, seq.c_str(), seq.size(), k, large_wind_kmer_am, start, minimized_h);
+        thread_sync<large_wind_kmer_am>(thread_count, vec, seq.c_str(), seq.size(), k, start, minimized_h);
     }
 
+template <uint32_t large_wind_kmer_am>
 void thread_sync_roll(std::vector<size_t>& vec, const char* seq, 
-    size_t ind, unsigned k, unsigned large_wind_kmer_am, 
+    size_t ind, unsigned k, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am){
-        digest::Syncmer dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, large_wind_kmer_am, ind, minimized_h);
+        digest::Syncmer<large_wind_kmer_am> dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, ind, minimized_h);
         dig.roll_minimizer(assigned_lwind_am, vec);
     }
 }

@@ -5,8 +5,8 @@
 
 namespace digest{
 
-// number of k-mer to be considered in the large window
-template <int32_t large_window>
+// number of k-mers to be considered in the large window
+template <uint32_t large_window>
 class Syncmer : public WindowMin<large_window> {
     public:
       /**

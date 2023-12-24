@@ -1,7 +1,7 @@
 #include "digest/window_minimizer.hpp"
 
 namespace digest{
-	template <int32_t large_window>
+	template <uint32_t large_window>
     void WindowMin<large_window>::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
         while(is_valid_hash){
             // -------------------
@@ -17,7 +17,7 @@ namespace digest{
         
     }
 
-	template <int32_t large_window>
+	template <uint32_t large_window>
     void WindowMin<large_window>::fill_st(){
         while((st_size < large_window) && is_valid_hash){
             if(get_minimized_h() == digest::MinimizedHashType::CANON){
@@ -33,7 +33,7 @@ namespace digest{
         }
     }
 
-	template <int32_t large_window>
+	template <uint32_t large_window>
     void WindowMin<large_window>::check(std::vector<size_t>& vec){
         if(is_minimized){
             if(st.min() != prev_mini){
