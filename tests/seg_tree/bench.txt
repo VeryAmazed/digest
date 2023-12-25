@@ -1,0 +1,68 @@
+2023-12-25T14:31:55+01:00
+Running ./bench_seg_tree
+Run on (8 X 4800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x4)
+  L1 Instruction 32 KiB (x4)
+  L2 Unified 1280 KiB (x4)
+  L3 Unified 12288 KiB (x1)
+Load Average: 0.45, 0.60, 0.62
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+----------------------------------------------------------------
+Benchmark                      Time             CPU   Iterations
+----------------------------------------------------------------
+BM_monoqueue<1>         17877309 ns     17876871 ns           38
+BM_monoqueue<2>         40761863 ns     40760384 ns           17
+BM_monoqueue<4>         58273057 ns     58270543 ns           12
+BM_monoqueue<8>         75615327 ns     75611989 ns            9
+BM_monoqueue<16>        77542914 ns     77536475 ns            9
+BM_monoqueue<32>        78892973 ns     78887808 ns            9
+BM_monoqueue<64>        72283400 ns     72282271 ns            9
+BM_monoqueue<128>       74838294 ns     74831844 ns            9
+BM_monoqueue<256>       71734333 ns     71675053 ns           10
+BM_monoqueue<512>       71339560 ns     71285264 ns           10
+BM_monoqueue<1024>      76346556 ns     76345783 ns            9
+BM_Segment_Tree<1>       4933340 ns      4933374 ns          140
+BM_Segment_Tree<2>       8860457 ns      8859821 ns           78
+BM_Segment_Tree<4>      16589492 ns     16588707 ns           43
+BM_Segment_Tree<8>      20993107 ns     20991060 ns           34
+BM_Segment_Tree<16>     23895403 ns     23895272 ns           29
+BM_Segment_Tree<32>     27949915 ns     27947616 ns           25
+BM_Segment_Tree<64>     32614415 ns     32612643 ns           22
+BM_Segment_Tree<128>    36974129 ns     36971679 ns           19
+BM_Segment_Tree<256>    41149069 ns     41146675 ns           17
+BM_Segment_Tree<512>    46065521 ns     46064765 ns           15
+BM_Segment_Tree<1024>   50124254 ns     50122893 ns           14
+BM_naive<1>              5065868 ns      5065435 ns          100
+BM_naive<2>              8981798 ns      8981428 ns           77
+BM_naive<4>             12038150 ns     12027499 ns           59
+BM_naive<8>             19639783 ns     19638878 ns           36
+BM_naive<16>            44429123 ns     44428351 ns           16
+BM_naive<32>           176563501 ns    176529178 ns            4
+BM_naive<64>           259650389 ns    259598009 ns            3
+BM_naive<128>          528867006 ns    528688115 ns            1
+BM_naive<256>         1079154730 ns   1078996690 ns            1
+BM_naive<512>         2166737795 ns   2166380167 ns            1
+BM_naive<1024>        4435739756 ns   4435079619 ns            1
+BM_naive2<1>             9258270 ns      9256639 ns           76
+BM_naive2<2>            61209480 ns     61190573 ns           12
+BM_naive2<4>           110104958 ns    110091482 ns            6
+BM_naive2<8>           153215694 ns    153171851 ns            5
+BM_naive2<16>          252397299 ns    252378173 ns            3
+BM_naive2<32>           26312519 ns     26305229 ns           27
+BM_naive2<64>           21338470 ns     21334486 ns           33
+BM_naive2<128>          17269416 ns     17263537 ns           39
+BM_naive2<256>          15148087 ns     15147890 ns           47
+BM_naive2<512>          14633218 ns     14632654 ns           48
+BM_naive2<1024>         13954441 ns     13953890 ns           48
+BM_mset<1>             158421218 ns    158416456 ns            4
+BM_mset<2>             200678031 ns    200649312 ns            3
+BM_mset<4>             301430583 ns    301411979 ns            2
+BM_mset<8>             433485031 ns    433421414 ns            2
+BM_mset<16>            512310743 ns    512153194 ns            1
+BM_mset<32>            552627325 ns    552609018 ns            1
+BM_mset<64>            584809780 ns    584804480 ns            1
+BM_mset<128>           605143785 ns    605116703 ns            1
+BM_mset<256>           620897293 ns    620687443 ns            1
+BM_mset<512>           642223120 ns    642177069 ns            1
+BM_mset<1024>          677941322 ns    677880861 ns            1
