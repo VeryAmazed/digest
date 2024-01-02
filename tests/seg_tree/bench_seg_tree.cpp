@@ -12,7 +12,9 @@ std::array<uint32_t,2*INPUT_SIZE> hashes;
 std::map<int,std::array<uint32_t,INPUT_SIZE>> st_outputs;
 std::map<int,std::array<uint32_t,INPUT_SIZE>> mset_outputs;
 std::map<int,std::array<uint32_t,INPUT_SIZE>> naive_outputs;
+std::map<int,std::array<uint32_t,INPUT_SIZE>> naive_outputs1;
 std::map<int,std::array<uint32_t,INPUT_SIZE>> naive_outputs2;
+std::map<int,std::array<uint32_t,INPUT_SIZE>> naive_outputs2c;
 std::map<int,std::array<uint32_t,INPUT_SIZE>> monoqueue_outputs;
 
 void setupInput(){
@@ -181,14 +183,52 @@ static void BM_naive(benchmark::State& state){
 }
 
 template<int k>
-class Naive2 {
+class Naive1 {
+	std::array<std::array<uint32_t, k>,2> arr; // hash, index
+	int i = 0;
+
+public:
+	void insert(uint32_t index, uint32_t hash) {
+		arr[0][i] = hash;
+		arr[1][i] = index;
+		if (++i == k) i = 0;
+	}
+
+	uint32_t max() {
+		int i = k-1;
+		for (int j = k-2; j >= 0; j--) {
+			if (arr[0][j] > arr[0][i]) {
+				i = j;
+			}
+		}
+		return arr[1][i];
+	}
+};
+
+template<int k>
+static void BM_naive1(benchmark::State& state){
+	auto &out = naive_outputs1[k];
+    for(auto _ : state) {
+		Naive1<k> n;
+		for (int i = 0; i < k; i++) {
+			n.insert(i, hashes[i]);
+		}
+        for (int i = 0; i < INPUT_SIZE; i++) {
+            out[i] = n.max();
+			n.insert(i+k, hashes[i+k]);
+        }
+	}
+}
+
+template<int k>
+class Naive2Combined {
 	std::array<uint64_t, k> arr;
 	int i = 0;
 	int last = 0;
 
 public:
-	Naive2() {
-		arr.fill(0);
+	Naive2Combined() {
+		arr.fill(0); // gets rid of warning
 	}
 
 	void insert(uint32_t index, uint32_t hash) {
@@ -199,6 +239,55 @@ public:
 		} else if (last == i) {
 			for (int j = 0; j < k; j++) {
 				if (arr[j] > arr[last]) {
+					last = j;
+				}
+			}
+		}
+
+		if (++i == k) i = 0;
+	}
+
+	uint32_t max() {
+		return arr[last];
+	}
+};
+
+template<int k>
+static void BM_naive2_combined(benchmark::State& state){
+	auto &out = naive_outputs2c[k];
+    for(auto _ : state) {
+		Naive2Combined<k> n;
+		for (int i = 0; i < k; i++) {
+			n.insert(i, hashes[i]);
+		}
+        for (int i = 0; i < INPUT_SIZE; i++) {
+            out[i] = n.max();
+			n.insert(i+k, hashes[i+k]);
+        }
+	}
+}
+
+template<int k>
+class Naive2 {
+	std::array<uint64_t, k> arr; // hash, index
+	int i = 0;
+	int last = 0;
+
+public:
+
+	void insert(uint32_t index, uint32_t hash) {
+		arr[i] = (uint64_t)hash << 32 | index; // this is faster
+
+		if (arr[i]>>32 > arr[last]>>32) {
+			last = i;
+		} else if (last == i) {
+			for (int j = i-1; j >= 0; j--) {
+				if (arr[j]>>32 > arr[last]>>32) {
+					last = j;
+				}
+			}
+			for (int j = k-1; j > i; j--) {
+				if (arr[j]>>32 > arr[last]>>32) {
 					last = j;
 				}
 			}
@@ -243,7 +332,9 @@ static void BM_naive2(benchmark::State& state){
 test(BM_monoqueue);
 test(BM_Segment_Tree);
 test(BM_naive);
+test(BM_naive1);
 test(BM_naive2);
+test(BM_naive2_combined);
 test(BM_mset);
 
 int main(int argc, char** argv)
@@ -252,6 +343,8 @@ int main(int argc, char** argv)
     benchmark::Initialize(&argc, argv);
     benchmark::RunSpecifiedBenchmarks();
 
+    assert(naive_outputs2 == naive_outputs2c);
+    assert(naive_outputs1 == naive_outputs);
     // sanity check
     assert(st_outputs == mset_outputs);
     assert(st_outputs == naive_outputs);

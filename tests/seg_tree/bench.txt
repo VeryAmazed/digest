@@ -1,4 +1,8 @@
-2023-12-25T14:31:55+01:00
+notes:
+naive and naive1 are the same algorithm, different memory layout
+naive2 and naive2_combined are the same algorithm, different memory layout
+
+2024-01-03T06:05:41+08:00
 Running ./bench_seg_tree
 Run on (8 X 4800 MHz CPU s)
 CPU Caches:
@@ -6,63 +10,85 @@ CPU Caches:
   L1 Instruction 32 KiB (x4)
   L2 Unified 1280 KiB (x4)
   L3 Unified 12288 KiB (x1)
-Load Average: 0.45, 0.60, 0.62
+Load Average: 0.64, 1.00, 1.10
 ***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
-----------------------------------------------------------------
-Benchmark                      Time             CPU   Iterations
-----------------------------------------------------------------
-BM_monoqueue<1>         17877309 ns     17876871 ns           38
-BM_monoqueue<2>         40761863 ns     40760384 ns           17
-BM_monoqueue<4>         58273057 ns     58270543 ns           12
-BM_monoqueue<8>         75615327 ns     75611989 ns            9
-BM_monoqueue<16>        77542914 ns     77536475 ns            9
-BM_monoqueue<32>        78892973 ns     78887808 ns            9
-BM_monoqueue<64>        72283400 ns     72282271 ns            9
-BM_monoqueue<128>       74838294 ns     74831844 ns            9
-BM_monoqueue<256>       71734333 ns     71675053 ns           10
-BM_monoqueue<512>       71339560 ns     71285264 ns           10
-BM_monoqueue<1024>      76346556 ns     76345783 ns            9
-BM_Segment_Tree<1>       4933340 ns      4933374 ns          140
-BM_Segment_Tree<2>       8860457 ns      8859821 ns           78
-BM_Segment_Tree<4>      16589492 ns     16588707 ns           43
-BM_Segment_Tree<8>      20993107 ns     20991060 ns           34
-BM_Segment_Tree<16>     23895403 ns     23895272 ns           29
-BM_Segment_Tree<32>     27949915 ns     27947616 ns           25
-BM_Segment_Tree<64>     32614415 ns     32612643 ns           22
-BM_Segment_Tree<128>    36974129 ns     36971679 ns           19
-BM_Segment_Tree<256>    41149069 ns     41146675 ns           17
-BM_Segment_Tree<512>    46065521 ns     46064765 ns           15
-BM_Segment_Tree<1024>   50124254 ns     50122893 ns           14
-BM_naive<1>              5065868 ns      5065435 ns          100
-BM_naive<2>              8981798 ns      8981428 ns           77
-BM_naive<4>             12038150 ns     12027499 ns           59
-BM_naive<8>             19639783 ns     19638878 ns           36
-BM_naive<16>            44429123 ns     44428351 ns           16
-BM_naive<32>           176563501 ns    176529178 ns            4
-BM_naive<64>           259650389 ns    259598009 ns            3
-BM_naive<128>          528867006 ns    528688115 ns            1
-BM_naive<256>         1079154730 ns   1078996690 ns            1
-BM_naive<512>         2166737795 ns   2166380167 ns            1
-BM_naive<1024>        4435739756 ns   4435079619 ns            1
-BM_naive2<1>             9258270 ns      9256639 ns           76
-BM_naive2<2>            61209480 ns     61190573 ns           12
-BM_naive2<4>           110104958 ns    110091482 ns            6
-BM_naive2<8>           153215694 ns    153171851 ns            5
-BM_naive2<16>          252397299 ns    252378173 ns            3
-BM_naive2<32>           26312519 ns     26305229 ns           27
-BM_naive2<64>           21338470 ns     21334486 ns           33
-BM_naive2<128>          17269416 ns     17263537 ns           39
-BM_naive2<256>          15148087 ns     15147890 ns           47
-BM_naive2<512>          14633218 ns     14632654 ns           48
-BM_naive2<1024>         13954441 ns     13953890 ns           48
-BM_mset<1>             158421218 ns    158416456 ns            4
-BM_mset<2>             200678031 ns    200649312 ns            3
-BM_mset<4>             301430583 ns    301411979 ns            2
-BM_mset<8>             433485031 ns    433421414 ns            2
-BM_mset<16>            512310743 ns    512153194 ns            1
-BM_mset<32>            552627325 ns    552609018 ns            1
-BM_mset<64>            584809780 ns    584804480 ns            1
-BM_mset<128>           605143785 ns    605116703 ns            1
-BM_mset<256>           620897293 ns    620687443 ns            1
-BM_mset<512>           642223120 ns    642177069 ns            1
-BM_mset<1024>          677941322 ns    677880861 ns            1
+-------------------------------------------------------------------
+Benchmark                         Time             CPU   Iterations
+-------------------------------------------------------------------
+BM_monoqueue<1>            19629975 ns     19595377 ns           37
+BM_monoqueue<2>            45087798 ns     44939460 ns           15
+BM_monoqueue<4>            65096964 ns     65014078 ns           11
+BM_monoqueue<8>            78884708 ns     78738729 ns            9
+BM_monoqueue<16>           83735675 ns     83688521 ns            8
+BM_monoqueue<32>           94831526 ns     94761458 ns            8
+BM_monoqueue<64>          105012281 ns    104787065 ns            7
+BM_monoqueue<128>         105912345 ns    105481732 ns            7
+BM_monoqueue<256>         101132086 ns    101131231 ns            7
+BM_monoqueue<512>         104326884 ns    104323301 ns            6
+BM_monoqueue<1024>        104409797 ns    103905910 ns            7
+BM_Segment_Tree<1>          6084157 ns      6082800 ns          123
+BM_Segment_Tree<2>         13087928 ns     13027961 ns           56
+BM_Segment_Tree<4>         24310753 ns     24309232 ns           29
+BM_Segment_Tree<8>         28282518 ns     28234919 ns           25
+BM_Segment_Tree<16>        35363281 ns     35363345 ns           20
+BM_Segment_Tree<32>        41657294 ns     41656743 ns           17
+BM_Segment_Tree<64>        48030551 ns     47957545 ns           15
+BM_Segment_Tree<128>       60326958 ns     59956197 ns           10
+BM_Segment_Tree<256>       59471190 ns     59469803 ns           12
+BM_Segment_Tree<512>       67969712 ns     67896684 ns           11
+BM_Segment_Tree<1024>      73465300 ns     73389175 ns           10
+BM_naive<1>                 6329994 ns      6318801 ns          114
+BM_naive<2>                12797278 ns     12768386 ns           55
+BM_naive<4>                16751800 ns     16737539 ns           42
+BM_naive<8>                27934227 ns     27910814 ns           25
+BM_naive<16>               66093250 ns     65990683 ns           11
+BM_naive<32>              269128482 ns    268564266 ns            3
+BM_naive<64>              392034531 ns    391574038 ns            2
+BM_naive<128>             777667284 ns    776057252 ns            1
+BM_naive<256>            1393786669 ns   1392062312 ns            1
+BM_naive<512>            2640376806 ns   2636874087 ns            1
+BM_naive<1024>           5373604774 ns   5366635942 ns            1
+BM_naive1<1>               13832403 ns     13821726 ns           53
+BM_naive1<2>               15522302 ns     15492336 ns           47
+BM_naive1<4>               57033539 ns     57011999 ns           11
+BM_naive1<8>               74150907 ns     74098980 ns            9
+BM_naive1<16>             155653477 ns    155532183 ns            4
+BM_naive1<32>             246498108 ns    246066595 ns            3
+BM_naive1<64>             379754305 ns    379122026 ns            2
+BM_naive1<128>            650131702 ns    649184239 ns            1
+BM_naive1<256>           1231569767 ns   1228768171 ns            1
+BM_naive1<512>           2213613749 ns   2212444323 ns            1
+BM_naive1<1024>          4195358515 ns   4193226579 ns            1
+BM_naive2<1>               11567455 ns     11558518 ns           66
+BM_naive2<2>               56094911 ns     55935580 ns            9
+BM_naive2<4>               56253036 ns     56007223 ns           12
+BM_naive2<8>               47886508 ns     47671998 ns           14
+BM_naive2<16>              47926881 ns     47887308 ns           11
+BM_naive2<32>              36259563 ns     36132692 ns           19
+BM_naive2<64>              31855464 ns     31720087 ns           22
+BM_naive2<128>             26119801 ns     26119066 ns           26
+BM_naive2<256>             23170344 ns     23075965 ns           30
+BM_naive2<512>             22851070 ns     22851172 ns           30
+BM_naive2<1024>            21672361 ns     21652856 ns           32
+BM_naive2_combined<1>      13118548 ns     13118461 ns           56
+BM_naive2_combined<2>      88606060 ns     88602719 ns            8
+BM_naive2_combined<4>     136692142 ns    136690686 ns            5
+BM_naive2_combined<8>     196265618 ns    196264840 ns            3
+BM_naive2_combined<16>    328088284 ns    327962667 ns            2
+BM_naive2_combined<32>     38208591 ns     38009581 ns           18
+BM_naive2_combined<64>     27871304 ns     27795028 ns           25
+BM_naive2_combined<128>    24118931 ns     24093139 ns           31
+BM_naive2_combined<256>    22034776 ns     21973075 ns           31
+BM_naive2_combined<512>    20294059 ns     20263919 ns           33
+BM_naive2_combined<1024>   20490706 ns     20450664 ns           32
+BM_mset<1>                232740005 ns    232540737 ns            3
+BM_mset<2>                293202758 ns    292682293 ns            2
+BM_mset<4>                434056520 ns    433219624 ns            2
+BM_mset<8>                596891403 ns    595572277 ns            1
+BM_mset<16>               674905062 ns    674765746 ns            1
+BM_mset<32>               886690617 ns    883523459 ns            1
+BM_mset<64>               856281519 ns    854847372 ns            1
+BM_mset<128>              844109058 ns    842974068 ns            1
+BM_mset<256>              881715298 ns    879823053 ns            1
+BM_mset<512>              854212284 ns    852728705 ns            1
+BM_mset<1024>             922477245 ns    918654716 ns            1
