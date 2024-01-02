@@ -1,4 +1,4 @@
-2023-12-11T15:47:57-05:00
+2024-01-03T06:13:13+08:00
 Running ./bench
 Run on (8 X 4800 MHz CPU s)
 CPU Caches:
@@ -6,42 +6,41 @@ CPU Caches:
   L1 Instruction 32 KiB (x4)
   L2 Unified 1280 KiB (x4)
   L3 Unified 12288 KiB (x1)
-Load Average: 0.68, 0.62, 0.64
+Load Average: 0.23, 0.50, 0.84
 ***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
------------------------------------------------------------------
-Benchmark                       Time             CPU   Iterations
------------------------------------------------------------------
-BM_NtHashRoll/4            466500 ns       466134 ns         1507
-BM_NtHashRoll/15           478790 ns       477792 ns         1474
-BM_NtHashRoll/31           539076 ns       538138 ns         1311
-BM_ModMinRoll/4            724896 ns       723550 ns          972
-BM_ModMinRoll/15           733357 ns       732183 ns          955
-BM_ModMinRoll/31           841692 ns       841140 ns          833
-BM_WindowMinRoll/4/11     1315641 ns      1315563 ns          534
-BM_WindowMinRoll/15/10    1191722 ns      1191788 ns          589
-BM_WindowMinRoll/31/15    1254855 ns      1254931 ns          562
-BM_SyncmerRoll/4/12       1293254 ns      1293325 ns          543
-BM_SyncmerRoll/15/11      1428691 ns      1428804 ns          490
-BM_SyncmerRoll/31/16      1352013 ns      1349660 ns          503
-
-
-Run on (20 X 2918.4 MHz CPU s)
-CPU Caches:
-  L1 Data 48 KiB (x10)
-  L1 Instruction 32 KiB (x10)
-  L2 Unified 1280 KiB (x10)
-  L3 Unified 24576 KiB (x1)
-Load Average: 0.96, 0.33, 0.12
-------------------------------------------------------------------------
-Benchmark                              Time             CPU   Iterations
-------------------------------------------------------------------------
-BM_NtHashRoll                  140124083 ns    129347186 ns            7
-BM_ModMinRoll/15/10            215836823 ns    199036575 ns            4
-BM_ModMinRoll/4/11             194084485 ns    179153800 ns            3
-BM_ModMinRoll/31/15            232174873 ns    214317725 ns            4
-BM_WindowMinRollFixWind/15/10  530975342 ns    490133400 ns            2
-BM_WindowMinRollFixWind/4/11   500135899 ns    461327200 ns            2
-BM_WindowMinRollFixWind/31/15  516394854 ns    476670050 ns            2
-BM_SyncmerRollFixWind/15/11    481604099 ns    444142750 ns            2
-BM_SyncmerRollFixWind/4/12     488803029 ns    451203650 ns            2
-BM_SyncmerRollFixWind/31/16    471771598 ns    434749150 ns            2
+---------------------------------------------------------------------
+Benchmark                           Time             CPU   Iterations
+---------------------------------------------------------------------
+BM_NtHashRoll/4                470586 ns       470580 ns         1496
+BM_NtHashRoll/15               462172 ns       462170 ns         1519
+BM_NtHashRoll/31               526919 ns       526764 ns         1260
+BM_ModMinRoll/4                679229 ns       678817 ns         1027
+BM_ModMinRoll/15               717923 ns       716879 ns          965
+BM_ModMinRoll/31               819191 ns       819201 ns          838
+BM_ModMinRoll/16               708128 ns       708154 ns          976
+BM_WindowMinRoll/4/11         1292588 ns      1292625 ns          535
+BM_WindowMinRoll/15/10        1173253 ns      1173298 ns          596
+BM_WindowMinRoll/31/15        1223282 ns      1223167 ns          567
+BM_WindowMinRoll/16/16        1265203 ns      1265135 ns          553
+BM_SyncmerRoll/4/12           1255549 ns      1255498 ns          554
+BM_SyncmerRoll/15/11          1400818 ns      1400835 ns          496
+BM_SyncmerRoll/31/16          1427148 ns      1427175 ns          490
+BM_SyncmerRoll/16/16          1344707 ns      1342007 ns          517
+BM_ThreadMod/1/real_time       946515 ns        36899 ns          720
+BM_ThreadMod/2/real_time       627515 ns        42518 ns         1093
+BM_ThreadMod/4/real_time       389824 ns        41133 ns         1795
+BM_ThreadMod/8/real_time       357042 ns       134798 ns         1975
+BM_ThreadMod/16/real_time      489457 ns       388466 ns         1671
+BM_ThreadMod/32/real_time      872036 ns       830114 ns          814
+BM_ThreadWind/1/real_time     1969270 ns        44957 ns          357
+BM_ThreadWind/2/real_time     1131086 ns        54095 ns          618
+BM_ThreadWind/4/real_time     1019640 ns        62826 ns          691
+BM_ThreadWind/8/real_time      739709 ns       171486 ns          918
+BM_ThreadWind/16/real_time     799016 ns       435024 ns          885
+BM_ThreadWind/32/real_time     996092 ns       951379 ns          682
+BM_ThreadSync/1/real_time     2062843 ns        47079 ns          339
+BM_ThreadSync/2/real_time     1451190 ns        55439 ns          495
+BM_ThreadSync/4/real_time     1053769 ns        63783 ns          663
+BM_ThreadSync/8/real_time      778819 ns       169404 ns          858
+BM_ThreadSync/16/real_time     827296 ns       433332 ns          844
+BM_ThreadSync/32/real_time    1006906 ns       961635 ns          683
