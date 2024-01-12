@@ -6,34 +6,36 @@
 namespace digest{
 
 // number of k-mers to be considered in the large window
-template <uint32_t large_window>
-class Syncmer : public WindowMin<large_window> {
+template <class T>
+class Syncmer : public WindowMin<T> {
     public:
       /**
          * 
          * @param seq 
          * @param len
          * @param k 
+         * @param large_window 
          * @param start
          * @param minimized_h 
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        Syncmer(const char* seq, size_t len, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  WindowMin<large_window>(seq, len, k, start, minimized_h)
+        Syncmer(const char* seq, size_t len, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
+        :  WindowMin<T>(seq, len, k, large_window, start, minimized_h)
         {}
 
         /**
          * 
          * @param seq 
          * @param k 
+         * @param large_window 
          * @param start
          * @param minimized_h 
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        Syncmer(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
-            Syncmer(seq.c_str(), seq.size(), k, start, minimized_h)
+        Syncmer(const std::string& seq, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
+            Syncmer(seq.c_str(), seq.size(), k, large_window, start, minimized_h)
         {}
 
         /**

@@ -14,7 +14,7 @@ project(
 nthash = subproject('ntHash')
 nthash_dep = nthash.get_variable('lib_dep')
 include_dirs = [include_directories('include'), nthash.get_variable('include_dirs')]
-sources = ['src/digester.cpp']
+sources = ['src/digester.cpp', 'src/mod_minimizer.cpp']
 
 digest_lib = static_library(
 	'digest',

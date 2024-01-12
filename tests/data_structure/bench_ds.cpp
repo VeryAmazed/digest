@@ -1,4 +1,4 @@
-#include "digest/data_structure.hpp"
+#include <digest/data_structure.hpp>
 #include <benchmark/benchmark.h>
 
 #include <cstdint>

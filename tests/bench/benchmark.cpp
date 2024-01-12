@@ -2,6 +2,7 @@
 // perf record --call-graph dwarf bench
 // perf report -g
 
+#include "digest/data_structure.hpp"
 #include <digest/mod_minimizer.hpp>
 #include <digest/window_minimizer.hpp>
 #include <digest/syncmer.hpp>
@@ -78,7 +79,7 @@ static void BM_WindowMinRoll(benchmark::State& state) {
     for(auto _ : state){
 		state.PauseTiming();
 		# define WINDOW(k) \
-			digest::WindowMin<k> dig(s, state.range(0)); \
+			digest::WindowMin<SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<size_t> vec; \
 			vec.reserve(DEFAULT_STR_LEN); \
 			state.ResumeTiming(); \
@@ -108,7 +109,7 @@ static void BM_SyncmerRoll(benchmark::State& state){
     for(auto _ : state){
 		state.PauseTiming();
 		# define SYNCMER(k) \
-			digest::Syncmer<k> dig(s, state.range(0)); \
+			digest::Syncmer<SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<size_t> vec; \
 			vec.reserve(DEFAULT_STR_LEN); \
 			state.ResumeTiming(); \
@@ -153,7 +154,7 @@ static void BM_ThreadWind(benchmark::State& state) {
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_wind<DEFAULT_LARGE_WIND>(state.range(0), vec, s, DEFAULT_KMER_LEN);
+		thread_out::thread_wind<SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
 		benchmark::ClobberMemory();
     }
 }
@@ -167,7 +168,7 @@ static void BM_ThreadSync(benchmark::State& state){
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_sync<DEFAULT_LARGE_WIND>(state.range(0), vec, s, DEFAULT_KMER_LEN);
+		thread_out::thread_sync<SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
 		benchmark::ClobberMemory();
     }
 }

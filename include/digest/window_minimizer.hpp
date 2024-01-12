@@ -1,8 +1,8 @@
-
-#ifndef WIND_MIN_HPP
-#define WIND_MIN_HPP
+#pragma once
 #include "digester.hpp"
-#include "point_update_st.hpp"
+#include "data_structure.hpp"
+#include <cstddef>
+#include <cstdint>
 
 namespace digest{
 
@@ -15,20 +15,21 @@ class BadWindowSizeException : public std::exception
 };
 
 // number of k-mers to be considered in the large window
-template <uint32_t large_window>
+template <class T>
 class WindowMin : public Digester{
 	public:
 		/**
          * @param seq 
          * @param len
          * @param k 
+         * @param large_window 
          * @param start
          * @param minimized_h 
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        WindowMin(const char* seq, size_t len, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  Digester(seq, len, k, start, minimized_h), st_size(0), is_minimized(false)
+        WindowMin(const char* seq, size_t len, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
+        :  Digester(seq, len, k, start, minimized_h), ds(large_window), st_size(0), is_minimized(false)
         {	
             if(large_window == 0){
 				throw BadWindowSizeException();
@@ -38,18 +39,18 @@ class WindowMin : public Digester{
         /**
          * @param seq 
          * @param k 
+         * @param large_window 
          * @param start
          * @param minimized_h 
          * 
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
-        WindowMin(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
-            WindowMin(seq.c_str(), seq.size(), k, start, minimized_h)
+        WindowMin(const std::string& seq, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
+            WindowMin(seq.c_str(), seq.size(), k, large_window, start, minimized_h)
         {}
 
 		/**
 		 * @brief adds up to amount of positions of minimizers into vec, here a k-mer is considered a minimizer if its hash is the smallest in the large window, using rightmost index wins in ties 
-         *        Time Complexity: O(log(large_wind_kmer_am)) per k-mer tested
 		 * 
 		 * @param amount 
 		 * @param vec 
@@ -70,8 +71,10 @@ class WindowMin : public Digester{
 		}
 
 	protected:
-		// internal point update segment tree data structure used to find minimum in large window
-		segtree::SegTree<large_window> st;
+		// data structure which will find miminum
+		T ds;
+
+		uint32_t large_window;
 
 		// internal counter that tracks the number of actual values in the segment tree
 		size_t st_size;
@@ -80,13 +83,13 @@ class WindowMin : public Digester{
 		bool is_minimized;
 
 		// the index of previous minimizer, a minimizer is only a new minimizer if it is different from the previous minimizer
-		int32_t prev_mini;
+		uint32_t prev_mini;
 
 		/**
 		 * @brief helper function which handles adding new elements into the segment tree when it is not full
 		 * 
 		 */
-		void fill_st();
+		void fill_st(std::vector<size_t>& vec);
 	
 	private:
 
@@ -95,10 +98,9 @@ class WindowMin : public Digester{
 		 * 
 		 * @param vec 
 		 */
-		void check(std::vector<size_t>& vec);
+		void check(std::vector<size_t>& vec, uint32_t hash);
 };
 
 }
 
 #include "window_minimizer.tpp"
-#endif

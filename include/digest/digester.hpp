@@ -62,6 +62,8 @@ class Digester{
         Digester(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             Digester(seq.c_str(), seq.size(), k, start, minimized_h) {}
 
+		virtual ~Digester() = default;
+
         /**
          * @return bool, true if values of the 3 hashes are meaningful, false otherwise, i.e. the object wasn't able to initialize with a valid hash or roll_one() was called when already at end of sequence
          */

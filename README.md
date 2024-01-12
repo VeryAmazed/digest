@@ -34,5 +34,11 @@ This will generate `include/` and `lib/` folders.
 
 # Todo
 License  
-expected density?  
 combine headers  
+digest lowercase
+remove constructor/destructor
+compiler warnings :/
+benchmarking instructions
+remove thread sanitier flag
+clean up branches
+fix nthash

@@ -4,6 +4,7 @@
 #include "digest/mod_minimizer.hpp"
 #include "digest/window_minimizer.hpp"
 #include "digest/syncmer.hpp"
+#include <cstdint>
 #include <thread>
 
 /*
@@ -70,23 +71,24 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  * @param len length of seq.
  * @param k k-mer size.
+ * @param large_wind_kmer_am
  * @param start 0-indexed position in seq to start hashing from. 
  * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
  * 
  * @throws BadThreadOutParams 
  */
 // number of k-mers to be considered in the large window
-template <uint32_t large_wind_kmer_am>
+template <class T>
 void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const char* seq, size_t len, unsigned k, size_t start = 0, 
+    const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 /**
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  */
-template <uint32_t large_wind_kmer_am>
+template <class T>
 void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const std::string& seq, unsigned k, size_t start = 0, 
+    const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 /**
@@ -99,23 +101,24 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  * @param len length of seq.
  * @param k k-mer size.
+ * @param large_wind_kmer_am
  * @param start 0-indexed position in seq to start hashing from. 
  * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
  * 
  * @throws BadThreadOutParams 
  */
 // number of k-mers to be considered in the large window
-template <uint32_t large_wind_kmer_am>
+template <class T>
 void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const char* seq, size_t len, unsigned k, size_t start = 0, 
+    const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 /**
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  */
-template <uint32_t large_wind_kmer_am>
+template <class T>
 void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
-    const std::string& seq, unsigned k, size_t start = 0, 
+    const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 //------------- WORKER FUNCTIONS ----------------
@@ -126,15 +129,15 @@ void thread_mod_roll(std::vector<size_t>& vec, const char* seq,
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
 // function that's passed to the thread for WindowMinimizers
-template <uint32_t large_wind_kmer_am>
+template <class T>
 void thread_wind_roll(std::vector<size_t>& vec, const char* seq, 
-    size_t ind, unsigned k, 
+    size_t ind, unsigned k, uint32_t large_wind_kmer_am, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 // function that's passed to the thread for Syncmers
-template <uint32_t large_wind_kmer_am>
+template <class T>
 void thread_sync_roll(std::vector<size_t>& vec, const char* seq, 
-    size_t ind, unsigned k,
+    size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 }

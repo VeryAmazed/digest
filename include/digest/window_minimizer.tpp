@@ -1,48 +1,51 @@
 #include "digest/window_minimizer.hpp"
 
 namespace digest{
-	template <uint32_t large_window>
-    void WindowMin<large_window>::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
-        while(is_valid_hash){
-            // -------------------
-            fill_st();
-            // -------------------
-            if((st_size != large_window) || (vec.size() >= amount)){
-                return;
-            }
-            st_size--;
-            // -------------------
-            check(vec);
-        }
-        
-    }
+	template<class T>
+    void WindowMin<T>::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
+		if (!is_valid_hash) return;
 
-	template <uint32_t large_window>
-    void WindowMin<large_window>::fill_st(){
-        while((st_size < large_window) && is_valid_hash){
-            if(get_minimized_h() == digest::MinimizedHashType::CANON){
-                st.set(chash, get_pos());
-            }else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
-                st.set(fhash, get_pos());
-            }else{
-                st.set(rhash, get_pos());
-            }
-            st_size++;
-            
-            roll_one();
+		while (st_size + 1 < large_window and is_valid_hash) {
+			if(get_minimized_h() == digest::MinimizedHashType::CANON){
+				ds.insert(get_pos(), chash);
+			}else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
+				ds.insert(get_pos(), fhash);
+			}else{
+				ds.insert(get_pos(), rhash);
+			}
+			
+			roll_one();
+			st_size++;
+		}
+
+        while (is_valid_hash and vec.size() < amount){
+            fill_st(vec);
         }
     }
 
-	template <uint32_t large_window>
-    void WindowMin<large_window>::check(std::vector<size_t>& vec){
+	template<class T>
+    void WindowMin<T>::fill_st(std::vector<size_t>& vec){
+		if(get_minimized_h() == digest::MinimizedHashType::CANON){
+			check(vec, ds.insert(get_pos(), chash));
+		}else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
+			check(vec, ds.insert(get_pos(), fhash));
+		}else{
+			check(vec, ds.insert(get_pos(), rhash));
+		}
+		
+		roll_one();
+    }
+
+	template<class T>
+    void WindowMin<T>::check(std::vector<size_t>& vec, uint32_t ind){
         if(is_minimized){
-            if(st.min() != prev_mini){
-                prev_mini =	st.min();
+            if(ind != prev_mini){
+                prev_mini =	ind;
                 vec.emplace_back(prev_mini);
             }
         }else{
             is_minimized = true;
-            prev_mini = st.min();
+            prev_mini = ind;
 			vec.emplace_back(prev_mini);
         }
     }
