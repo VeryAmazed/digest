@@ -11,6 +11,7 @@
 // requirement on all data_structures
 // constructor which accepts uint32_t
 // uint32_t set(uint32_t index, uint32_t hash) // returns new minimum
+// assignment/copy constructors if you want to use them
 
 template<uint32_t k>
 struct MonoQueue {
@@ -28,6 +29,8 @@ struct MonoQueue {
 		queue[2].fill(0); // necessary to avoid 1 in a billion collision
 		queue[0].fill(0); // gets rid of warning
 	}
+	MonoQueue(const MonoQueue& other) = default;
+	MonoQueue &operator=(const MonoQueue& other) = default;
 
  	uint32_t insert(uint32_t index, uint32_t hash) {
  		if (queue[2][head] == time - k) {
@@ -60,13 +63,15 @@ struct MonoQueue {
 template<int k>
 struct SegmentTree {
 	int i = 0;
-	uint64_t segtree[2*k];
+	std::array<uint64_t,2*k> segtree;
 
 	constexpr int log2() {
 		return std::ceil(std::log2(k));
 	}
 
 	SegmentTree(uint32_t) {}
+	SegmentTree(const SegmentTree& other) = default;
+	SegmentTree &operator=(const SegmentTree& other) = default;
 
 	uint32_t insert(uint32_t index, uint32_t hash) {
 		int ind = i + k;
@@ -95,6 +100,8 @@ struct Set {
 			vec[i] = mset.emplace(i).first;
 		}
 	}
+	Set(const Set& other) = delete; // have to copy over iterators
+	Set &operator=(const Set& other) = delete;
 
 	uint32_t insert(uint32_t index, uint32_t hash) {
 		mset.erase(vec[i]);
@@ -112,6 +119,8 @@ struct Naive {
 	int i = 0;
 
 	Naive(uint32_t) {};
+	Naive(const Naive& other) = default;
+	Naive &operator=(const Naive& other) = default;
 
 	uint32_t insert(uint32_t index, uint32_t hash) {
 		arr[i] = (uint64_t)~hash << 32 | index;
@@ -135,6 +144,8 @@ struct Naive2 {
 	std::vector<uint64_t> arr = std::vector<uint64_t>(k);
 
 	Naive2(uint32_t) {};
+	Naive2(const Naive2& other) = default;
+	Naive2 &operator=(const Naive2& other) = default;
 
 	uint32_t insert(uint32_t index, uint32_t hash) {
 		// flip the hash bits so we can take the maximum
@@ -157,11 +168,12 @@ struct Naive2 {
 };
 
 struct Adaptive {
-	const uint32_t k;
-	uint32_t i = 0, last = 0;
+	uint32_t k, i = 0, last = 0;
 	std::vector<uint64_t> arr;
 
 	Adaptive(uint32_t k) : k(k), arr(k) {}
+	Adaptive(const Adaptive& other) = default;
+	Adaptive &operator=(const Adaptive& other) = default;
 
 	uint32_t naive(uint32_t index, uint32_t hash) {
 		arr[i] = (uint64_t)~hash << 32 | index;

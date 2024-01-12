@@ -42,3 +42,5 @@ benchmarking instructions
 remove thread sanitier flag
 clean up branches
 fix nthash
+policy for only actg
+threading?
