@@ -81,12 +81,12 @@ static void BM(benchmark::State& state){
 	// BENCHMARK_TEMPLATE(BM, 512, name, out); \
 	// BENCHMARK_TEMPLATE(BM, 1024, name, out); \
 
-test(Naive, 0);
-test(Naive2, 1);
-test(MonoQueue, 2);
-test(SegmentTree, 3);
-test(Set, 4);
-test2(Adaptive, 5);
+test(data_structure::Naive, 0);
+test(data_structure::Naive2, 1);
+test(data_structure::MonoQueue, 2);
+test(data_structure::SegmentTree, 3);
+test(data_structure::Set, 4);
+test2(data_structure::Adaptive, 5);
 
 int main(int argc, char** argv)
 {

@@ -13,6 +13,8 @@
 // uint32_t set(uint32_t index, uint32_t hash) // returns new minimum
 // assignment/copy constructors if you want to use them
 
+namespace data_structure {
+
 template<uint32_t k>
 struct MonoQueue {
  	int head = 0, tail = 0;
@@ -216,3 +218,4 @@ struct Adaptive {
 	}
 };
 
+}
