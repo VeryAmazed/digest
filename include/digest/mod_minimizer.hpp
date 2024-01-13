@@ -2,6 +2,7 @@
 #define MOD_MINI_HPP
 
 #include "digester.hpp"
+#include <cassert>
 
 namespace digest{
 
@@ -30,7 +31,7 @@ class ModMin : public Digester{
         ModMin(const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
         :  Digester(seq, len, k, start, minimized_h), mod(mod), congruence(congruence)
         {
-            if(congruence >= mod){
+            if (congruence >= mod){
                 throw BadModException();
             }
         }

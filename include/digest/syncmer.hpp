@@ -58,7 +58,7 @@ class Syncmer : public WindowMin<T> {
          * @param amount 
          * @param vec 
          */
-        void roll_minimizer(unsigned amount, std::vector<std::pair<size_t, size_t>>& vec); 
+        // void roll_minimizer(unsigned amount, std::vector<std::pair<size_t, size_t>>& vec); 
 
     private:
         /**

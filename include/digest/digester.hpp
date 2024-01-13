@@ -41,10 +41,11 @@ class Digester{
          * 
          * @throws BadConstructionException Thrown if k is less than 4,
          *      or if the starting position is after the end of the string
+		 *      or if minimized_h is greater than 2
          */
         Digester(const char* seq, size_t len, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) 
             : seq(seq), len(len), offset(0), start(start), end(start+k), chash(0), fhash(0), rhash(0), k(k), minimized_h(minimized_h) {
-                if(k < 4 ||start >= len){
+                if(k < 4 or start >= len or (int)minimized_h > 2) {
                     throw BadConstructionException();
                 }
                 init_hash();

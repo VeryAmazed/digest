@@ -29,7 +29,7 @@ class WindowMin : public Digester{
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         WindowMin(const char* seq, size_t len, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  Digester(seq, len, k, start, minimized_h), ds(large_window), st_size(0), is_minimized(false)
+        :  Digester(seq, len, k, start, minimized_h), ds(large_window), large_window(large_window), st_size(0), is_minimized(false)
         {	
             if(large_window == 0){
 				throw BadWindowSizeException();
