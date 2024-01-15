@@ -758,57 +758,6 @@ TEST_CASE("ModMin Testing"){
 	}
 }
 
-// takes too long to compile :/
-// #define do64(F) \
-// 	{ F(data_structure::SegmentTree<1>, 1) } \
-// 	{ F(data_structure::SegmentTree<2>, 2) } \
-// 	{ F(data_structure::SegmentTree<3>, 3) } \
-// 	{ F(data_structure::SegmentTree<4>, 4) } \
-// 	{ F(data_structure::SegmentTree<13>, 13) } \
-// 	{ F(data_structure::SegmentTree<14>, 14) } \
-// 	{ F(data_structure::SegmentTree<18>, 18) } \
-// 	{ F(data_structure::SegmentTree<20>, 20) } \
-// 	{ F(data_structure::SegmentTree<31>, 31) } \
-// 	{ F(data_structure::SegmentTree<32>, 32) } \
-// 	{ F(data_structure::SegmentTree<63>, 63) } \
-// 	{ F(data_structure::SegmentTree<64>, 64) } \
-// 	{ F(data_structure::Naive<1>, 1) } \
-// 	{ F(data_structure::Naive<2>, 2) } \
-// 	{ F(data_structure::Naive<3>, 3) } \
-// 	{ F(data_structure::Naive<4>, 4) } \
-// 	{ F(data_structure::Naive<13>, 13) } \
-// 	{ F(data_structure::Naive<14>, 14) } \
-// 	{ F(data_structure::Naive<18>, 18) } \
-// 	{ F(data_structure::Naive<20>, 20) } \
-// 	{ F(data_structure::Naive<31>, 31) } \
-// 	{ F(data_structure::Naive<32>, 32) } \
-// 	{ F(data_structure::Naive<63>, 63) } \
-// 	{ F(data_structure::Naive<64>, 64) } \
-// 	{ F(data_structure::Naive2<1>, 1) } \
-// 	{ F(data_structure::Naive2<2>, 2) } \
-// 	{ F(data_structure::Naive2<3>, 3) } \
-// 	{ F(data_structure::Naive2<4>, 4) } \
-// 	{ F(data_structure::Naive2<13>, 13) } \
-// 	{ F(data_structure::Naive2<14>, 14) } \
-// 	{ F(data_structure::Naive2<18>, 18) } \
-// 	{ F(data_structure::Naive2<20>, 20) } \
-// 	{ F(data_structure::Naive2<31>, 31) } \
-// 	{ F(data_structure::Naive2<32>, 32) } \
-// 	{ F(data_structure::Naive2<63>, 63) } \
-// 	{ F(data_structure::Naive2<64>, 64) } \
-// 	{ F(data_structure::Adaptive, 1) } \
-// 	{ F(data_structure::Adaptive, 2) } \
-// 	{ F(data_structure::Adaptive, 3) } \
-// 	{ F(data_structure::Adaptive, 4) } \
-// 	{ F(data_structure::Adaptive, 13) } \
-// 	{ F(data_structure::Adaptive, 14) } \
-// 	{ F(data_structure::Adaptive, 18) } \
-// 	{ F(data_structure::Adaptive, 20) } \
-// 	{ F(data_structure::Adaptive, 31) } \
-// 	{ F(data_structure::Adaptive, 32) } \
-// 	{ F(data_structure::Adaptive, 63) } \
-// 	{ F(data_structure::Adaptive, 64) }
-		
 #define do64(F) \
 	{ F(data_structure::SegmentTree<1>, 1) } \
 	{ F(data_structure::SegmentTree<2>, 2) } \

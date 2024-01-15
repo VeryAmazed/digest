@@ -47,39 +47,39 @@ static void BM(benchmark::State& state){
 	BENCHMARK_TEMPLATE(BM, 2, name<2>, out); \
 	BENCHMARK_TEMPLATE(BM, 3, name<3>, out); \
 	BENCHMARK_TEMPLATE(BM, 4, name<4>, out); \
-	// BENCHMARK_TEMPLATE(BM, 5, name<5>, out); \
-	// BENCHMARK_TEMPLATE(BM, 8, name<8>, out); \
-	// BENCHMARK_TEMPLATE(BM, 9, name<9>, out); \
-	// BENCHMARK_TEMPLATE(BM, 12, name<12>, out); \
-	// BENCHMARK_TEMPLATE(BM, 16, name<16>, out); \
-	// BENCHMARK_TEMPLATE(BM, 17, name<17>, out); \
-	// BENCHMARK_TEMPLATE(BM, 32, name<32>, out); \
-	// BENCHMARK_TEMPLATE(BM, 33, name<33>, out); \
-	// BENCHMARK_TEMPLATE(BM, 64, name<64>, out); \
-	// BENCHMARK_TEMPLATE(BM, 96, name<96>, out); \
-	// BENCHMARK_TEMPLATE(BM, 128, name<128>, out); \
-	// BENCHMARK_TEMPLATE(BM, 256, name<256>, out); \
-	// BENCHMARK_TEMPLATE(BM, 512, name<512>, out); \
-	// BENCHMARK_TEMPLATE(BM, 1024, name<1024>, out); \
+	BENCHMARK_TEMPLATE(BM, 5, name<5>, out); \
+	BENCHMARK_TEMPLATE(BM, 8, name<8>, out); \
+	BENCHMARK_TEMPLATE(BM, 9, name<9>, out); \
+	BENCHMARK_TEMPLATE(BM, 12, name<12>, out); \
+	BENCHMARK_TEMPLATE(BM, 16, name<16>, out); \
+	BENCHMARK_TEMPLATE(BM, 17, name<17>, out); \
+	BENCHMARK_TEMPLATE(BM, 32, name<32>, out); \
+	BENCHMARK_TEMPLATE(BM, 33, name<33>, out); \
+	BENCHMARK_TEMPLATE(BM, 64, name<64>, out); \
+	BENCHMARK_TEMPLATE(BM, 96, name<96>, out); \
+	BENCHMARK_TEMPLATE(BM, 128, name<128>, out); \
+	BENCHMARK_TEMPLATE(BM, 256, name<256>, out); \
+	BENCHMARK_TEMPLATE(BM, 512, name<512>, out); \
+	BENCHMARK_TEMPLATE(BM, 1024, name<1024>, out); \
 
 #define test2(name, out) \
 	BENCHMARK_TEMPLATE(BM, 2, name, out); \
 	BENCHMARK_TEMPLATE(BM, 3, name, out); \
 	BENCHMARK_TEMPLATE(BM, 4, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 5, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 8, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 9, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 12, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 16, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 17, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 32, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 33, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 64, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 96, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 128, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 256, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 512, name, out); \
-	// BENCHMARK_TEMPLATE(BM, 1024, name, out); \
+	BENCHMARK_TEMPLATE(BM, 5, name, out); \
+	BENCHMARK_TEMPLATE(BM, 8, name, out); \
+	BENCHMARK_TEMPLATE(BM, 9, name, out); \
+	BENCHMARK_TEMPLATE(BM, 12, name, out); \
+	BENCHMARK_TEMPLATE(BM, 16, name, out); \
+	BENCHMARK_TEMPLATE(BM, 17, name, out); \
+	BENCHMARK_TEMPLATE(BM, 32, name, out); \
+	BENCHMARK_TEMPLATE(BM, 33, name, out); \
+	BENCHMARK_TEMPLATE(BM, 64, name, out); \
+	BENCHMARK_TEMPLATE(BM, 96, name, out); \
+	BENCHMARK_TEMPLATE(BM, 128, name, out); \
+	BENCHMARK_TEMPLATE(BM, 256, name, out); \
+	BENCHMARK_TEMPLATE(BM, 512, name, out); \
+	BENCHMARK_TEMPLATE(BM, 1024, name, out); \
 
 test(data_structure::Naive, 0);
 test(data_structure::Naive2, 1);

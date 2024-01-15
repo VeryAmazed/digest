@@ -21,7 +21,7 @@ We use [Meson](https://mesonbuild.com). (Very) old version will not work.
 
 PREFIX is an absolute path to install location. If excluded, will install to system libraries.
 ```
-meson setup --prefix=PREFIX build
+meson setup --prefix=PREFIX --buildtype=release build
 meson install -C build
 ```
 This will generate `include/` and `lib/` folders.
@@ -32,15 +32,17 @@ This will generate `include/` and `lib/` folders.
 * example compile: `g++ file.cpp -IPREFIX/include -LPREFIX/lib -ldigest`
 * may need `std=c++17`
 
+# benchmark / tests
+```
+meson setup build
+cd build && meson compile
+``````
+this will generate proper executables for benchmark/testing
+
 # Todo
-License  
-combine headers  
-digest lowercase
-remove constructor/destructor
-compiler warnings :/
-benchmarking instructions
-remove thread sanitier flag
+license  
 clean up branches
-fix nthash
 policy for only actg
 threading?
+fix nthash
+64 bit hash?
