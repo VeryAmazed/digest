@@ -3,7 +3,7 @@
 namespace thread_out
 {
 
-void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence, size_t start, 
     digest::MinimizedHashType minimized_h){
         int num_kmers = (int)len - (int)start - (int)k + 1;
@@ -12,7 +12,7 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
         }
         unsigned kmers_per_thread = num_kmers/thread_count;
         unsigned extras = num_kmers % thread_count;
-        vec.assign(thread_count, std::vector<size_t>());
+        vec.assign(thread_count, std::vector<uint32_t>());
         std::vector<std::thread> thread_vector;
 
         size_t ind = start;
@@ -36,13 +36,13 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
         }
     }
 
-void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence, size_t start, 
     digest::MinimizedHashType minimized_h){
         thread_mod(thread_count, vec, seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h);
     }
 
-void thread_mod_roll(std::vector<size_t>& vec, const char* seq, 
+void thread_mod_roll(std::vector<uint32_t>& vec, const char* seq, 
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am){
         digest::ModMin dig(seq, ind + assigned_kmer_am + k -1, k, mod, congruence, ind, minimized_h);
@@ -50,7 +50,7 @@ void thread_mod_roll(std::vector<size_t>& vec, const char* seq,
     }
 
 template <class T>
-void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start, 
     digest::MinimizedHashType minimized_h){
         int num_lwinds = (int)len - (int)start - (int)(k+large_wind_kmer_am)+2;
@@ -59,7 +59,7 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
         }
         unsigned lwinds_per_thread = num_lwinds/thread_count;
         unsigned extras = num_lwinds % thread_count;
-        vec.assign(thread_count, std::vector<size_t>());
+        vec.assign(thread_count, std::vector<uint32_t>());
         std::vector<std::thread> thread_vector;
 
         size_t ind = start;
@@ -95,14 +95,14 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
     }
 
 template <class T>
-void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start, 
     digest::MinimizedHashType minimized_h){
         thread_wind<T>(thread_count, vec, seq.c_str(), seq.size(), k, large_wind_kmer_am, start, minimized_h);
     }
 
 template <class T>
-void thread_wind_roll(std::vector<size_t>& vec, const char* seq, 
+void thread_wind_roll(std::vector<uint32_t>& vec, const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am){
         digest::WindowMin<T> dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, large_wind_kmer_am, ind, minimized_h);
@@ -110,7 +110,7 @@ void thread_wind_roll(std::vector<size_t>& vec, const char* seq,
     }
 
 template <class T>
-void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start, 
     digest::MinimizedHashType minimized_h){
         int num_lwinds = (int)len - (int)start - (int)(k+large_wind_kmer_am)+2;
@@ -119,7 +119,7 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
         }
         unsigned lwinds_per_thread = num_lwinds/thread_count;
         unsigned extras = num_lwinds % thread_count;
-        vec.assign(thread_count, std::vector<size_t>());
+        vec.assign(thread_count, std::vector<uint32_t>());
         std::vector<std::thread> thread_vector;
 
         size_t ind = start;
@@ -145,14 +145,14 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
     }
 
 template <class T>
-void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start, 
     digest::MinimizedHashType minimized_h){
         thread_sync<T>(thread_count, vec, seq.c_str(), seq.size(), k, large_wind_kmer_am, start, minimized_h);
     }
 
 template <class T>
-void thread_sync_roll(std::vector<size_t>& vec, const char* seq, 
+void thread_sync_roll(std::vector<uint32_t>& vec, const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am){
         digest::Syncmer<T> dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, large_wind_kmer_am, ind, minimized_h);

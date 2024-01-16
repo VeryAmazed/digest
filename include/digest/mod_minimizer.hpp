@@ -3,6 +3,7 @@
 
 #include "digester.hpp"
 #include <cassert>
+#include <cstdint>
 
 namespace digest{
 
@@ -58,7 +59,7 @@ class ModMin : public Digester{
          * @param amount 
          * @param vec 
          */
-        void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;    
+        void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) override;    
 
         /**
          * @return uint32_t, the mod space being used

@@ -1,6 +1,7 @@
 #ifndef DIGESTER_HPP
 #define DIGESTER_HPP
 
+#include <cstdint>
 #include <nthash/nthash.hpp>
 #include <nthash/kmer.hpp>
 #include <stdexcept>
@@ -94,7 +95,7 @@ class Digester{
          * @param amount number of minimizers you want to generate
          * @param vec a reference to a vector of size_t's, the positions returned will go there
          */
-        virtual void roll_minimizer(unsigned amount, std::vector<size_t>& vec) = 0;
+        virtual void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) = 0;
 
         /**
          * @return current index of the first character of the current kmer that has been hashed

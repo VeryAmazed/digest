@@ -1,7 +1,8 @@
 #include "digest/mod_minimizer.hpp"
+#include <cstdint>
 
 namespace digest{
-    void ModMin::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
+    void ModMin::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
         if(!is_valid_hash) return;
 
 		if(get_minimized_h() == digest::MinimizedHashType::CANON) {

@@ -104,8 +104,8 @@ void ModMin_dig_comp(digest::ModMin& dig1, digest::ModMin& dig2){
 
 template <class T>
 void WindowMin_roll_minimizers_comp(digest::WindowMin<T>& dig1, digest::WindowMin<T>& dig2){
-	std::vector<size_t> vec1;
-	std::vector<size_t> vec2;
+	std::vector<uint32_t> vec1;
+	std::vector<uint32_t> vec2;
 	dig1.roll_minimizer(1000, vec1);
 	dig2.roll_minimizer(1000, vec2);
 	REQUIRE(vec1.size() == vec2.size());
@@ -114,17 +114,17 @@ void WindowMin_roll_minimizers_comp(digest::WindowMin<T>& dig1, digest::WindowMi
 	}
 }
 
-// template <class T>
-// void Syncmer_roll_minimizers_comp(digest::Syncmer<T>& dig1, digest::Syncmer<T>& dig2){
-	// std::vector<std::pair<size_t, size_t>> vec1;
-	// std::vector<std::pair<size_t, size_t>> vec2;
-	// dig1.roll_minimizer(1000, vec1);
-	// dig2.roll_minimizer(1000, vec2);
-	// REQUIRE(vec1.size() == vec2.size());
-	// for(size_t i = 0; i < vec1.size(); i++){
-	// 	CHECK(vec1[i] == vec2[i]);
-	// }
-// }
+template <class T>
+void Syncmer_roll_minimizers_comp(digest::Syncmer<T>& dig1, digest::Syncmer<T>& dig2){
+	std::vector<std::pair<uint32_t, uint32_t>> vec1;
+	std::vector<std::pair<uint32_t, uint32_t>> vec2;
+	dig1.roll_minimizer(1000, vec1);
+	dig2.roll_minimizer(1000, vec2);
+	REQUIRE(vec1.size() == vec2.size());
+	for(size_t i = 0; i < vec1.size(); i++){
+		CHECK(vec1[i] == vec2[i]);
+	}
+}
 
 template <class T>
 void WindowMin_dig_comp(digest::WindowMin<T>& dig1, digest::WindowMin<T>& dig2){
@@ -191,7 +191,7 @@ void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, di
 		}
 		
 	}
-	std::vector<size_t> dig_positions;
+	std::vector<uint32_t> dig_positions;
 	dig.roll_minimizer(400, dig_positions);
 	REQUIRE(positions.size() == dig_positions.size());
 	for(size_t i = 0; i < positions.size(); i++){
@@ -240,7 +240,7 @@ void WindowMin_roll_minimizer(digest::WindowMin<T>& dig, std::string& str, unsig
 		}
 	}
 
-	std::vector<size_t> wind_mins;
+	std::vector<uint32_t> wind_mins;
 	dig.roll_minimizer(1000, wind_mins);
 	REQUIRE(answers.size() == wind_mins.size());
 	for(size_t i = 0; i < answers.size(); i++){
@@ -277,20 +277,20 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 		}
 	}
 
-	std::vector<size_t> syncs;
+	std::vector<uint32_t> syncs;
 	dig.roll_minimizer(1000, syncs);
 	REQUIRE(answers.size() == syncs.size());
 	for(size_t i = 0; i < answers.size(); i++){
 		CHECK(syncs[i] == answers[i].first);
 	}
 
-	// std::vector<std::pair<size_t, size_t>> wind_mins;
-	// dig.roll_minimizer(1000, wind_mins);
-	// REQUIRE(answers.size() == wind_mins.size());
-	// for(size_t i = 0; i < answers.size(); i++){
-	// 	CHECK(wind_mins[i].first == answers[i].first);
-	// 	CHECK(wind_mins[i].second == answers[i].second);
-	// }
+	std::vector<std::pair<uint32_t, uint32_t>> wind_mins;
+	dig.roll_minimizer(1000, wind_mins);
+	REQUIRE(answers.size() == wind_mins.size());
+	for(size_t i = 0; i < answers.size(); i++){
+		CHECK(wind_mins[i].first == answers[i].first);
+		CHECK(wind_mins[i].second == answers[i].second);
+	}
 }
 
 void append_seq_compare(std::string& str1, std::string& str2, digest::Digester& dig, unsigned  k){
@@ -633,7 +633,7 @@ TEST_CASE("Digester Testing"){
 		
 		// new_seq when deque has stuff in it
 		dig1 = new digest::ModMin(test_strs[2], 8, 17, 0, 0, digest::MinimizedHashType::CANON);
-		std::vector<size_t> vec;
+		std::vector<uint32_t> vec;
 		dig1->roll_minimizer(1000, vec);
 		vec.clear();
 		dig1->append_seq(test_strs[2]);
@@ -719,7 +719,7 @@ TEST_CASE("ModMin Testing"){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
 					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
-					std::vector<size_t> vec;
+					std::vector<uint32_t> vec;
 					dig1->roll_minimizer(1000, vec);
 					dig1->append_seq(str2);
 					digest::ModMin* dig2 = new digest::ModMin(*dig1);
@@ -751,7 +751,7 @@ TEST_CASE("ModMin Testing"){
 					std::string str1 = test_strs[i].substr(0, l);
 					std::string str2 = test_strs[i].substr(l, 100);
 					digest::ModMin* dig1 = new digest::ModMin(str1, ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
-					std::vector<size_t> vec;
+					std::vector<uint32_t> vec;
 					dig1->roll_minimizer(1000, vec);
 					dig1->append_seq(str2);
 					digest::ModMin* dig2 = new digest::ModMin(test_strs[1], 99, 98765, 3, 0, digest::MinimizedHashType::REVERSE);
@@ -880,7 +880,7 @@ TEST_CASE("WindowMin Testing"){
 						std::string str1 = test_strs[i].substr(0, l); \
 						std::string str2 = test_strs[i].substr(l, 100); \
 						digest::WindowMin<T> dig1(str1, ks[j], k, 0, digest::MinimizedHashType::FORWARD); \
-						std::vector<size_t> vec; \
+						std::vector<uint32_t> vec; \
 						dig1.roll_minimizer(1000, vec); \
 						dig1.append_seq(str2); \
 						digest::WindowMin<T> dig2(dig1); \
@@ -915,7 +915,7 @@ TEST_CASE("WindowMin Testing"){
 						std::string str1 = test_strs[i].substr(0, l); \
 						std::string str2 = test_strs[i].substr(l, 100); \
 						digest::WindowMin<T> dig1(str1, ks[j], m, 0, digest::MinimizedHashType::FORWARD); \
-						std::vector<size_t> vec; \
+						std::vector<uint32_t> vec; \
 						dig1.roll_minimizer(1000, vec); \
 						dig1.append_seq(str2); \
 						digest::WindowMin<T> dig2(test_strs[1], 35, m, 0, digest::MinimizedHashType::REVERSE); \
@@ -1003,7 +1003,7 @@ TEST_CASE("Syncmer Testing"){
 						std::string str1 = test_strs[i].substr(0, l); \
 						std::string str2 = test_strs[i].substr(l, 100); \
 						digest::Syncmer<T> dig1(str1, ks[j], m, 0, digest::MinimizedHashType::FORWARD); \
-						std::vector<size_t> vec; \
+						std::vector<uint32_t> vec; \
 						dig1.roll_minimizer(1000, vec); \
 						dig1.append_seq(str2); \
 						digest::Syncmer<T> dig2(dig1); \
@@ -1038,7 +1038,7 @@ TEST_CASE("Syncmer Testing"){
 						std::string str1 = test_strs[i].substr(0, l); \
 						std::string str2 = test_strs[i].substr(l, 100); \
 						digest::Syncmer<T>* dig1 = new digest::Syncmer<T>(str1, ks[j], m, 0, digest::MinimizedHashType::FORWARD); \
-						std::vector<size_t> vec; \
+						std::vector<uint32_t> vec; \
 						dig1->roll_minimizer(1000, vec); \
 						dig1->append_seq(str2); \
 						digest::Syncmer<T>* dig2 = new digest::Syncmer<T>(test_strs[1], 35, m, 0, digest::MinimizedHashType::REVERSE); \

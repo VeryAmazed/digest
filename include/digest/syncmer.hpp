@@ -40,12 +40,11 @@ class Syncmer : public WindowMin<T> {
 
         /**
          * @brief adds up to amount of positions of syncmers into vec, here a large window is considered a syncmer if the smallest hash in the large window is at the leftmost or rightmost position 
-         *        Time Complexity: O(log(large_wind_kmer_am)) per k-mer tested
          * 
          * @param amount 
          * @param vec 
          */
-        void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;
+        void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) override;
 
         /**
          * @brief adds up to amount of positions of syncmers into vec, here a large window is considered a syncmer if the smallest hash in the large window is at the leftmost or rightmost position 
@@ -58,22 +57,11 @@ class Syncmer : public WindowMin<T> {
          * @param amount 
          * @param vec 
          */
-        // void roll_minimizer(unsigned amount, std::vector<std::pair<size_t, size_t>>& vec); 
+        void roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec); 
 
     private:
-        /**
-         * @brief helper function that checks if a large_window is a syncmer for the function that takes a reference to a vector of size_t as its parameter
-         * 
-         * @param vec 
-         */
-        void check1(std::vector<size_t>& vec);
-
-        /**
-         * @brief helper function that checks if a large_window is a syncmer for the function that takes a reference to a vector of pairs of size_t's as its parameter
-         * 
-         * @param vec 
-         */
-        void check2(std::vector<std::pair<size_t, size_t>>& vec);
+		void fill_st(std::vector<uint32_t>& vec);
+		void fill_st(std::vector<std::pair<uint32_t, uint32_t>>& vec);
 };
 
 }

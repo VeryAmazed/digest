@@ -55,7 +55,7 @@ class WindowMin : public Digester{
 		 * @param amount 
 		 * @param vec 
 		 */
-		virtual void roll_minimizer(unsigned amount, std::vector<size_t>& vec) override;
+		virtual void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) override;
 
 		unsigned get_large_wind_kmer_am(){
 			return large_window;
@@ -89,7 +89,7 @@ class WindowMin : public Digester{
 		 * @brief helper function which handles adding new elements into the segment tree when it is not full
 		 * 
 		 */
-		void fill_st(std::vector<size_t>& vec);
+		void fill_st(std::vector<uint32_t>& vec);
 	
 	private:
 
@@ -98,7 +98,7 @@ class WindowMin : public Digester{
 		 * 
 		 * @param vec 
 		 */
-		void check(std::vector<size_t>& vec, uint32_t hash);
+		void check(std::vector<uint32_t>& vec, uint32_t hash);
 };
 
 }

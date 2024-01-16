@@ -2,6 +2,7 @@
 // perf record --call-graph dwarf bench
 // perf report -g
 
+#include <cstdint>
 #include <digest/data_structure.hpp>
 #include <digest/mod_minimizer.hpp>
 #include <digest/window_minimizer.hpp>
@@ -56,7 +57,7 @@ static void BM_ModMinRoll(benchmark::State& state) {
 	for(auto _ : state) {
 		state.PauseTiming();
 		digest::ModMin dig(s, state.range(0), 17);
-		std::vector<size_t> vec;
+		std::vector<uint32_t> vec;
 		vec.reserve(STR_LEN);
 		state.ResumeTiming();
 		
@@ -76,7 +77,7 @@ static void BM_WindowMinRoll(benchmark::State& state) {
 		state.PauseTiming();
 		# define WINDOW(k) \
 			digest::WindowMin<data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
-			std::vector<size_t> vec; \
+			std::vector<uint32_t> vec; \
 			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
 			benchmark::DoNotOptimize(vec); \
@@ -106,7 +107,7 @@ static void BM_SyncmerRoll(benchmark::State& state){
 		state.PauseTiming();
 		# define SYNCMER(k) \
 			digest::Syncmer<data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
-			std::vector<size_t> vec; \
+			std::vector<uint32_t> vec; \
 			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
 			benchmark::DoNotOptimize(vec); \
@@ -133,7 +134,7 @@ BENCHMARK(BM_SyncmerRoll)
 static void BM_ThreadMod(benchmark::State& state) {
 	for(auto _ : state) {
 		state.PauseTiming();
-		std::vector<std::vector<size_t>> vec;
+		std::vector<std::vector<uint32_t>> vec;
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
@@ -146,7 +147,7 @@ BENCHMARK(BM_ThreadMod)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
 static void BM_ThreadWind(benchmark::State& state) {
     for(auto _ : state){
 		state.PauseTiming();
-		std::vector<std::vector<size_t>> vec;
+		std::vector<std::vector<uint32_t>> vec;
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
@@ -160,7 +161,7 @@ BENCHMARK(BM_ThreadWind)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
 static void BM_ThreadSync(benchmark::State& state){
     for(auto _ : state){
 		state.PauseTiming();
-		std::vector<std::vector<size_t>> vec;
+		std::vector<std::vector<uint32_t>> vec;
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);

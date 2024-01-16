@@ -50,14 +50,14 @@ class BadThreadOutParams : public std::exception
  * 
  * @throws BadThreadOutParams 
  */
-void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 /**
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  */
-void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
@@ -79,7 +79,7 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  */
 // number of k-mers to be considered in the large window
 template <class T>
-void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
@@ -87,7 +87,7 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  */
 template <class T>
-void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
@@ -109,7 +109,7 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  */
 // number of k-mers to be considered in the large window
 template <class T>
-void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
@@ -117,26 +117,26 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec,
  * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
  */
 template <class T>
-void thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 //------------- WORKER FUNCTIONS ----------------
 
 // function that's passed to the thread for ModMinmizers
-void thread_mod_roll(std::vector<size_t>& vec, const char* seq, 
+void thread_mod_roll(std::vector<uint32_t>& vec, const char* seq, 
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
 // function that's passed to the thread for WindowMinimizers
 template <class T>
-void thread_wind_roll(std::vector<size_t>& vec, const char* seq, 
+void thread_wind_roll(std::vector<uint32_t>& vec, const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 // function that's passed to the thread for Syncmers
 template <class T>
-void thread_sync_roll(std::vector<size_t>& vec, const char* seq, 
+void thread_sync_roll(std::vector<uint32_t>& vec, const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 

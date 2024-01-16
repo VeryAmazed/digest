@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include "digest/thread_out.hpp"
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -39,14 +40,14 @@ std::vector<T> multi_to_single_vec(std::vector<std::vector<T>> vec){
     return ret_vec;
 }
 
-void test_thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void test_thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     std::string str, unsigned k, uint64_t mod, uint64_t congruence, size_t start, 
     digest::MinimizedHashType minimized_h){
-    std::vector<size_t> single_thread;
+    std::vector<uint32_t> single_thread;
     digest::ModMin dig(str, k, mod, congruence, start, minimized_h);
     dig.roll_minimizer(str.size(), single_thread);
     thread_out::thread_mod(thread_count, vec, str, k, mod, congruence, start, minimized_h);
-    std::vector<size_t> multi_thread = multi_to_single_vec(vec);
+    std::vector<uint32_t> multi_thread = multi_to_single_vec(vec);
     
     REQUIRE(single_thread.size() == multi_thread.size());
 	for(size_t i = 0; i < single_thread.size(); i++){
@@ -54,14 +55,14 @@ void test_thread_mod(unsigned thread_count, std::vector<std::vector<size_t>>& ve
 	}
 }
 
-void test_thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void test_thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     std::string str, unsigned k, unsigned large_wind_kmer_am, size_t start, 
     digest::MinimizedHashType minimized_h){
-    std::vector<size_t> single_thread;
+    std::vector<uint32_t> single_thread;
     digest::WindowMin<data_structure::Adaptive> dig(str, k, large_wind_kmer_am, start, minimized_h);
     dig.roll_minimizer(str.size(), single_thread);
     thread_out::thread_wind<data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
-    std::vector<size_t> multi_thread = multi_to_single_vec(vec);
+    std::vector<uint32_t> multi_thread = multi_to_single_vec(vec);
     
     REQUIRE(single_thread.size() == multi_thread.size());
 	for(size_t i = 0; i < single_thread.size(); i++){
@@ -69,14 +70,14 @@ void test_thread_wind(unsigned thread_count, std::vector<std::vector<size_t>>& v
 	}
 }
 
-void test_thread_sync(unsigned thread_count, std::vector<std::vector<size_t>>& vec, 
+void test_thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     std::string str, unsigned k, unsigned large_wind_kmer_am, size_t start, 
     digest::MinimizedHashType minimized_h){
-    std::vector<size_t> single_thread;
+    std::vector<uint32_t> single_thread;
     digest::Syncmer<data_structure::Adaptive> dig(str, k, large_wind_kmer_am, start, minimized_h);
     dig.roll_minimizer(str.size(), single_thread);
     thread_out::thread_sync<data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
-    std::vector<size_t> multi_thread = multi_to_single_vec(vec);
+    std::vector<uint32_t> multi_thread = multi_to_single_vec(vec);
     
     REQUIRE(single_thread.size() == multi_thread.size());
 	for(size_t i = 0; i < single_thread.size(); i++){
@@ -89,7 +90,7 @@ TEST_CASE("thread_mod function testing"){
     SECTION("Throw Errors"){
         std::string str = "ACTGACTG";
         unsigned thread_count = 4;
-        std::vector<std::vector<size_t>> vec;
+        std::vector<std::vector<uint32_t>> vec;
         unsigned k = 4;
         uint64_t mod = 1e9+7;
         uint64_t congruence = 0;
@@ -115,7 +116,7 @@ TEST_CASE("thread_mod function testing"){
 
     SECTION("Special Cases"){
         unsigned thread_count = 4;
-        std::vector<std::vector<size_t>> vec;
+        std::vector<std::vector<uint32_t>> vec;
         unsigned k = 4;
         uint64_t mod = 3;
         uint64_t congruence = 0;
@@ -151,7 +152,7 @@ TEST_CASE("thread_mod function testing"){
 
     SECTION("Full Testing"){
         unsigned thread_count = 4;
-        std::vector<std::vector<size_t>> vec;
+	std::vector<std::vector<uint32_t>> vec;
         unsigned k = 4;
         uint64_t mod = 17;
         uint64_t congruence = 0;
@@ -179,7 +180,7 @@ TEST_CASE("thread_wind function testing"){
     SECTION("Throw Errors"){
         std::string str = "ACTGACTGACTG";
         unsigned thread_count = 4;
-        std::vector<std::vector<size_t>> vec;
+        std::vector<std::vector<uint32_t>> vec;
         unsigned k = 4;
         const uint32_t large_wind_kmer_am = 4;
         size_t start = 0;
@@ -198,7 +199,7 @@ TEST_CASE("thread_wind function testing"){
 
     SECTION("Special Cases"){
         unsigned thread_count = 4;
-        std::vector<std::vector<size_t>> vec;
+        std::vector<std::vector<uint32_t>> vec;
         unsigned k = 4;
         const uint32_t large_wind_kmer_am = 8; 
         size_t start = 0;
@@ -235,7 +236,7 @@ TEST_CASE("thread_wind function testing"){
     
     SECTION("Full Testing"){
         unsigned thread_count = 4;
-        std::vector<std::vector<size_t>> vec;
+        std::vector<std::vector<uint32_t>> vec;
         unsigned k = 4;
         const uint32_t large_wind_kmer_am = 8;
         size_t start = 0;
@@ -261,7 +262,7 @@ TEST_CASE("thread_sync function testing"){
     setupStrings();
     SECTION("Special Cases"){
         unsigned thread_count = 4;
-        std::vector<std::vector<size_t>> vec;
+        std::vector<std::vector<uint32_t>> vec;
         unsigned k = 4;
         const uint32_t large_wind_kmer_am = 8; 
         size_t start = 0;
@@ -298,7 +299,7 @@ TEST_CASE("thread_sync function testing"){
     
     SECTION("Full Testing"){
         unsigned thread_count = 4;
-        std::vector<std::vector<size_t>> vec;
+        std::vector<std::vector<uint32_t>> vec;
         unsigned k = 4;
         const int32_t large_wind_kmer_am = 8;
         size_t start = 0;

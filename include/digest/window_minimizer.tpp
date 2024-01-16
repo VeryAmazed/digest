@@ -2,7 +2,7 @@
 
 namespace digest{
 	template<class T>
-    void WindowMin<T>::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
+    void WindowMin<T>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
 		amount += vec.size();
 
 		while (st_size + 1 < large_window and is_valid_hash) {
@@ -24,20 +24,23 @@ namespace digest{
     }
 
 	template<class T>
-    void WindowMin<T>::fill_st(std::vector<size_t>& vec){
+    void WindowMin<T>::fill_st(std::vector<uint32_t>& vec){
 		if(get_minimized_h() == digest::MinimizedHashType::CANON){
-			check(vec, ds.insert(get_pos(), chash));
+			ds.insert(get_pos(), chash);
+			check(vec, ds.min());
 		}else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
-			check(vec, ds.insert(get_pos(), fhash));
+			ds.insert(get_pos(), fhash);
+			check(vec, ds.min());
 		}else{
-			check(vec, ds.insert(get_pos(), rhash));
+			ds.insert(get_pos(), rhash);
+			check(vec, ds.min());
 		}
 		
 		roll_one();
     }
 
 	template<class T>
-    void WindowMin<T>::check(std::vector<size_t>& vec, uint32_t ind){
+    void WindowMin<T>::check(std::vector<uint32_t>& vec, uint32_t ind){
         if(is_minimized){
             if(ind != prev_mini){
                 prev_mini =	ind;

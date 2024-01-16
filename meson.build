@@ -60,11 +60,11 @@ if get_option('buildtype') != 'release'
   )
 
   ### benchmark segment tree ###
-  executable(
-    'bench_ds',
-    'tests/data_structure/bench_ds.cpp',
-    dependencies : [bench, digest_dep],
-  )
+  # executable(
+  #   'bench_ds',
+  #   'tests/data_structure/bench_ds.cpp',
+  #   dependencies : [bench, digest_dep],
+  # )
 
   ### Expected Density ACTG ###
   # executable(
