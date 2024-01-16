@@ -44,8 +44,6 @@ static void BM(benchmark::State& state){
 }
 
 #define test(name, out) \
-	BENCHMARK_TEMPLATE(BM, 2, name<2>, out); \
-	BENCHMARK_TEMPLATE(BM, 3, name<3>, out); \
 	BENCHMARK_TEMPLATE(BM, 4, name<4>, out); \
 	BENCHMARK_TEMPLATE(BM, 5, name<5>, out); \
 	BENCHMARK_TEMPLATE(BM, 8, name<8>, out); \
@@ -60,11 +58,9 @@ static void BM(benchmark::State& state){
 	BENCHMARK_TEMPLATE(BM, 128, name<128>, out); \
 	BENCHMARK_TEMPLATE(BM, 256, name<256>, out); \
 	BENCHMARK_TEMPLATE(BM, 512, name<512>, out); \
-	BENCHMARK_TEMPLATE(BM, 1024, name<1024>, out); \
+	BENCHMARK_TEMPLATE(BM, 1024, name<1024>, out);
 
 #define test2(name, out) \
-	BENCHMARK_TEMPLATE(BM, 2, name, out); \
-	BENCHMARK_TEMPLATE(BM, 3, name, out); \
 	BENCHMARK_TEMPLATE(BM, 4, name, out); \
 	BENCHMARK_TEMPLATE(BM, 5, name, out); \
 	BENCHMARK_TEMPLATE(BM, 8, name, out); \
@@ -79,7 +75,7 @@ static void BM(benchmark::State& state){
 	BENCHMARK_TEMPLATE(BM, 128, name, out); \
 	BENCHMARK_TEMPLATE(BM, 256, name, out); \
 	BENCHMARK_TEMPLATE(BM, 512, name, out); \
-	BENCHMARK_TEMPLATE(BM, 1024, name, out); \
+	BENCHMARK_TEMPLATE(BM, 1024, name, out);
 
 test(data_structure::Naive, 0);
 test(data_structure::Naive2, 1);
@@ -87,6 +83,7 @@ test(data_structure::MonoQueue, 2);
 test(data_structure::SegmentTree, 3);
 test(data_structure::Set, 4);
 test2(data_structure::Adaptive, 5);
+test2(data_structure::Adaptive64, 6);
 
 int main(int argc, char** argv)
 {

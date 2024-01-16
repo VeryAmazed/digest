@@ -114,8 +114,8 @@ void WindowMin_roll_minimizers_comp(digest::WindowMin<T>& dig1, digest::WindowMi
 	}
 }
 
-template <class T>
-void Syncmer_roll_minimizers_comp(digest::Syncmer<T>& dig1, digest::Syncmer<T>& dig2){
+// template <class T>
+// void Syncmer_roll_minimizers_comp(digest::Syncmer<T>& dig1, digest::Syncmer<T>& dig2){
 	// std::vector<std::pair<size_t, size_t>> vec1;
 	// std::vector<std::pair<size_t, size_t>> vec2;
 	// dig1.roll_minimizer(1000, vec1);
@@ -124,7 +124,7 @@ void Syncmer_roll_minimizers_comp(digest::Syncmer<T>& dig1, digest::Syncmer<T>& 
 	// for(size_t i = 0; i < vec1.size(); i++){
 	// 	CHECK(vec1[i] == vec2[i]);
 	// }
-}
+// }
 
 template <class T>
 void WindowMin_dig_comp(digest::WindowMin<T>& dig1, digest::WindowMin<T>& dig2){
@@ -143,7 +143,7 @@ void Syncmer_dig_comp(digest::Syncmer<T>& dig1, digest::Syncmer<U>& dig2){
 	CHECK(dig1.get_st_size() == dig2.get_st_size());
 	CHECK(dig1.get_is_minimized() == dig2.get_is_minimized());
 	// need to use this because I need to check, or at least get some indication, of whether the two seg trees are the same
-	Syncmer_roll_minimizers_comp(dig1, dig2);
+	// Syncmer_roll_minimizers_comp(dig1, dig2);
 }
 
 void roll_one(digest::Digester& dig, std::string& str, unsigned k){
@@ -277,6 +277,7 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 		}
 	}
 
+	(void) dig;
 	// std::vector<std::pair<size_t, size_t>> wind_mins;
 	// dig.roll_minimizer(1000, wind_mins);
 	// REQUIRE(answers.size() == wind_mins.size());
@@ -811,11 +812,13 @@ TEST_CASE("WindowMin Testing"){
 		k = 4;
 		pos = 0;
 		minimized_h = digest::MinimizedHashType::CANON;
-		// #define WC(T) \
-		// 	digest::WindowMin<T>* dig1; \
-		// 	CHECK_THROWS_AS((dig1 = new digest::WindowMin<T>(str, k, 0, pos, minimized_h)), digest::BadWindowSizeException);
-		//
-		// WC(data_structure::SegmentTree<0>);
+		/*
+		#define WC(T) \
+			digest::WindowMin<T>* dig1; \
+			CHECK_THROWS_AS((dig1 = new digest::WindowMin<T>(str, k, 0, pos, minimized_h)), digest::BadWindowSizeException);
+
+		WC(data_structure::SegmentTree<0>);
+		*/
 
 		for(uint i =0; i < test_strs.size(); i++){
 			k = 4;

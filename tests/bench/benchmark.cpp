@@ -2,7 +2,7 @@
 // perf record --call-graph dwarf bench
 // perf report -g
 
-#include "digest/data_structure.hpp"
+#include <digest/data_structure.hpp>
 #include <digest/mod_minimizer.hpp>
 #include <digest/window_minimizer.hpp>
 #include <digest/syncmer.hpp>
@@ -14,9 +14,9 @@
 #define DEFAULT_LARGE_WIND 16
 #define DEFAULT_KMER_LEN 16
 #define DEFAULT_KMER_LEN2 64
-#define DEFAULT_STR_LEN 1e5
+#define STR_LEN 62460029
 
-std::vector<std::string> bench_strs;
+std::string bench_str;
 std::string s;
 std::string s1;
 std::string s2;
@@ -24,20 +24,16 @@ std::string s2;
 
 void setupStrings(){
 	std::string files[] = {
-		"../tests/bench/ACTG.txt",
+		"../tests/bench/chrY.txt",
 	};
 	
 	for (auto& file : files) {
 		std::ifstream ifs(file);
 		ifs.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         std::string str;
-		ifs >> str;
-		bench_strs.push_back(str);
+		ifs >> bench_str;
+		s = bench_str;
 	}
-}
-
-static void random(const benchmark::State& state) {
-	s = bench_strs[0].substr(0, DEFAULT_STR_LEN);
 }
 
 // roll_minimizers grouping --------------------------------------------------------------
@@ -51,7 +47,7 @@ static void BM_NtHashRoll(benchmark::State& state) {
 			benchmark::DoNotOptimize(*dig.hashes());
 	}
 }
-BENCHMARK(BM_NtHashRoll)->Setup(random)
+BENCHMARK(BM_NtHashRoll)
     ->Args({4}) // spumoni2
     ->Args({15}) // minimap
     ->Args({31}); // kraken v1
@@ -61,15 +57,15 @@ static void BM_ModMinRoll(benchmark::State& state) {
 		state.PauseTiming();
 		digest::ModMin dig(s, state.range(0), 17);
 		std::vector<size_t> vec;
-		vec.reserve(DEFAULT_STR_LEN);
+		vec.reserve(STR_LEN);
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		dig.roll_minimizer(DEFAULT_STR_LEN, vec);
+		dig.roll_minimizer(STR_LEN, vec);
 		benchmark::ClobberMemory();
 	}
 }
-BENCHMARK(BM_ModMinRoll)->Setup(random)
+BENCHMARK(BM_ModMinRoll)
     ->Args({4}) // spumoni2
     ->Args({15}) // minimap
     ->Args({31}) // kraken v1
@@ -81,10 +77,10 @@ static void BM_WindowMinRoll(benchmark::State& state) {
 		# define WINDOW(k) \
 			digest::WindowMin<data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<size_t> vec; \
-			vec.reserve(DEFAULT_STR_LEN); \
+			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
 			benchmark::DoNotOptimize(vec); \
-			dig.roll_minimizer(DEFAULT_STR_LEN, vec); \
+			dig.roll_minimizer(STR_LEN, vec); \
 			benchmark::ClobberMemory(); \
 
 		if (state.range(1) == 11) {
@@ -98,7 +94,7 @@ static void BM_WindowMinRoll(benchmark::State& state) {
 		}
     }
 }
-BENCHMARK(BM_WindowMinRoll)->Setup(random)
+BENCHMARK(BM_WindowMinRoll)
     ->Args({4, 11}) // spumoni2
     ->Args({15, 10}) // minimap
     ->Args({31, 15}) // kraken v1
@@ -111,10 +107,10 @@ static void BM_SyncmerRoll(benchmark::State& state){
 		# define SYNCMER(k) \
 			digest::Syncmer<data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<size_t> vec; \
-			vec.reserve(DEFAULT_STR_LEN); \
+			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
 			benchmark::DoNotOptimize(vec); \
-			dig.roll_minimizer(DEFAULT_STR_LEN, vec); \
+			dig.roll_minimizer(STR_LEN, vec); \
 			benchmark::ClobberMemory();
 
 		if (state.range(1) == 12) {
@@ -126,7 +122,7 @@ static void BM_SyncmerRoll(benchmark::State& state){
 		}
     }
 }
-BENCHMARK(BM_SyncmerRoll)->Setup(random)
+BENCHMARK(BM_SyncmerRoll)
     ->Args({4, 12}) // spumoni2
     ->Args({15, 11}) // minimap
     ->Args({31, 16}) // kraken v1
@@ -145,7 +141,7 @@ static void BM_ThreadMod(benchmark::State& state) {
 		benchmark::ClobberMemory();
 	}
 }
-BENCHMARK(BM_ThreadMod)->Setup(random)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadMod)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
 
 static void BM_ThreadWind(benchmark::State& state) {
     for(auto _ : state){
@@ -158,7 +154,7 @@ static void BM_ThreadWind(benchmark::State& state) {
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_ThreadWind)->Setup(random)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadWind)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
 
 
 static void BM_ThreadSync(benchmark::State& state){
@@ -172,7 +168,7 @@ static void BM_ThreadSync(benchmark::State& state){
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_ThreadSync)->Setup(random)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadSync)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
 
 
 

@@ -81,11 +81,10 @@ if get_option('buildtype') != 'release'
   # )
   
   ### test thread functions ###
-  
-  # executable(
-  # 	'test_thread',
-  # 	'tests/test/test_thread.cpp',
-  # 	dependencies : [catch2, digest_dep],
-  # 	# cpp_args : extra_args
-  # )
+  executable(
+  	'test_thread',
+  	'tests/test/test_thread.cpp',
+  	dependencies : [catch2, digest_dep],
+  	# cpp_args : extra_args
+  )
 endif

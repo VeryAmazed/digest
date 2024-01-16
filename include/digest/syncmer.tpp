@@ -16,6 +16,8 @@ namespace digest{
 
 	template <class T>
     void Syncmer<T>::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
+		amount += vec.size();
+
 		while (this->st_size + 1 < this->large_window and this->is_valid_hash) {
 			if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 				this->ds.insert(this->get_pos(), this->chash);

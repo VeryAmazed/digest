@@ -3,7 +3,7 @@
 namespace digest{
 	template<class T>
     void WindowMin<T>::roll_minimizer(unsigned amount, std::vector<size_t>& vec){
-		if (!is_valid_hash) return;
+		amount += vec.size();
 
 		while (st_size + 1 < large_window and is_valid_hash) {
 			if(get_minimized_h() == digest::MinimizedHashType::CANON){

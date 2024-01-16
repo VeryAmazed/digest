@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <set>
 #include <vector>
 #include <utility>
@@ -10,6 +11,7 @@
 // requirement on all data_structures
 // constructor which accepts uint32_t
 // uint32_t set(uint32_t index, uint32_t hash) // returns new minimum
+// can use uin64_t hash if wanted
 // assignment/copy constructors if you want to use them
 
 namespace data_structure {
@@ -210,6 +212,55 @@ struct Adaptive {
 	}
 
 	uint32_t insert(uint32_t index, uint32_t hash) {
+		if (k < 16) {
+			return naive(index, hash);
+		}
+		return naive2(index, hash);
+	}
+};
+
+struct Adaptive64 {
+	uint32_t k, i = 0, last = 0;
+	std::vector<__uint128_t> arr;
+
+	Adaptive64(uint32_t k) : k(k), arr(k) {}
+	Adaptive64(const Adaptive64& other) = default;
+	Adaptive64 &operator=(const Adaptive64& other) = default;
+
+	uint32_t naive(uint32_t index, uint64_t hash) {
+		arr[i] = (__uint128_t)~hash << 32 | index;
+		if (++i == k) i = 0;
+
+		// get min
+		int i = k-1;
+		for (int j = k-2; j >= 0; j--) {
+			if (arr[j] > arr[i]) {
+				i = j;
+			}
+		}
+		return arr[i];
+	}
+
+	uint32_t naive2(uint32_t index, uint64_t hash) {
+		// flip the hash bits so we can take the maximum
+		arr[i] = (__uint128_t)~hash << 32 | index;
+
+		if (arr[i] > arr[last]) {
+			last = i;
+		} else if (last == i) {
+			for (int j = k-1; j >= 0; j--) {
+				if (arr[j] > arr[last]) {
+					last = j;
+				}
+			}
+		}
+
+		if (++i == k) i = 0;
+
+		return arr[last];
+	}
+
+	uint32_t insert(uint32_t index, uint64_t hash) {
 		if (k < 16) {
 			return naive(index, hash);
 		}
