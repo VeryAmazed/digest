@@ -48,8 +48,8 @@ our general guidelines:
 * for 12 <= `large_window` <= 16 use SegmentTree
 * for `large_window` > 16 use Naive2
 
-adaptive performs about 20% slower than best  
-adaptive64 performs about 50% to 150% slower than best
+adaptive performs at worst about 10% slower than best  
+adaptive64 performs at worst about 100% slower than best
 
 # Benchmark / Tests
 ```bash
