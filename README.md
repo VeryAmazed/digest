@@ -43,7 +43,13 @@ A vector must be passed in, which will be appended to.
 Each WindowMin / Syncmer object is templated by the algorithm / data structure to find minimizers.
 
 # Selecting the correct `data_structure`
+our general guidelines:
+* for `large_window` < 12, use Naive
+* for 12 <= `large_window` <= 16 use SegmentTree
+* for `large_window` > 16 use Naive2
 
+adaptive performs about 20% slower than best  
+adaptive64 performs about 50% to 150% slower than best
 
 # Benchmark / Tests
 ```bash
@@ -57,5 +63,3 @@ license
 clean up branches  
 policy for only actg  
 threading (why no join at end)  
-
-timing / example  
