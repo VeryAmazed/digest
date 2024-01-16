@@ -263,7 +263,7 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 		}
 		hashes.push_back(std::make_pair(temp, tHash.get_pos()));
 	}
-
+	
 	std::vector<std::pair<size_t, size_t>> answers;
 	for(size_t i =0; i + large_wind_kmer_am <= hashes.size(); i++){
 		uint32_t minAm = hashes[i].first;
@@ -277,7 +277,13 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 		}
 	}
 
-	(void) dig;
+	std::vector<size_t> syncs;
+	dig.roll_minimizer(1000, syncs);
+	REQUIRE(answers.size() == syncs.size());
+	for(size_t i = 0; i < answers.size(); i++){
+		CHECK(syncs[i] == answers[i].first);
+	}
+
 	// std::vector<std::pair<size_t, size_t>> wind_mins;
 	// dig.roll_minimizer(1000, wind_mins);
 	// REQUIRE(answers.size() == wind_mins.size());
