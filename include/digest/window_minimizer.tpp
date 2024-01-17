@@ -27,14 +27,12 @@ namespace digest{
     void WindowMin<T>::fill_st(std::vector<uint32_t>& vec){
 		if(get_minimized_h() == digest::MinimizedHashType::CANON){
 			ds.insert(get_pos(), chash);
-			check(vec, ds.min());
 		}else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
 			ds.insert(get_pos(), fhash);
-			check(vec, ds.min());
 		}else{
 			ds.insert(get_pos(), rhash);
-			check(vec, ds.min());
 		}
+		check(vec, ds.min());
 		
 		roll_one();
     }

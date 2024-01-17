@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstdint>
 #include <set>
@@ -78,7 +79,7 @@ namespace data_structure {
 /** A data structure that can answer point update & range minimum queries. */
 template<int k>
 struct SegmentTree {
-	int i = 0;
+	int i = k;
 	std::array<uint64_t,2*k> segtree;
 
 	constexpr int log2() {
@@ -90,8 +91,8 @@ struct SegmentTree {
 	SegmentTree &operator=(const SegmentTree& other) = default;
 
 	void insert(uint32_t index, uint32_t hash) {
-		int ind = i + k;
-		if (++i == k) i = 0;
+		int ind = i;
+		if (++i == 2*k) i = k;
 
 		// negate so we can use max so that ties are broken by rightmost
 		segtree[ind] = (uint64_t)~hash << 32 | index;
@@ -110,14 +111,14 @@ struct SegmentTree {
 	}
 
 	void min_syncmer(std::vector<uint32_t> &vec) {
-		if (segtree[1] == segtree[i] or segtree[1] == segtree[i ? i-1 : k-1]) {
+		if (segtree[1] >> 32 == std::max(uint32_t(segtree[i] >> 32), uint32_t(segtree[i==k ? 2*k-1 : i-1] >> 32))) {
 			vec.emplace_back(segtree[i]);
 		}
 	}
 
 	void min_syncmer(std::vector<std::pair<uint32_t,uint32_t>> &vec) {
-		if (segtree[1] == segtree[i] or segtree[1] == segtree[i ? i-1 : k-1]) {
-			vec.emplace_back(segtree[i], segtree[i ? i-1 : k-1]);
+		if (segtree[1] >> 32 == std::max(uint32_t(segtree[i] >> 32), uint32_t(segtree[i==k ? 2*k-1 : i-1] >> 32))) {
+			vec.emplace_back(segtree[i], segtree[i==k ? 2*k-1 : i-1]);
 		}
 	}
 };
@@ -188,13 +189,13 @@ struct Naive {
 	}
 
 	void min_syncmer(std::vector<uint32_t> &vec) {
-		uint j = k-1;
-		for (int l = k-2; l >= 0; l--) {
+		uint j = 0;
+		for (uint l = 1; l < k; l++) {
 			if (arr[l] > arr[j]) {
 				j = l;
 			}
 		}
-		if (j == i or j == (i ? i-1 : k-1)) {
+		if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 			vec.emplace_back(arr[i]);
 		}
 	}
@@ -206,7 +207,7 @@ struct Naive {
 				j = l;
 			}
 		}
-		if (j == i or j == (i ? i-1 : k-1)) {
+		if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 			vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 		}
 	}
@@ -248,13 +249,13 @@ struct Naive2 {
 	}
 
 	void min_syncmer(std::vector<uint32_t> &vec) {
-		if (last == i or last == (i ? i-1 : k-1)) {
+		if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 			vec.emplace_back(arr[i]);
 		}
 	}
 
 	void min_syncmer(std::vector<std::pair<uint32_t,uint32_t>> &vec) {
-		if (last == i or last == (i ? i-1 : k-1)) {
+		if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 			vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 		}
 	}
@@ -334,11 +335,11 @@ struct Adaptive {
 					j = l;
 				}
 			}
-			if (j == i or j == (i ? i-1 : k-1)) {
+			if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i]);
 			}
 		} else {
-			if (last == i or last == (i ? i-1 : k-1)) {
+			if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i]);
 			}
 		}
@@ -352,11 +353,11 @@ struct Adaptive {
 					j = l;
 				}
 			}
-			if (j == i or j == (i ? i-1 : k-1)) {
+			if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 			}
 		} else {
-			if (last == i or last == (i ? i-1 : k-1)) {
+			if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 			}
 		}
@@ -437,11 +438,11 @@ struct Adaptive64 {
 					j = l;
 				}
 			}
-			if (j == i or j == (i ? i-1 : k-1)) {
+			if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i]);
 			}
 		} else {
-			if (last == i or last == (i ? i-1 : k-1)) {
+			if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i]);
 			}
 		}
@@ -455,11 +456,11 @@ struct Adaptive64 {
 					j = l;
 				}
 			}
-			if (j == i or j == (i ? i-1 : k-1)) {
+			if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 			}
 		} else {
-			if (last == i or last == (i ? i-1 : k-1)) {
+			if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 			}
 		}

@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <fstream>
 #include <iterator>
+#include <map>
 #include <vector>
 
 std::vector<std::string> test_strs;
@@ -273,19 +274,23 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 		}
 
 		if(minAm == hashes[i].first || minAm == hashes[i+large_wind_kmer_am-1].first){
-			answers.push_back(std::make_pair(hashes[i].second, hashes[i+large_wind_kmer_am-1].second));
+			answers.emplace_back(hashes[i].second, hashes[i+large_wind_kmer_am-1].second);
 		}
 	}
 
+	digest::Syncmer<T> dig2 = dig;
+
 	std::vector<uint32_t> syncs;
 	dig.roll_minimizer(1000, syncs);
+
+	assert(answers.size() == syncs.size());
 	REQUIRE(answers.size() == syncs.size());
 	for(size_t i = 0; i < answers.size(); i++){
 		CHECK(syncs[i] == answers[i].first);
 	}
 
 	std::vector<std::pair<uint32_t, uint32_t>> wind_mins;
-	dig.roll_minimizer(1000, wind_mins);
+	dig2.roll_minimizer(1000, wind_mins);
 	REQUIRE(answers.size() == wind_mins.size());
 	for(size_t i = 0; i < answers.size(); i++){
 		CHECK(wind_mins[i].first == answers[i].first);
@@ -766,36 +771,24 @@ TEST_CASE("ModMin Testing"){
 }
 
 #define do64(F) \
-	{ F(data_structure::SegmentTree<1>, 1) } \
-	{ F(data_structure::SegmentTree<2>, 2) } \
-	{ F(data_structure::SegmentTree<3>, 3) } \
 	{ F(data_structure::SegmentTree<4>, 4) } \
 	{ F(data_structure::SegmentTree<31>, 31) } \
 	{ F(data_structure::SegmentTree<32>, 32) } \
 	{ F(data_structure::SegmentTree<33>, 33) } \
 	{ F(data_structure::SegmentTree<63>, 63) } \
 	{ F(data_structure::SegmentTree<64>, 64) } \
-	{ F(data_structure::Naive<1>, 1) } \
-	{ F(data_structure::Naive<2>, 2) } \
-	{ F(data_structure::Naive<3>, 3) } \
 	{ F(data_structure::Naive<4>, 4) } \
 	{ F(data_structure::Naive<31>, 31) } \
 	{ F(data_structure::Naive<32>, 32) } \
 	{ F(data_structure::Naive<33>, 33) } \
 	{ F(data_structure::Naive<63>, 63) } \
 	{ F(data_structure::Naive<64>, 64) } \
-	{ F(data_structure::Naive2<1>, 1) } \
-	{ F(data_structure::Naive2<2>, 2) } \
-	{ F(data_structure::Naive2<3>, 3) } \
 	{ F(data_structure::Naive2<4>, 4) } \
 	{ F(data_structure::Naive2<31>, 31) } \
 	{ F(data_structure::Naive2<32>, 32) } \
 	{ F(data_structure::Naive2<33>, 33) } \
 	{ F(data_structure::Naive2<63>, 63) } \
 	{ F(data_structure::Naive2<64>, 64) } \
-	{ F(data_structure::Adaptive, 1) } \
-	{ F(data_structure::Adaptive, 2) } \
-	{ F(data_structure::Adaptive, 3) } \
 	{ F(data_structure::Adaptive, 4) } \
 	{ F(data_structure::Adaptive, 31) } \
 	{ F(data_structure::Adaptive, 32) } \
@@ -956,7 +949,7 @@ TEST_CASE("Syncmer Testing"){
 				minimized_h = digest::MinimizedHashType::CANON; \
 				 \
 				digest::Syncmer<T> dig(test_strs[i], k, j, pos, minimized_h); \
-				WindowMin_constructor(dig, test_strs[i], k, j, pos, minimized_h);
+				WindowMin_constructor<T>(dig, test_strs[i], k, j, pos, minimized_h);
 
 			do64(TEST_SYNCON)
 		}

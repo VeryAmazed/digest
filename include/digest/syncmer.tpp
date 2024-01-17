@@ -19,7 +19,7 @@ namespace digest{
 		}
 
         while (this->is_valid_hash and vec.size() < amount){
-            this->fill_st(vec);
+            Syncmer::fill_st(vec);
         }
     }
 
@@ -41,7 +41,7 @@ namespace digest{
 		}
 
         while (this->is_valid_hash and vec.size() < amount){
-            this->fill_st(vec);
+            Syncmer::fill_st(vec);
         }
     }     
 
@@ -49,14 +49,12 @@ namespace digest{
     void Syncmer<T>::fill_st(std::vector<uint32_t>& vec){
 		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 			this->ds.insert(this->get_pos(), this->chash);
-			this->ds.min_syncmer(vec);
 		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
 			this->ds.insert(this->get_pos(), this->fhash);
-			this->ds.min_syncmer(vec);
 		}else{
 			this->ds.insert(this->get_pos(), this->rhash);
-			this->ds.min_syncmer(vec);
 		}
+		this->ds.min_syncmer(vec);
 		
 		this->roll_one();
     }
@@ -65,14 +63,12 @@ namespace digest{
     void Syncmer<T>::fill_st(std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 			this->ds.insert(this->get_pos(), this->chash);
-			this->ds.min_syncmer(vec);
 		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
 			this->ds.insert(this->get_pos(), this->fhash);
-			this->ds.min_syncmer(vec);
 		}else{
 			this->ds.insert(this->get_pos(), this->rhash);
-			this->ds.min_syncmer(vec);
 		}
+		this->ds.min_syncmer(vec);
 		
 		this->roll_one();
     }
