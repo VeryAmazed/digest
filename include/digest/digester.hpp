@@ -98,6 +98,14 @@ class Digester{
         virtual void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) = 0;
 
         /**
+         * @brief returns the positions (pair.first), as defined by get_pos(), and the hashes (pair.second) of minimizers up to the amount specified 
+         * 
+         * @param amount number of minimizers you want to generate
+         * @param vec a reference to a vector of size_t's, the positions returned will go there
+         */
+        virtual void roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec) = 0;
+
+        /**
          * @return current index of the first character of the current kmer that has been hashed
          *         strings that have been appended onto each other count as 1 big string, 
          *         i.e. if you first had a string of length 10 and then appended another string of length 20, and the index of the first character of the current

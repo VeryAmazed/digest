@@ -106,8 +106,8 @@ struct SegmentTree {
 		return segtree[1];
 	}
 
-	std::pair<uint32_t, uint32_t> min_hash() {
-		return {segtree[1], ~(segtree[1] >> 32)};
+	uint32_t min_hash() {
+		return ~(segtree[1] >> 32);
 	}
 
 	void min_syncmer(std::vector<uint32_t> &vec) {
@@ -118,9 +118,19 @@ struct SegmentTree {
 
 	void min_syncmer(std::vector<std::pair<uint32_t,uint32_t>> &vec) {
 		if (segtree[1] >> 32 == std::max(uint32_t(segtree[i] >> 32), uint32_t(segtree[i==k ? 2*k-1 : i-1] >> 32))) {
+			vec.emplace_back(segtree[i], ~(segtree[1] >> 32));
+		}
+	}
+	/*
+	std::pair<uint32_t, uint32_t> min_hash() {
+		return {segtree[1], ~(segtree[1] >> 32)};
+	}
+	void min_syncmer(std::vector<std::pair<uint32_t,uint32_t>> &vec) {
+		if (segtree[1] >> 32 == std::max(uint32_t(segtree[i] >> 32), uint32_t(segtree[i==k ? 2*k-1 : i-1] >> 32))) {
 			vec.emplace_back(segtree[i], segtree[i==k ? 2*k-1 : i-1]);
 		}
 	}
+	*/
 };
 
 // template<uint32_t k>
@@ -178,14 +188,14 @@ struct Naive {
 		return arr[i];
 	}
 
-	std::pair<uint32_t, uint32_t> min_hash() {
+	uint32_t min_hash() {
 		int i = k-1;
 		for (int j = k-2; j >= 0; j--) {
 			if (arr[j] > arr[i]) {
 				i = j;
 			}
 		}
-		return {arr[i], ~(uint32_t)(arr[i] >> 32)};
+		return ~(uint32_t)(arr[i] >> 32);
 	}
 
 	void min_syncmer(std::vector<uint32_t> &vec) {
@@ -208,9 +218,31 @@ struct Naive {
 			}
 		}
 		if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
+			vec.emplace_back(arr[i], ~(uint32_t)(arr[j] >> 32));
+		}
+	}
+	/*
+	std::pair<uint32_t, uint32_t> min_hash() {
+		int i = k-1;
+		for (int j = k-2; j >= 0; j--) {
+			if (arr[j] > arr[i]) {
+				i = j;
+			}
+		}
+		return {arr[i], ~(uint32_t)(arr[i] >> 32)};
+	}
+	void min_syncmer(std::vector<std::pair<uint32_t,uint32_t>> &vec) {
+		uint j = k-1;
+		for (int l = k-2; l >= 0; l--) {
+			if (arr[l] > arr[j]) {
+				j = l;
+			}
+		}
+		if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 			vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 		}
 	}
+	*/
 };
 
 template<uint32_t k>
@@ -244,8 +276,8 @@ struct Naive2 {
 		return arr[last];
 	}
 
-	std::pair<uint32_t, uint32_t> min_hash() {
-		return {arr[last], ~(uint32_t)(arr[last] >> 32)};
+	uint32_t min_hash() {
+		return ~(uint32_t)(arr[last] >> 32);
 	}
 
 	void min_syncmer(std::vector<uint32_t> &vec) {
@@ -256,9 +288,20 @@ struct Naive2 {
 
 	void min_syncmer(std::vector<std::pair<uint32_t,uint32_t>> &vec) {
 		if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
+			vec.emplace_back(arr[i], ~(uint32_t)(arr[last] >> 32));
+		}
+	}
+
+	/*
+	std::pair<uint32_t, uint32_t> min_hash() {
+		return {arr[last], ~(uint32_t)(arr[last] >> 32)};
+	}
+	void min_syncmer(std::vector<std::pair<uint32_t,uint32_t>> &vec) {
+		if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 			vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 		}
 	}
+	*/
 };
 
 struct Adaptive {
@@ -313,7 +356,7 @@ struct Adaptive {
 		}
 	}
 
-	std::pair<uint32_t, uint32_t> min_hash() {
+	uint32_t min_hash() {
 		if (k < 16) {
 			int i = k-1;
 			for (int j = k-2; j >= 0; j--) {
@@ -321,9 +364,9 @@ struct Adaptive {
 					i = j;
 				}
 			}
-			return {arr[i], ~(uint32_t)(arr[i] >> 32)};
+			return ~(uint32_t)(arr[i] >> 32);
 		} else {
-			return {arr[last], ~(uint32_t)(arr[last] >> 32)};
+			return ~(uint32_t)(arr[last] >> 32);
 		}
 	}
 
@@ -354,6 +397,38 @@ struct Adaptive {
 				}
 			}
 			if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
+				vec.emplace_back(arr[i], ~(uint32_t)(arr[j] >> 32));
+			}
+		} else {
+			if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
+				vec.emplace_back(arr[i], ~(uint32_t)(arr[last] >> 32));
+			}
+		}
+	}
+
+	/*
+	std::pair<uint32_t, uint32_t> min_hash() {
+		if (k < 16) {
+			int i = k-1;
+			for (int j = k-2; j >= 0; j--) {
+				if (arr[j] > arr[i]) {
+					i = j;
+				}
+			}
+			return {arr[i], ~(uint32_t)(arr[i] >> 32)};
+		} else {
+			return {arr[last], ~(uint32_t)(arr[last] >> 32)};
+		}
+	}
+	void min_syncmer(std::vector<std::pair<uint32_t, uint32_t>> &vec) {
+		if (k < 16) {
+			uint j = k-1;
+			for (int l = k-2; l >= 0; l--) {
+				if (arr[l] > arr[j]) {
+					j = l;
+				}
+			}
+			if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
 				vec.emplace_back(arr[i], arr[i ? i-1 : k-1]);
 			}
 		} else {
@@ -362,6 +437,7 @@ struct Adaptive {
 			}
 		}
 	}
+	*/
 };
 
 struct Adaptive64 {
@@ -416,7 +492,7 @@ struct Adaptive64 {
 		}
 	}
 
-	std::pair<uint32_t, uint64_t> min_hash() {
+	uint64_t min_hash() {
 		if (k < 16) {
 			int i = k-1;
 			for (int j = k-2; j >= 0; j--) {
@@ -424,9 +500,9 @@ struct Adaptive64 {
 					i = j;
 				}
 			}
-			return {arr[i], ~(uint64_t)(arr[i] >> 32)};
+			return  ~(uint64_t)(arr[i] >> 32);
 		} else {
-			return {arr[last], ~(uint64_t)(arr[last] >> 32)};
+			return ~(uint64_t)(arr[last] >> 32);
 		}
 	}
 
@@ -448,6 +524,37 @@ struct Adaptive64 {
 		}
 	}
 
+	void min_syncmer(std::vector<std::pair<uint32_t, uint64_t>> &vec) {
+		if (k < 16) {
+			uint j = k-1;
+			for (int l = k-2; l >= 0; l--) {
+				if (arr[l] > arr[j]) {
+					j = l;
+				}
+			}
+			if (arr[j] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
+				vec.emplace_back(arr[i],  ~(uint64_t)(arr[j] >> 32));
+			}
+		} else {
+			if (arr[last] >> 32 == std::max(uint32_t(arr[i] >> 32), uint32_t(arr[i ? i-1 : k-1] >> 32))) {
+				vec.emplace_back(arr[i], ~(uint64_t)(arr[last] >> 32));
+			}
+		}
+	}
+	/*
+	std::pair<uint32_t, uint64_t> min_hash() {
+		if (k < 16) {
+			int i = k-1;
+			for (int j = k-2; j >= 0; j--) {
+				if (arr[j] > arr[i]) {
+					i = j;
+				}
+			}
+			return {arr[i], ~(uint64_t)(arr[i] >> 32)};
+		} else {
+			return {arr[last], ~(uint64_t)(arr[last] >> 32)};
+		}
+	}
 	void min_syncmer(std::vector<std::pair<uint32_t, uint32_t>> &vec) {
 		if (k < 16) {
 			uint j = k-1;
@@ -465,6 +572,7 @@ struct Adaptive64 {
 			}
 		}
 	}
+	*/
 };
 
 }

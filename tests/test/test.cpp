@@ -92,7 +92,7 @@ void WindowMin_constructor(digest::WindowMin<T>& dig, std::string& str, unsigned
 	base_constructor(dig, str, k, pos, minimized_h);
 	CHECK(dig.get_large_wind_kmer_am() == large_wind_kmer_am);
 	// CHECK(dig.get_st_index() == 0);
-	CHECK(dig.get_st_size() == 0);
+	CHECK(dig.get_ds_size() == 0);
 	CHECK(dig.get_is_minimized() == false);
 }
 
@@ -117,8 +117,8 @@ void WindowMin_roll_minimizers_comp(digest::WindowMin<T>& dig1, digest::WindowMi
 
 template <class T>
 void Syncmer_roll_minimizers_comp(digest::Syncmer<T>& dig1, digest::Syncmer<T>& dig2){
-	std::vector<std::pair<uint32_t, uint32_t>> vec1;
-	std::vector<std::pair<uint32_t, uint32_t>> vec2;
+	std::vector<uint32_t> vec1;
+	std::vector<uint32_t> vec2;
 	dig1.roll_minimizer(1000, vec1);
 	dig2.roll_minimizer(1000, vec2);
 	REQUIRE(vec1.size() == vec2.size());
@@ -131,7 +131,7 @@ template <class T>
 void WindowMin_dig_comp(digest::WindowMin<T>& dig1, digest::WindowMin<T>& dig2){
 	base_dig_comp(dig1, dig2);
 	CHECK(dig1.get_large_wind_kmer_am() == dig2.get_large_wind_kmer_am());
-	CHECK(dig1.get_st_size() == dig2.get_st_size());
+	CHECK(dig1.get_ds_size() == dig2.get_ds_size());
 	CHECK(dig1.get_is_minimized() == dig2.get_is_minimized());
 	// need to use this because I need to check, or at least get some indication, of whether the two seg trees are the same
 	WindowMin_roll_minimizers_comp(dig1, dig2);
@@ -141,10 +141,10 @@ template <class T, class U>
 void Syncmer_dig_comp(digest::Syncmer<T>& dig1, digest::Syncmer<U>& dig2){
 	base_dig_comp(dig1, dig2);
 	CHECK(dig1.get_large_wind_kmer_am() == dig2.get_large_wind_kmer_am());
-	CHECK(dig1.get_st_size() == dig2.get_st_size());
+	CHECK(dig1.get_ds_size() == dig2.get_ds_size());
 	CHECK(dig1.get_is_minimized() == dig2.get_is_minimized());
 	// need to use this because I need to check, or at least get some indication, of whether the two seg trees are the same
-	// Syncmer_roll_minimizers_comp(dig1, dig2);
+	Syncmer_roll_minimizers_comp(dig1, dig2);
 }
 
 void roll_one(digest::Digester& dig, std::string& str, unsigned k){
@@ -188,15 +188,25 @@ void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, di
 		}
 		if(temp % prime == 0){
 			positions.push_back(tHash.get_pos());
-			hashes.push_back(temp%prime);
+			hashes.push_back(temp);
 		}
 		
 	}
+	digest::ModMin dig2 = dig;
+
 	std::vector<uint32_t> dig_positions;
 	dig.roll_minimizer(400, dig_positions);
 	REQUIRE(positions.size() == dig_positions.size());
 	for(size_t i = 0; i < positions.size(); i++){
 		CHECK(dig_positions[i] == positions[i]);
+	}
+
+	std::vector<std::pair<uint32_t, uint32_t>> dig_positions2;
+	dig2.roll_minimizer(400, dig_positions2);
+	REQUIRE(positions.size() == dig_positions2.size());
+	for(size_t i = 0; i < positions.size(); i++){
+		CHECK(dig_positions2[i].first == positions[i]);
+		CHECK(dig_positions2[i].second == hashes[i]);
 	}
 }
 
@@ -241,11 +251,21 @@ void WindowMin_roll_minimizer(digest::WindowMin<T>& dig, std::string& str, unsig
 		}
 	}
 
+	digest::WindowMin<T> dig2 = dig;
+
 	std::vector<uint32_t> wind_mins;
 	dig.roll_minimizer(1000, wind_mins);
 	REQUIRE(answers.size() == wind_mins.size());
 	for(size_t i = 0; i < answers.size(); i++){
 		CHECK(wind_mins[i] == answers[i].second);
+	}
+
+	std::vector<std::pair<uint32_t, uint32_t>> wind_mins2;
+	dig2.roll_minimizer(1000, wind_mins2);
+	REQUIRE(answers.size() == wind_mins2.size());
+	for(size_t i = 0; i < answers.size(); i++){
+		CHECK(wind_mins2[i].second == answers[i].first);
+		CHECK(wind_mins2[i].first == answers[i].second);
 	}
 }
 
@@ -265,7 +285,7 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 		hashes.push_back(std::make_pair(temp, tHash.get_pos()));
 	}
 	
-	std::vector<std::pair<size_t, size_t>> answers;
+	std::vector<std::pair<size_t, uint32_t>> answers;
 	for(size_t i =0; i + large_wind_kmer_am <= hashes.size(); i++){
 		uint32_t minAm = hashes[i].first;
 
@@ -274,7 +294,7 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 		}
 
 		if(minAm == hashes[i].first || minAm == hashes[i+large_wind_kmer_am-1].first){
-			answers.emplace_back(hashes[i].second, hashes[i+large_wind_kmer_am-1].second);
+			answers.emplace_back(hashes[i].second, minAm);
 		}
 	}
 
@@ -289,13 +309,15 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 		CHECK(syncs[i] == answers[i].first);
 	}
 
-	std::vector<std::pair<uint32_t, uint32_t>> wind_mins;
-	dig2.roll_minimizer(1000, wind_mins);
-	REQUIRE(answers.size() == wind_mins.size());
+	
+	std::vector<std::pair<uint32_t, uint32_t>> syncs2;
+	dig2.roll_minimizer(1000, syncs2);
+	REQUIRE(answers.size() == syncs2.size());
 	for(size_t i = 0; i < answers.size(); i++){
-		CHECK(wind_mins[i].first == answers[i].first);
-		CHECK(wind_mins[i].second == answers[i].second);
+		CHECK(syncs2[i].first == answers[i].first);
+		CHECK(syncs2[i].second == answers[i].second);
 	}
+	
 }
 
 void append_seq_compare(std::string& str1, std::string& str2, digest::Digester& dig, unsigned  k){

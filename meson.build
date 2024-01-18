@@ -59,7 +59,7 @@ if get_option('buildtype') != 'release'
     dependencies : [bench, digest_dep],
   )
 
-  ### benchmark segment tree ###
+  ### benchmark data structures ###
   # executable(
   #   'bench_ds',
   #   'tests/data_structure/bench_ds.cpp',

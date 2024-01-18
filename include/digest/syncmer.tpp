@@ -5,7 +5,7 @@ namespace digest{
     void Syncmer<T>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
 		amount += vec.size();
 
-		while (this->st_size + 1 < this->large_window and this->is_valid_hash) {
+		while (this->ds_size + 1 < this->large_window and this->is_valid_hash) {
 			if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 				this->ds.insert(this->get_pos(), this->chash);
 			}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
@@ -15,11 +15,11 @@ namespace digest{
 			}
 			
 			this->roll_one();
-			this->st_size++;
+			this->ds_size++;
 		}
 
         while (this->is_valid_hash and vec.size() < amount){
-            Syncmer::fill_st(vec);
+            Syncmer::roll_ds_sync(vec);
         }
     }
 
@@ -27,7 +27,7 @@ namespace digest{
     void Syncmer<T>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		amount += vec.size();
 
-		while (this->st_size + 1 < this->large_window and this->is_valid_hash) {
+		while (this->ds_size + 1 < this->large_window and this->is_valid_hash) {
 			if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 				this->ds.insert(this->get_pos(), this->chash);
 			}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
@@ -37,16 +37,16 @@ namespace digest{
 			}
 			
 			this->roll_one();
-			this->st_size++;
+			this->ds_size++;
 		}
 
         while (this->is_valid_hash and vec.size() < amount){
-            Syncmer::fill_st(vec);
+            Syncmer::roll_ds_sync(vec);
         }
     }     
 
 	template<class T>
-    void Syncmer<T>::fill_st(std::vector<uint32_t>& vec){
+    void Syncmer<T>::roll_ds_sync(std::vector<uint32_t>& vec){
 		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 			this->ds.insert(this->get_pos(), this->chash);
 		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
@@ -60,7 +60,7 @@ namespace digest{
     }
 
 	template<class T>
-    void Syncmer<T>::fill_st(std::vector<std::pair<uint32_t, uint32_t>>& vec){
+    void Syncmer<T>::roll_ds_sync(std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 			this->ds.insert(this->get_pos(), this->chash);
 		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){

@@ -39,7 +39,7 @@ class Syncmer : public WindowMin<T> {
         {}
 
         /**
-         * @brief adds up to amount of positions of syncmers into vec, here a large window is considered a syncmer if the smallest hash in the large window is at the leftmost or rightmost position 
+         * @brief 
          * 
          * @param amount 
          * @param vec 
@@ -47,21 +47,25 @@ class Syncmer : public WindowMin<T> {
         void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) override;
 
         /**
-         * @brief adds up to amount of positions of syncmers into vec, here a large window is considered a syncmer if the smallest hash in the large window is at the leftmost or rightmost position 
-         *        Time Complexity: O(log(large_wind_kmer_am)) per k-mer tested
-         *        Because the size of syncmers may be irregular if there are k-mers with invalid characters within the large window that we skip over, this function adds pairs with the
-         *        first element being the position of the first k-mer in the large window, and the second element being the position of the last k-mer in the large window, so if the distance
-         *        between these two elements is not large_wind_kmer_am-1, then you know the window size is irregular, and you may need to do some processing on your end to get a syncmer of standard
-         *        size that doesn't contain any k-mers with non-ACTG characters in it
-         * 
+         * @brief adds up to amount of positions and hashes of syncmers into vec, here a large window is considered a syncmer if the smallest hash in the large window is at the leftmost or rightmost position 
+         *       
          * @param amount 
          * @param vec 
          */
         void roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec); 
 
     private:
-		void fill_st(std::vector<uint32_t>& vec);
-		void fill_st(std::vector<std::pair<uint32_t, uint32_t>>& vec);
+        /**
+         * @brief helper function which handles adding the next hash into the data structure
+         * 
+         */
+		    void roll_ds_sync(std::vector<uint32_t>& vec);
+        
+        /**
+         * @brief helper function which handles adding the next hash into the data structure
+         * 
+         */
+        void roll_ds_sync(std::vector<std::pair<uint32_t, uint32_t>>& vec);
 };
 
 }

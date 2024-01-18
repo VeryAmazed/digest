@@ -61,6 +61,16 @@ class ModMin : public Digester{
          */
         void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) override;    
 
+         /**
+         * @brief adds up to amount of positions and hashes of minimizers into vec, here a k-mer is considered a minimizer if its hash is congruent to congruence in the mod space 
+         *        Time Complexity: O(1) per k-mer tested
+         * 
+         * @param amount 
+         * @param vec 
+         */
+        void roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec) override;    
+
+
         /**
          * @return uint32_t, the mod space being used
          */

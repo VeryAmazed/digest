@@ -29,7 +29,7 @@ class WindowMin : public Digester{
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         WindowMin(const char* seq, size_t len, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  Digester(seq, len, k, start, minimized_h), ds(large_window), large_window(large_window), st_size(0), is_minimized(false)
+        :  Digester(seq, len, k, start, minimized_h), ds(large_window), large_window(large_window), ds_size(0), is_minimized(false)
         {	
             if(large_window == 0){
 				throw BadWindowSizeException();
@@ -57,12 +57,20 @@ class WindowMin : public Digester{
 		 */
 		virtual void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) override;
 
+		/**
+		 * @brief adds up to amount of positions and hashes of minimizers into vec, here a k-mer is considered a minimizer if its hash is the smallest in the large window, using rightmost index wins in ties 
+		 * 
+		 * @param amount 
+		 * @param vec 
+		 */
+		virtual void roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec) override;
+
 		unsigned get_large_wind_kmer_am(){
 			return large_window;
 		}
 		
-		size_t get_st_size(){
-			return st_size;
+		size_t get_ds_size(){
+			return ds_size;
 		}
 
 		// function is mainly to help with tests
@@ -76,8 +84,8 @@ class WindowMin : public Digester{
 
 		uint32_t large_window;
 
-		// internal counter that tracks the number of actual values in the segment tree
-		size_t st_size;
+		// internal counter that tracks the number of actual values in the data structure
+		size_t ds_size;
 
 		// internal bool keeping track of if we have obtained the first minimizer yet, because we don't want to add a position to the vector if it's already in there
 		bool is_minimized;
@@ -85,20 +93,34 @@ class WindowMin : public Digester{
 		// the index of previous minimizer, a minimizer is only a new minimizer if it is different from the previous minimizer
 		uint32_t prev_mini;
 
-		/**
-		 * @brief helper function which handles adding new elements into the segment tree when it is not full
-		 * 
-		 */
-		void fill_st(std::vector<uint32_t>& vec);
 	
 	private:
+
+		/**
+		 * @brief helper function which handles adding the next hash into the data structure
+		 * 
+		 */
+		void roll_ds_wind(std::vector<uint32_t>& vec);
+
+		/**
+		 * @brief helper function which handles adding the next hash into the data structure
+		 * 
+		 */
+		void roll_ds_wind(std::vector<std::pair<uint32_t, uint32_t>>& vec);
 
 		/**
 		 * @brief helper function that checks to see if the current minimizer is a new minimizer, and should thus be added to the vec
 		 * 
 		 * @param vec 
 		 */
-		void check(std::vector<uint32_t>& vec, uint32_t hash);
+		void check(std::vector<uint32_t>& vec);
+
+		/**
+		 * @brief helper function that checks to see if the current minimizer is a new minimizer, and should thus be added to the vec
+		 * 
+		 * @param vec 
+		 */
+		void check(std::vector<std::pair<uint32_t, uint32_t>>& vec);
 };
 
 }
