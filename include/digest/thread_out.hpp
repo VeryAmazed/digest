@@ -55,9 +55,21 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 /**
- * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
+ * @param seq C++ string of DNA sequence to be hashed.
  */
 void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
+    const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
+    digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
+
+/**
+ * @param vec vec will contain both the index and the hash of minimizers. 
+ * All other things previously stated about vec remain true
+ */
+void thread_mod(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
+    const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
+    digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
+    
+void thread_mod(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
@@ -84,10 +96,24 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 /**
- * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
+ * @param seq C++ string of DNA sequence to be hashed.
  */
 template <class T>
 void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
+    const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
+    digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
+
+/**
+ * @param vec vec will contain both the index and the hash of minimizers. 
+ * All other things previously stated about vec remain true
+ */
+template <class T>
+void thread_wind(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
+    const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
+    digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
+
+template <class T>
+void thread_wind(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
@@ -114,10 +140,24 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
 /**
- * @param seq char pointer poitning to the c-string of DNA sequence to be hashed.
+ * @param seq C++ string of DNA sequence to be hashed.
  */
 template <class T>
 void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
+    const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
+    digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
+
+/**
+ * @param vec vec will contain both the index and the hash of minimizers. 
+ * All other things previously stated about vec remain true
+ */
+template <class T>
+void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
+    const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
+    digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
+
+template <class T>
+void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
@@ -128,15 +168,31 @@ void thread_mod_roll(std::vector<uint32_t>& vec, const char* seq,
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
+void thread_mod_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
+    size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
+    digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
+
+
 // function that's passed to the thread for WindowMinimizers
 template <class T>
 void thread_wind_roll(std::vector<uint32_t>& vec, const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
+template <class T>
+void thread_wind_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
+    size_t ind, unsigned k, uint32_t large_wind_kmer_am, 
+    digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
+
+
 // function that's passed to the thread for Syncmers
 template <class T>
 void thread_sync_roll(std::vector<uint32_t>& vec, const char* seq, 
+    size_t ind, unsigned k, uint32_t large_wind_kmer_am,
+    digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
+
+template <class T>
+void thread_sync_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
