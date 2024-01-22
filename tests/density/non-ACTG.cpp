@@ -60,7 +60,7 @@ int main() {
     std::string str;
     
     std::vector<std::string> strs;
-    freopen("non-ACTG.txt", "r", stdin);
+    freopen("../tests/density/non-ACTG.txt", "r", stdin);
     for(int i =0; i < 100; i++){
         std::cin >> str;
         strs.pb(str);
@@ -101,7 +101,7 @@ int main() {
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
             digest::ModMin mm(strs[j], 16, mods[i], 0, 0, digest::MinimizedHashType::CANON);
-            std::vector<size_t> temp;
+            std::vector<uint32_t> temp;
             mm.roll_minimizer(100000, temp);
             double am = temp.size();
             am /= kmers[i];
@@ -112,8 +112,8 @@ int main() {
     
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::WindowMin wm(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
-            std::vector<size_t> temp;
+            digest::WindowMin<data_structure::Adaptive> wm(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
+            std::vector<uint32_t> temp;
             wm.roll_minimizer(100000, temp);
             double am = temp.size();
             am /= kmers[i];
@@ -124,8 +124,8 @@ int main() {
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::Syncmer syn(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
-            std::vector<size_t> temp;
+            digest::Syncmer<data_structure::Adaptive> syn(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
+            std::vector<uint32_t> temp;
             syn.roll_minimizer(100000, temp);
             double am = temp.size();
             am /= kmers[i];
@@ -133,7 +133,7 @@ int main() {
             sync_vec[i].pb(am);
         }
     }
-    freopen("out2.txt", "w", stdout);
+    freopen("../tests/density/out2.txt", "w", stdout);
     for(int i  = 0; i < 4; i++){
         for(size_t j = 0; j < 100; j++){
             std::cout << mod_min_vec[i][j] << " ";

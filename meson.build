@@ -28,7 +28,7 @@ install_headers(
 	'include/digest/digester.hpp', 'include/digest/mod_minimizer.hpp',
 	'include/digest/syncmer.hpp', 'include/digest/window_minimizer.hpp',
 	'include/digest/data_structure.hpp',
-  	'include/digest/syncmer.tpp', 'include/digest/window_minimizer.tpp',
+  'include/digest/syncmer.tpp', 'include/digest/window_minimizer.tpp',
 	'include/digest/thread_out.hpp', 'include/digest/thread_out.tpp',
 	install_dir: 'include/digest'
 )
@@ -67,18 +67,18 @@ if get_option('buildtype') != 'release'
   # )
 
   ### Expected Density ACTG ###
-  # executable(
-  # 	'expected_ACTG',
-  # 	'tests/density/ACTG.cpp',
-  # 	dependencies : [digest_dep]
-  # )
+  executable(
+    'expected_ACTG',
+  	'tests/density/ACTG.cpp',
+  	dependencies : [digest_dep]
+  )
   
   ### Expected Density non-ACTG ###
-  # executable(
-  # 	'expected_non-ACTG',
-  # 	'tests/density/non-ACTG.cpp',
-  # 	dependencies : [digest_dep]
-  # )
+  executable(
+  	'expected_non-ACTG',
+  	'tests/density/non-ACTG.cpp',
+  	dependencies : [digest_dep]
+  )
   
   ### test thread functions ###
   executable(

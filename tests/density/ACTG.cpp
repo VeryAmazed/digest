@@ -1,33 +1,9 @@
-#include <vector>
-#include <set>
-#include <map>
-#include <queue>
-#include <list>
-#include <unordered_map>
-#include <unordered_set>
-#include <sstream>
-#include <fstream>
-#include <algorithm>
-#include <cctype>
-#include <cmath>
-#include <string>
-#include <iostream>
-#include <cstdlib>
-#include <iterator>
-#include <utility>
-#include <deque>
-#include <ctime>
-#include <chrono>
-#include <iomanip>
-#include <cstdio>
-#include <cstring>
-#include <stack>
-#include <functional>
+#include <bits/stdc++.h>
 
 #include "digest/mod_minimizer.hpp"
 #include "digest/window_minimizer.hpp"
 #include "digest/syncmer.hpp"
-
+#include "digest/data_structure.hpp" 
 
 typedef long long ll;
 // if you end up using long double, you need to set the floating point notation to fixed, and set the percision to be very high
@@ -60,7 +36,7 @@ int main() {
     std::string str;
     
     std::vector<std::string> strs;
-    freopen("ACTG.txt", "r", stdin);
+    freopen("../tests/density/ACTG.txt", "r", stdin);
     for(int i =0; i < 100; i++){
         std::cin >> str;
         strs.pb(str);
@@ -78,7 +54,7 @@ int main() {
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
             digest::ModMin mm(strs[j], 16, mods[i], 0, 0, digest::MinimizedHashType::CANON);
-            std::vector<size_t> temp;
+            std::vector<uint32_t> temp;
             mm.roll_minimizer(100000, temp);
             double am = temp.size();
             am /= kmers;
@@ -89,8 +65,8 @@ int main() {
     
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::WindowMin wm(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
-            std::vector<size_t> temp;
+            digest::WindowMin<data_structure::Adaptive> wm(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
+            std::vector<uint32_t> temp;
             wm.roll_minimizer(100000, temp);
             double am = temp.size();
             am /= kmers;
@@ -100,15 +76,15 @@ int main() {
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::Syncmer syn(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
-            std::vector<size_t> temp;
+            digest::Syncmer<data_structure::Adaptive> syn(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
+            std::vector<uint32_t> temp;
             syn.roll_minimizer(100000, temp);
             double am = temp.size();
             am /= kmers;
             sync_vec[i].pb(am);
         }
     }
-    freopen("out1.txt", "w", stdout);
+    freopen("../tests/density/out1.txt", "w", stdout);
     for(int i  = 0; i < 4; i++){
         for(size_t j = 0; j < 100; j++){
             std::cout << mod_min_vec[i][j] << " ";
