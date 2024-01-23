@@ -158,10 +158,6 @@ struct SegmentTree {
 // 	uint32_t min() {
 // 		return *mset.rbegin();
 // 	}
-//
-// 	void min_syncmer(std::vector<uint32_t> &vec) {
-//
-// 	}
 // };
 
 template<uint32_t k>

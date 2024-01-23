@@ -31,6 +31,7 @@ This will generate `include` and `lib` folders.
 * Classes are in `digest` namespace
 * example compile: `g++ file.cpp -IPREFIX/include -LPREFIX/lib -ldigest`
 * may need `std=c++17`
+* ntHash does not support `large_window < 4`
 
 # Example
 ```cpp

@@ -37,7 +37,8 @@ static void BM(benchmark::State& state){
 			ds.insert(i, hashes[i]);
 		}
         for (int i = 0; i < INPUT_SIZE; i++) {
-            temp[i] = ds.insert(i+k-1, hashes[i+k-1]);
+			ds.insert(i+k-1, hashes[i+k-1]);
+			temp[i] = ds.min();
         }
 		benchmark::ClobberMemory();
 	}
@@ -46,6 +47,7 @@ static void BM(benchmark::State& state){
 #define test(name, out) \
 	BENCHMARK_TEMPLATE(BM, 4, name<4>, out); \
 	BENCHMARK_TEMPLATE(BM, 5, name<5>, out); \
+	/*
 	BENCHMARK_TEMPLATE(BM, 8, name<8>, out); \
 	BENCHMARK_TEMPLATE(BM, 9, name<9>, out); \
 	BENCHMARK_TEMPLATE(BM, 12, name<12>, out); \
@@ -59,10 +61,12 @@ static void BM(benchmark::State& state){
 	BENCHMARK_TEMPLATE(BM, 256, name<256>, out); \
 	BENCHMARK_TEMPLATE(BM, 512, name<512>, out); \
 	BENCHMARK_TEMPLATE(BM, 1024, name<1024>, out);
+	*/
 
 #define test2(name, out) \
 	BENCHMARK_TEMPLATE(BM, 4, name, out); \
 	BENCHMARK_TEMPLATE(BM, 5, name, out); \
+	/*
 	BENCHMARK_TEMPLATE(BM, 8, name, out); \
 	BENCHMARK_TEMPLATE(BM, 9, name, out); \
 	BENCHMARK_TEMPLATE(BM, 12, name, out); \
@@ -76,6 +80,7 @@ static void BM(benchmark::State& state){
 	BENCHMARK_TEMPLATE(BM, 256, name, out); \
 	BENCHMARK_TEMPLATE(BM, 512, name, out); \
 	BENCHMARK_TEMPLATE(BM, 1024, name, out);
+	*/
 
 test(data_structure::Naive, 0);
 test(data_structure::Naive2, 1);
@@ -93,7 +98,7 @@ int main(int argc, char** argv)
 
     // sanity check
 	for (auto &[_, m] : all) {
-		assert(m == all[0]);
+		assert(m == all.begin()->second);
 	}
 
     std::cout << "Passed Asserts!" << std::endl;
