@@ -1,4 +1,5 @@
 #include "digest/thread_out.hpp"
+#include <future>
 
 namespace thread_out
 {
@@ -12,8 +13,8 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
         }
         unsigned kmers_per_thread = num_kmers/thread_count;
         unsigned extras = num_kmers % thread_count;
-        vec.assign(thread_count, std::vector<uint32_t>());
-        std::vector<std::thread> thread_vector;
+		vec.reserve(thread_count);
+        std::vector<std::future<std::vector<uint32_t>>> thread_vector;
 
         size_t ind = start;
         for(unsigned i = 0; i < thread_count; i++){
@@ -25,15 +26,14 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
                 extras--;
             }
 
-            thread_vector.emplace_back(std::thread(static_cast<void (*)
-                (std::vector<uint32_t>&, const char*, size_t, unsigned, uint32_t, uint32_t, digest::MinimizedHashType, unsigned)>(&thread_mod_roll), 
-                std::ref(vec[i]), seq, ind, k, mod, congruence, minimized_h, assigned_kmer_am));
+            thread_vector.emplace_back(std::async(thread_mod_roll1,
+                seq, ind, k, mod, congruence, minimized_h, assigned_kmer_am));
 
             ind += assigned_kmer_am;
         }
         for(auto& t: thread_vector)
         {
-            t.join();
+            vec.emplace_back(t.get());
         }
     }
 
@@ -46,8 +46,8 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<std::pair<uint32_
         }
         unsigned kmers_per_thread = num_kmers/thread_count;
         unsigned extras = num_kmers % thread_count;
-        vec.assign(thread_count, std::vector<std::pair<uint32_t, uint32_t>>());
-        std::vector<std::thread> thread_vector;
+        vec.reserve(thread_count);
+        std::vector<std::future<std::vector<std::pair<uint32_t,uint32_t>>>> thread_vector;
 
         size_t ind = start;
         for(unsigned i = 0; i < thread_count; i++){
@@ -59,15 +59,14 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<std::pair<uint32_
                 extras--;
             }
 
-            thread_vector.emplace_back(std::thread(static_cast<void (*)
-                (std::vector<std::pair<uint32_t, uint32_t>>&, const char*, size_t, unsigned, uint32_t, uint32_t, digest::MinimizedHashType, unsigned)>(&thread_mod_roll), 
-                std::ref(vec[i]), seq, ind, k, mod, congruence, minimized_h, assigned_kmer_am));
+            thread_vector.emplace_back(std::async(thread_mod_roll2,
+                seq, ind, k, mod, congruence, minimized_h, assigned_kmer_am));
 
             ind += assigned_kmer_am;
         }
         for(auto& t: thread_vector)
         {
-            t.join();
+			vec.emplace_back(t.get());
         }
     }
 
@@ -83,18 +82,22 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<std::pair<uint32_
         thread_mod(thread_count, vec, seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h);
     }
 
-void thread_mod_roll(std::vector<uint32_t>& vec, const char* seq, 
+std::vector<uint32_t> thread_mod_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am){
+		std::vector<uint32_t> out;
         digest::ModMin dig(seq, ind + assigned_kmer_am + k -1, k, mod, congruence, ind, minimized_h);
-        dig.roll_minimizer(assigned_kmer_am, vec);
+        dig.roll_minimizer(assigned_kmer_am, out);
+		return out;
     }
 
-void thread_mod_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
+std::vector<std::pair<uint32_t,uint32_t>> thread_mod_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am){
+		std::vector<std::pair<uint32_t,uint32_t>> out;
         digest::ModMin dig(seq, ind + assigned_kmer_am + k -1, k, mod, congruence, ind, minimized_h);
-        dig.roll_minimizer(assigned_kmer_am, vec);
+        dig.roll_minimizer(assigned_kmer_am, out);
+		return out;
     }
 
 template <class T>
@@ -107,8 +110,8 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
         }
         unsigned lwinds_per_thread = num_lwinds/thread_count;
         unsigned extras = num_lwinds % thread_count;
-        vec.assign(thread_count, std::vector<uint32_t>());
-        std::vector<std::thread> thread_vector;
+        vec.reserve(thread_count);
+        std::vector<std::future<std::vector<uint32_t>>> thread_vector;
 
         size_t ind = start;
         for(unsigned i = 0; i < thread_count; i++){
@@ -120,15 +123,14 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
                 extras--;
             }
 
-            thread_vector.emplace_back(std::thread(static_cast<void (*)
-                (std::vector<uint32_t>&, const char*, size_t, unsigned, uint32_t, digest::MinimizedHashType, unsigned)>(&thread_wind_roll<T>), 
-                std::ref(vec[i]), seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
+            thread_vector.emplace_back(std::async(thread_wind_roll1<T>,
+                seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
 
             ind += assigned_lwind_am;
         }
         for(auto& t: thread_vector)
         {
-            t.join();
+			vec.emplace_back(t.get());
         }
         
         // handle duplicates
@@ -153,8 +155,8 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<std::pair<uint32
         }
         unsigned lwinds_per_thread = num_lwinds/thread_count;
         unsigned extras = num_lwinds % thread_count;
-        vec.assign(thread_count, std::vector<std::pair<uint32_t, uint32_t>>());
-        std::vector<std::thread> thread_vector;
+        vec.reserve(thread_count);
+        std::vector<std::future<std::pair<uint32_t, uint32_t>>> thread_vector;
 
         size_t ind = start;
         for(unsigned i = 0; i < thread_count; i++){
@@ -166,15 +168,14 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<std::pair<uint32
                 extras--;
             }
 
-            thread_vector.emplace_back(std::thread(static_cast<void (*)
-                (std::vector<std::pair<uint32_t, uint32_t>>&, const char*, size_t, unsigned, uint32_t, digest::MinimizedHashType, unsigned)>(&thread_wind_roll<T>), 
-                std::ref(vec[i]), seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
+            thread_vector.emplace_back(std::async(thread_wind_roll2<T>,
+                seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
 
             ind += assigned_lwind_am;
         }
         for(auto& t: thread_vector)
         {
-            t.join();
+			vec.emplace_back(t.get());
         }
         
         // handle duplicates
@@ -204,19 +205,23 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<std::pair<uint32
     }
 
 template <class T>
-void thread_wind_roll(std::vector<uint32_t>& vec, const char* seq, 
+std::vector<uint32_t> thread_wind_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am){
+		std::vector<uint32_t> out;
         digest::WindowMin<T> dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, large_wind_kmer_am, ind, minimized_h);
-        dig.roll_minimizer(assigned_lwind_am, vec);
+        dig.roll_minimizer(assigned_lwind_am, out);
+		return out;
     }
 
 template <class T>
-void thread_wind_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
+std::vector<std::pair<uint32_t, uint32_t>> thread_wind_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am){
+		std::vector<std::pair<uint32_t, uint32_t>> out;
         digest::WindowMin<T> dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, large_wind_kmer_am, ind, minimized_h);
-        dig.roll_minimizer(assigned_lwind_am, vec);
+        dig.roll_minimizer(assigned_lwind_am, out);
+		return out;
     }
 
 template <class T>
@@ -229,8 +234,8 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
         }
         unsigned lwinds_per_thread = num_lwinds/thread_count;
         unsigned extras = num_lwinds % thread_count;
-        vec.assign(thread_count, std::vector<uint32_t>());
-        std::vector<std::thread> thread_vector;
+        vec.reserve(thread_count);
+        std::vector<std::future<std::vector<uint32_t>>> thread_vector;
 
         size_t ind = start;
         for(unsigned i = 0; i < thread_count; i++){
@@ -242,15 +247,14 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
                 extras--;
             }
 
-            thread_vector.emplace_back(std::thread(static_cast<void (*)
-                (std::vector<uint32_t>&, const char*, size_t, unsigned, uint32_t, digest::MinimizedHashType, unsigned)>(&thread_sync_roll<T>), 
-                std::ref(vec[i]), seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
+            thread_vector.emplace_back(std::async(thread_sync_roll1<T>,
+                seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
 
             ind += assigned_lwind_am;
         }
         for(auto& t: thread_vector)
         {
-            t.join();
+			vec.emplace_back(t.get());
         }
         
     }
@@ -264,8 +268,8 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32
         }
         unsigned lwinds_per_thread = num_lwinds/thread_count;
         unsigned extras = num_lwinds % thread_count;
-        vec.assign(thread_count, std::vector<std::pair<uint32_t, uint32_t>>());
-        std::vector<std::thread> thread_vector;
+        vec.reserve(thread_count);
+        std::vector<std::future<std::vector<std::pair<uint32_t, uint32_t>>>> thread_vector;
 
         size_t ind = start;
         for(unsigned i = 0; i < thread_count; i++){
@@ -277,15 +281,14 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32
                 extras--;
             }
 
-            thread_vector.emplace_back(std::thread(static_cast<void (*)
-                (std::vector<std::pair<uint32_t, uint32_t>>&, const char*, size_t, unsigned, uint32_t, digest::MinimizedHashType, unsigned)>(&thread_sync_roll<T>), 
-                std::ref(vec[i]), seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
+            thread_vector.emplace_back(std::async(thread_sync_roll2<T>,
+                seq, ind, k, large_wind_kmer_am, minimized_h, assigned_lwind_am));
 
             ind += assigned_lwind_am;
         }
         for(auto& t: thread_vector)
         {
-            t.join();
+			vec.emplace_back(t.get());
         }
         
     }
@@ -305,19 +308,23 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32
     }
     
 template <class T>
-void thread_sync_roll(std::vector<uint32_t>& vec, const char* seq, 
+std::vector<uint32_t> thread_sync_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am){
+		std::vector<uint32_t> out;
         digest::Syncmer<T> dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, large_wind_kmer_am, ind, minimized_h);
-        dig.roll_minimizer(assigned_lwind_am, vec);
+        dig.roll_minimizer(assigned_lwind_am, out);
+		return out;
     }
 
 template <class T>
-void thread_sync_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
+std::vector<std::pair<uint32_t, uint32_t>> thread_sync_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am){
+		std::vector<std::pair<uint32_t, uint32_t>> out;
         digest::Syncmer<T> dig(seq, ind + assigned_lwind_am + k + large_wind_kmer_am -1 -1, k, large_wind_kmer_am, ind, minimized_h);
-        dig.roll_minimizer(assigned_lwind_am, vec);
+        dig.roll_minimizer(assigned_lwind_am, out);
+		return out;
     }
 }
 

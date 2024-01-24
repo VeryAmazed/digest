@@ -6,6 +6,7 @@
 #include "digest/syncmer.hpp"
 #include <cstdint>
 #include <thread>
+#include <vector>
 
 /*
     Possible implementation for multi-threading the digestion of a single sequence.
@@ -164,35 +165,35 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32
 //------------- WORKER FUNCTIONS ----------------
 
 // function that's passed to the thread for ModMinmizers
-void thread_mod_roll(std::vector<uint32_t>& vec, const char* seq, 
+std::vector<uint32_t> thread_mod_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
-void thread_mod_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
+std::vector<std::pair<uint32_t,uint32_t>> thread_mod_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
 
 // function that's passed to the thread for WindowMinimizers
 template <class T>
-void thread_wind_roll(std::vector<uint32_t>& vec, const char* seq, 
+std::vector<uint32_t> thread_wind_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 template <class T>
-void thread_wind_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
+std::vector<std::pair<uint32_t,uint32_t>> thread_wind_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 
 // function that's passed to the thread for Syncmers
 template <class T>
-void thread_sync_roll(std::vector<uint32_t>& vec, const char* seq, 
+std::vector<uint32_t> thread_sync_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 template <class T>
-void thread_sync_roll(std::vector<std::pair<uint32_t, uint32_t>>& vec, const char* seq, 
+std::vector<std::pair<uint32_t,uint32_t>> thread_sync_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
