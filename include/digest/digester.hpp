@@ -1,6 +1,7 @@
 #ifndef DIGESTER_HPP
 #define DIGESTER_HPP
 
+#include <cstdint>
 #include <nthash/nthash.hpp>
 #include <nthash/kmer.hpp>
 #include <stdexcept>
@@ -13,7 +14,7 @@ class BadConstructionException : public std::exception
 {
 	const char * what () const throw ()
     {
-    	return "minimized_h must be either 0, 1, or 2, k must be greater than 3, start must be less than len";
+    	return "k must be greater than 3, start must be less than len";
     }
 };
 
@@ -23,6 +24,10 @@ class NotRolledTillEndException : public std::exception
     {
     	return "Iterator must be at the end of the current sequence before appending a new one.";
     }
+};
+
+enum class MinimizedHashType{
+    CANON, FORWARD, REVERSE
 };
 
 // Only supports characters in DNA and N, upper or lower case
@@ -35,12 +40,13 @@ class Digester{
          * @param start 0-indexed position in seq to start hashing from. 
          * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
          * 
-         * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
-         *      or if the starting position is not at least k-1 from the end of the string
+         * @throws BadConstructionException Thrown if k is less than 4,
+         *      or if the starting position is after the end of the string
+		 *      or if minimized_h is greater than 2
          */
-        Digester(const char* seq, size_t len, unsigned k, size_t start = 0, unsigned minimized_h = 0) 
+        Digester(const char* seq, size_t len, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) 
             : seq(seq), len(len), offset(0), start(start), end(start+k), chash(0), fhash(0), rhash(0), k(k), minimized_h(minimized_h) {
-                if(k < 4 ||start >= len || minimized_h > 2){
+                if(k < 4 or start >= len or (int)minimized_h > 2) {
                     throw BadConstructionException();
                 }
                 init_hash();
@@ -52,26 +58,14 @@ class Digester{
          * @param start 0-indexed position in seq to start hashing from. 
          * @param minimized_h hash to be minimized, 0 for canoncial, 1 for forward, 2 for reverse
          * 
-         * @throws BadConstructionException Thrown if k equals 0 or is greater than the length of the sequence, if minimized_h is not 0, 1, or 2,
-         *      or if the starting position is not at least k-1 from the end of the string
+         * @throws BadConstructionException Thrown if k is less than 4,
+         *      or if the starting position is after the end of the string
          */
-        Digester(const std::string& seq, unsigned k, size_t start = 0, unsigned minimized_h = 0) :
+        Digester(const std::string& seq, unsigned k, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
             Digester(seq.c_str(), seq.size(), k, start, minimized_h) {}
 
-        Digester(const Digester& copy){
-            copyOver(copy);
-            this->c_outs = copy.c_outs;
-        }
+		virtual ~Digester() = default;
 
-        Digester& operator=(const Digester& copy){
-            copyOver(copy);
-            this->c_outs.assign(copy.c_outs.begin(), copy.c_outs.end());
-            return *this;
-        }
-
-        virtual ~Digester(){
-        }
-        
         /**
          * @return bool, true if values of the 3 hashes are meaningful, false otherwise, i.e. the object wasn't able to initialize with a valid hash or roll_one() was called when already at end of sequence
          */
@@ -101,7 +95,15 @@ class Digester{
          * @param amount number of minimizers you want to generate
          * @param vec a reference to a vector of size_t's, the positions returned will go there
          */
-        virtual void roll_minimizer(unsigned amount, std::vector<size_t>& vec) = 0;
+        virtual void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) = 0;
+
+        /**
+         * @brief returns the positions (pair.first), as defined by get_pos(), and the hashes (pair.second) of minimizers up to the amount specified 
+         * 
+         * @param amount number of minimizers you want to generate
+         * @param vec a reference to a vector of size_t's, the positions returned will go there
+         */
+        virtual void roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec) = 0;
 
         /**
          * @return current index of the first character of the current kmer that has been hashed
@@ -191,7 +193,7 @@ class Digester{
         /**
          * @return unsigned, a number representing the hash you are minimizing, 0 for canoncial, 1 for forward, 2 for reverse 
          */
-        unsigned get_minimized_h(){
+        MinimizedHashType get_minimized_h(){
             return minimized_h;
         }
 
@@ -203,26 +205,24 @@ class Digester{
         }
         
     protected:
-        /**
-         * Helper function
-         * 
-         * @param copy, Digester object you want to copy from 
-         */
-        void copyOver(const Digester& copy){
-            this->seq = copy.seq;
-            this->len = copy.len;
-            this->k = copy.k;
-            this->offset = copy.offset;
-            this->start = copy.start;
-            this->end = copy.end;
-            this->is_valid_hash = copy.is_valid_hash;
-            this->minimized_h = copy.minimized_h;
-            if(this->is_valid_hash){
-                this->chash = copy.chash;
-                this->rhash = copy.rhash;
-                this->fhash = copy.fhash;
-            }
-        }
+		std::array<bool,256> actg = {
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // all in hex:
+			0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,0, // 41 = 'A', 43 = 'C', 47 = 'G'
+			0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0, // 54 = 'T'
+			0,1,0,1,0,0,0,1,0,0,0,0,0,0,0,0, // 61 = 'a', 63 = 'c',	67 = 'g'
+			0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0, // 74 = 't'
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		};
 
         /**
          * Helper function
@@ -231,10 +231,7 @@ class Digester{
          * @return bool, true if in is an upper or lowercase ACTG character, false otherwise
          */
         bool is_ACTG(char in){
-            if(in == 'a' || in == 'A' || in == 'c' || in == 'C' || in == 't' || in == 'T' || in == 'g' || in == 'G'){
-                return true;
-            }
-            return false;
+			return actg[in];
         }
 
         /**
@@ -277,7 +274,7 @@ class Digester{
         std::deque<char> c_outs;
         
         //Hash value to be minimized, 0 for canonical, 1 for forward, 2 for reverse
-        unsigned minimized_h;
+        MinimizedHashType minimized_h;
 
         // bool representing whether the current hash is meaningful, i.e. corresponds to the k-mer at get_pos()
         bool is_valid_hash = false;

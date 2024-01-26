@@ -20,19 +20,47 @@ Syncmer classifies a large window as a minimizer if its smallest value is equal 
 We use [Meson](https://mesonbuild.com). (Very) old version will not work.
 
 PREFIX is an absolute path to install location. If excluded, will install to system libraries.
-```
-meson setup --prefix=PREFIX build
+```bash
+meson setup --prefix=PREFIX --buildtype=release build
 meson install -C build
 ```
-This will generate `include/` and `lib/` folders.
+This will generate `include` and `lib` folders.
 
 # Usage
 * Headers at `#include <digest/___.hpp>`
 * Classes are in `digest` namespace
 * example compile: `g++ file.cpp -IPREFIX/include -LPREFIX/lib -ldigest`
 * may need `std=c++17`
+* ntHash does not support `large_window < 4`
+
+# Example
+```cpp
+digest::WindowMin<data_structure::Naive<8>> wm(str, 16, 8);
+std::vector<size_t> temp;
+wm.roll_minimizer(100000, temp);
+```
+Example snippet to collect up to 100000 indices of minimizers.
+A vector must be passed in, which will be appended to.
+Each WindowMin / Syncmer object is templated by the algorithm / data structure to find minimizers.
+
+# Selecting the correct `data_structure`
+our general guidelines:
+* for `large_window` < 12, use Naive
+* for 12 <= `large_window` <= 16 use SegmentTree
+* for `large_window` > 16 use Naive2
+
+adaptive performs at worst about 10% slower than best  
+adaptive64 performs at worst about 100% slower than best
+
+# Benchmark / Tests
+```bash
+meson setup build
+cd build && meson compile
+```
+this will generate proper executables for benchmark/testing
 
 # Todo
-License  
-expected density?  
-combine headers  
+license  
+clean up branches  
+policy for only actg  
+threading (why no join at end)  

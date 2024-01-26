@@ -1,0 +1,118 @@
+2024-01-16T22:25:35+08:00
+Running ./bench_ds
+Run on (8 X 4800 MHz CPU s)
+CPU Caches:
+  L1 Data 48 KiB (x4)
+  L1 Instruction 32 KiB (x4)
+  L2 Unified 1280 KiB (x4)
+  L3 Unified 12288 KiB (x1)
+Load Average: 0.31, 0.63, 0.77
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+-----------------------------------------------------------------------------------------
+Benchmark                                               Time             CPU   Iterations
+-----------------------------------------------------------------------------------------
+BM<4, data_structure::Naive<4>, 0>               12002885 ns     12002960 ns           60
+BM<5, data_structure::Naive<5>, 0>               13329839 ns     13321898 ns           53
+BM<8, data_structure::Naive<8>, 0>               18725452 ns     18723820 ns           38
+BM<9, data_structure::Naive<9>, 0>               19902924 ns     19893519 ns           35
+BM<12, data_structure::Naive<12>, 0>             25223179 ns     25219826 ns           28
+BM<16, data_structure::Naive<16>, 0>             31787121 ns     31786449 ns           20
+BM<17, data_structure::Naive<17>, 0>             33934332 ns     33928382 ns           21
+BM<32, data_structure::Naive<32>, 0>            177201271 ns    177162871 ns            4
+BM<33, data_structure::Naive<33>, 0>            121327480 ns    121323403 ns            6
+BM<64, data_structure::Naive<64>, 0>            286007166 ns    286007302 ns            2
+BM<96, data_structure::Naive<96>, 0>            396155357 ns    396141955 ns            2
+BM<128, data_structure::Naive<128>, 0>          533507347 ns    533510301 ns            1
+BM<256, data_structure::Naive<256>, 0>         1063945055 ns   1063713323 ns            1
+BM<512, data_structure::Naive<512>, 0>         2172216415 ns   2172143013 ns            1
+BM<1024, data_structure::Naive<1024>, 0>       4419593096 ns   4418807392 ns            1
+BM<4, data_structure::Naive2<4>, 1>              38613107 ns     38611031 ns           18
+BM<5, data_structure::Naive2<5>, 1>              36083711 ns     36081676 ns           19
+BM<8, data_structure::Naive2<8>, 1>              36268222 ns     36265823 ns           19
+BM<9, data_structure::Naive2<9>, 1>              33875182 ns     33857786 ns           21
+BM<12, data_structure::Naive2<12>, 1>            31046531 ns     31036933 ns           22
+BM<16, data_structure::Naive2<16>, 1>            31434142 ns     31430777 ns           23
+BM<17, data_structure::Naive2<17>, 1>            30378222 ns     30367722 ns           22
+BM<32, data_structure::Naive2<32>, 1>            28102961 ns     28091607 ns           25
+BM<33, data_structure::Naive2<33>, 1>            28769900 ns     28764200 ns           24
+BM<64, data_structure::Naive2<64>, 1>            23014084 ns     23014595 ns           30
+BM<96, data_structure::Naive2<96>, 1>            20710496 ns     20709193 ns           35
+BM<128, data_structure::Naive2<128>, 1>          18177284 ns     18175982 ns           36
+BM<256, data_structure::Naive2<256>, 1>          18741751 ns     18733645 ns           45
+BM<512, data_structure::Naive2<512>, 1>          17928713 ns     17926806 ns           38
+BM<1024, data_structure::Naive2<1024>, 1>        13959045 ns     13954854 ns           44
+BM<4, data_structure::MonoQueue<4>, 2>           65880799 ns     65853414 ns           10
+BM<5, data_structure::MonoQueue<5>, 2>           70925212 ns     70910434 ns           10
+BM<8, data_structure::MonoQueue<8>, 2>           79202837 ns     79198649 ns            9
+BM<9, data_structure::MonoQueue<9>, 2>          102113928 ns    102110091 ns            7
+BM<12, data_structure::MonoQueue<12>, 2>        101923568 ns    101903703 ns            7
+BM<16, data_structure::MonoQueue<16>, 2>         86640984 ns     86615487 ns            8
+BM<17, data_structure::MonoQueue<17>, 2>         84194720 ns     84186912 ns            8
+BM<32, data_structure::MonoQueue<32>, 2>         82498938 ns     82484956 ns            8
+BM<33, data_structure::MonoQueue<33>, 2>         94092548 ns     94048635 ns            8
+BM<64, data_structure::MonoQueue<64>, 2>        104736464 ns    104682873 ns            7
+BM<96, data_structure::MonoQueue<96>, 2>         88069405 ns     88038034 ns            7
+BM<128, data_structure::MonoQueue<128>, 2>       82925946 ns     82902306 ns            8
+BM<256, data_structure::MonoQueue<256>, 2>       79569313 ns     79542835 ns            9
+BM<512, data_structure::MonoQueue<512>, 2>       98417431 ns     98373223 ns            8
+BM<1024, data_structure::MonoQueue<1024>, 2>     85307121 ns     85282296 ns            7
+BM<4, data_structure::SegmentTree<4>, 3>         17907149 ns     17901481 ns           40
+BM<5, data_structure::SegmentTree<5>, 3>         22418453 ns     22407348 ns           31
+BM<8, data_structure::SegmentTree<8>, 3>         22446079 ns     22438076 ns           31
+BM<9, data_structure::SegmentTree<9>, 3>         26575221 ns     26566246 ns           27
+BM<12, data_structure::SegmentTree<12>, 3>       26807061 ns     26796762 ns           26
+BM<16, data_structure::SegmentTree<16>, 3>       29820347 ns     29807171 ns           25
+BM<17, data_structure::SegmentTree<17>, 3>       41304911 ns     41291370 ns           17
+BM<32, data_structure::SegmentTree<32>, 3>       41525210 ns     41510973 ns           17
+BM<33, data_structure::SegmentTree<33>, 3>       44074586 ns     44056254 ns           14
+BM<64, data_structure::SegmentTree<64>, 3>       48552647 ns     48543442 ns           16
+BM<96, data_structure::SegmentTree<96>, 3>       53055745 ns     53034826 ns           13
+BM<128, data_structure::SegmentTree<128>, 3>     50416291 ns     50401129 ns           12
+BM<256, data_structure::SegmentTree<256>, 3>     51359397 ns     51355429 ns           13
+BM<512, data_structure::SegmentTree<512>, 3>     55571079 ns     55570411 ns           13
+BM<1024, data_structure::SegmentTree<1024>, 3>   62369477 ns     62357425 ns           11
+BM<4, data_structure::Set<4>, 4>                439876676 ns    439712322 ns            2
+BM<5, data_structure::Set<5>, 4>                507309675 ns    507071863 ns            1
+BM<8, data_structure::Set<8>, 4>                595602512 ns    595588977 ns            1
+BM<9, data_structure::Set<9>, 4>                595340967 ns    595242978 ns            1
+BM<12, data_structure::Set<12>, 4>              656214476 ns    656015492 ns            1
+BM<16, data_structure::Set<16>, 4>              684305429 ns    684018961 ns            1
+BM<17, data_structure::Set<17>, 4>              685297489 ns    685090991 ns            1
+BM<32, data_structure::Set<32>, 4>              729395628 ns    729110573 ns            1
+BM<33, data_structure::Set<33>, 4>              778661966 ns    778381475 ns            1
+BM<64, data_structure::Set<64>, 4>              954060316 ns    953539067 ns            1
+BM<96, data_structure::Set<96>, 4>              974137545 ns    973817723 ns            1
+BM<128, data_structure::Set<128>, 4>            839433670 ns    839174272 ns            1
+BM<256, data_structure::Set<256>, 4>            821573734 ns    821374051 ns            1
+BM<512, data_structure::Set<512>, 4>            842225313 ns    841987435 ns            1
+BM<1024, data_structure::Set<1024>, 4>          893881559 ns    893692365 ns            1
+BM<4, data_structure::Adaptive, 5>               15187054 ns     15181573 ns           49
+BM<5, data_structure::Adaptive, 5>               17322457 ns     17316902 ns           40
+BM<8, data_structure::Adaptive, 5>               23088074 ns     23085723 ns           30
+BM<9, data_structure::Adaptive, 5>               27623687 ns     27611530 ns           28
+BM<12, data_structure::Adaptive, 5>              34351499 ns     34323742 ns           19
+BM<16, data_structure::Adaptive, 5>              39876461 ns     39861997 ns           20
+BM<17, data_structure::Adaptive, 5>              36542626 ns     36518788 ns           17
+BM<32, data_structure::Adaptive, 5>              31436866 ns     31432821 ns           22
+BM<33, data_structure::Adaptive, 5>              32938628 ns     32936875 ns           21
+BM<64, data_structure::Adaptive, 5>              25691373 ns     25689705 ns           28
+BM<96, data_structure::Adaptive, 5>              21985108 ns     21983702 ns           31
+BM<128, data_structure::Adaptive, 5>             25458598 ns     25445193 ns           30
+BM<256, data_structure::Adaptive, 5>             22501267 ns     22487297 ns           32
+BM<512, data_structure::Adaptive, 5>             19644837 ns     19635404 ns           36
+BM<1024, data_structure::Adaptive, 5>            16464202 ns     16459885 ns           38
+BM<4, data_structure::Adaptive64, 6>             29163817 ns     29158125 ns           23
+BM<5, data_structure::Adaptive64, 6>             34950921 ns     34950287 ns           19
+BM<8, data_structure::Adaptive64, 6>             50490308 ns     50489462 ns           10
+BM<9, data_structure::Adaptive64, 6>             56240815 ns     56211592 ns           13
+BM<12, data_structure::Adaptive64, 6>            76348649 ns     76311890 ns            9
+BM<16, data_structure::Adaptive64, 6>            44946492 ns     44935639 ns           16
+BM<17, data_structure::Adaptive64, 6>            43889144 ns     43877143 ns           17
+BM<32, data_structure::Adaptive64, 6>            51883868 ns     51853773 ns           14
+BM<33, data_structure::Adaptive64, 6>            51610402 ns     51587092 ns           14
+BM<64, data_structure::Adaptive64, 6>            48110628 ns     48088834 ns           15
+BM<96, data_structure::Adaptive64, 6>            37528739 ns     37515959 ns           17
+BM<128, data_structure::Adaptive64, 6>           36556658 ns     36546416 ns           19
+BM<256, data_structure::Adaptive64, 6>           35188234 ns     35176882 ns           20
+BM<512, data_structure::Adaptive64, 6>           42869949 ns     42859926 ns           20
+BM<1024, data_structure::Adaptive64, 6>          42446431 ns     42442190 ns           17
