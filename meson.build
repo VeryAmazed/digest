@@ -45,9 +45,9 @@ if get_option('buildtype') != 'release'
   ### test ###
   # catch2 = dependency('catch2-with-main')
   # executable(
-  #	'tests',
-  #	'tests/test/test.cpp',
-  #  dependencies : [catch2, digest_dep],
+  #	 'tests',
+  #	 'tests/test/test.cpp',
+  #   dependencies : [catch2, digest_dep],
   # )
 
   ### benchmark ###

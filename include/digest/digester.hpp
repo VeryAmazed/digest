@@ -35,7 +35,7 @@ enum class BadCharPolicy{
 };
 
 // Only supports characters in DNA and N, upper or lower case
-template <BadCharPolicy P>
+template <class P>
 class Digester{
     public:
         /**

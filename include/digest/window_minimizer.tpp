@@ -1,7 +1,7 @@
 #include "digest/window_minimizer.hpp"
 
 namespace digest{
-	template<BadCharPolicy P, class T>
+	template<class P, class T>
     void WindowMin<P, T>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
 		amount += vec.size();
 
@@ -23,7 +23,7 @@ namespace digest{
         }
     }
 
-	template<BadCharPolicy P, class T>
+	template<class P, class T>
     void WindowMin<P, T>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		amount += vec.size();
 
@@ -45,7 +45,7 @@ namespace digest{
         }
     }
 
-	template<BadCharPolicy P, class T>
+	template<class P, class T>
     void WindowMin<P, T>::roll_ds_wind(std::vector<uint32_t>& vec){
 		if(get_minimized_h() == digest::MinimizedHashType::CANON){
 			ds.insert(get_pos(), chash);
@@ -59,7 +59,7 @@ namespace digest{
 		roll_one();
     }
 
-	template<BadCharPolicy P, class T>
+	template<class P, class T>
     void WindowMin<P, T>::roll_ds_wind(std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		if(get_minimized_h() == digest::MinimizedHashType::CANON){
 			ds.insert(get_pos(), chash);
@@ -73,7 +73,7 @@ namespace digest{
 		roll_one();
     }
 
-	template<BadCharPolicy P, class T>
+	template<class P, class T>
     void WindowMin<P, T>::check(std::vector<uint32_t>& vec){
         if(is_minimized){
             if(ds.min() != prev_mini){
@@ -87,7 +87,7 @@ namespace digest{
         }
     }
 
-	template<BadCharPolicy P, class T>
+	template<class P, class T>
     void WindowMin<P, T>::check(std::vector<std::pair<uint32_t, uint32_t>>& vec){
         if(is_minimized){
             if(ds.min() != prev_mini){

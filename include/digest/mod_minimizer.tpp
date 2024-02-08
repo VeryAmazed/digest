@@ -2,6 +2,8 @@
 #include <cstdint>
 
 namespace digest{
+
+	template <class P>
     void ModMin<P>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
         if(!is_valid_hash) return;
 
@@ -31,6 +33,7 @@ namespace digest{
         } while(roll_one() && vec.size() < amount);
     }
 
+	template <class P>
 	void ModMin<P>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
         if(!is_valid_hash) return;
 

@@ -2,14 +2,14 @@
 
 namespace digest{
     
-
-    void Digester::append_seq(const char* seq, size_t len){
+    template <class P>
+    void Digester<P>::append_seq(const char* seq, size_t len){
         if(end < this->len){
             throw NotRolledTillEndException();
         }
         offset += this->len;
         size_t ind = this->len-1;
-        
+
         /*
             this is for the case where we call append_seq after having previously called append_seq and not having gotten through the deque
             In such a case, since append_seq initializes a hash, we need to get rid of the first character in the deque since if we just initialized the hash
@@ -71,11 +71,13 @@ namespace digest{
         this->len = len;
     }
 
-    void Digester::append_seq(const std::string& seq){
+    template <class P>
+    void Digester<P>::append_seq(const std::string& seq){
         append_seq(seq.c_str(), seq.size());
     }
 
-    bool Digester::init_hash(){
+    template <class P>
+    bool Digester<P>::init_hash(){
         c_outs.clear();
         while(end-1 < len){
             bool works = true;
@@ -101,7 +103,8 @@ namespace digest{
         return false;
     }
 
-    bool Digester::roll_one(){
+    template <class P>
+    bool Digester<P>::roll_one(){
         if(!is_valid_hash){
             return false;
         }

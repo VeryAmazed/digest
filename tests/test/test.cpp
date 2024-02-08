@@ -34,7 +34,8 @@ void setupStrings(){
 	}
 }
 
-void base_constructor(digest::Digester& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h){
+template <class P>
+void base_constructor(digest::Digester<P>& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h){
 	INFO("String is: " << str);
 	INFO("K is: " << k);
 	INFO("Pos is: " << dig.get_pos());
@@ -57,7 +58,8 @@ void base_constructor(digest::Digester& dig, std::string& str, unsigned k, size_
 	}
 }
 
-void base_dig_comp(digest::Digester& dig1, digest::Digester& dig2){
+template <class P>
+void base_dig_comp(digest::Digester<P>& dig1, digest::Digester<P>& dig2){
 	CHECK(strcmp(dig1.get_sequence(), dig2.get_sequence()) == 0);
 	CHECK(dig1.get_len() == dig2.get_len());
 	CHECK(dig1.get_k() == dig2.get_k());
@@ -70,7 +72,8 @@ void base_dig_comp(digest::Digester& dig1, digest::Digester& dig2){
 	}
 }
 
-void base_dig_roll(digest::Digester& dig1, digest::Digester& dig2){
+template <class P>
+void base_dig_roll(digest::Digester<P>& dig1, digest::Digester<P>& dig2){
 	while(dig1.get_is_valid_hash()){
 		dig1.roll_one();
 		dig2.roll_one();
@@ -81,14 +84,15 @@ void base_dig_roll(digest::Digester& dig1, digest::Digester& dig2){
 	CHECK(dig1.get_is_valid_hash() == dig2.get_is_valid_hash());
 }
 
-void ModMin_constructor(digest::ModMin& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h, uint64_t mod, uint64_t congruence){
+template <class P>
+void ModMin_constructor(digest::ModMin<P>& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h, uint64_t mod, uint64_t congruence){
 	base_constructor(dig, str, k, pos, minimized_h);
 	CHECK(dig.get_mod() ==  mod);
 	CHECK(dig.get_congruence() == congruence);
 }
 
-template <class T>
-void WindowMin_constructor(digest::WindowMin<T>& dig, std::string& str, unsigned k, unsigned large_wind_kmer_am, size_t pos, digest::MinimizedHashType minimized_h){
+template <class P, class T>
+void WindowMin_constructor(digest::WindowMin<P, T>& dig, std::string& str, unsigned k, unsigned large_wind_kmer_am, size_t pos, digest::MinimizedHashType minimized_h){
 	base_constructor(dig, str, k, pos, minimized_h);
 	CHECK(dig.get_large_wind_kmer_am() == large_wind_kmer_am);
 	// CHECK(dig.get_st_index() == 0);
@@ -96,15 +100,16 @@ void WindowMin_constructor(digest::WindowMin<T>& dig, std::string& str, unsigned
 	CHECK(dig.get_is_minimized() == false);
 }
 
-void ModMin_dig_comp(digest::ModMin& dig1, digest::ModMin& dig2){
+template <class P>
+void ModMin_dig_comp(digest::ModMin<P>& dig1, digest::ModMin<P>& dig2){
 	base_dig_comp(dig1, dig2);
 	CHECK(dig1.get_mod() ==  dig2.get_mod());
 	CHECK(dig1.get_congruence() == dig2.get_congruence());
 	base_dig_roll(dig1, dig2);
 }
 
-template <class T>
-void WindowMin_roll_minimizers_comp(digest::WindowMin<T>& dig1, digest::WindowMin<T>& dig2){
+template <class P, class T>
+void WindowMin_roll_minimizers_comp(digest::WindowMin<P, T>& dig1, digest::WindowMin<P, T>& dig2){
 	std::vector<uint32_t> vec1;
 	std::vector<uint32_t> vec2;
 	dig1.roll_minimizer(1000, vec1);
@@ -115,8 +120,8 @@ void WindowMin_roll_minimizers_comp(digest::WindowMin<T>& dig1, digest::WindowMi
 	}
 }
 
-template <class T>
-void Syncmer_roll_minimizers_comp(digest::Syncmer<T>& dig1, digest::Syncmer<T>& dig2){
+template <class P, class T>
+void Syncmer_roll_minimizers_comp(digest::Syncmer<P, T>& dig1, digest::Syncmer<P, T>& dig2){
 	std::vector<uint32_t> vec1;
 	std::vector<uint32_t> vec2;
 	dig1.roll_minimizer(1000, vec1);
@@ -127,8 +132,8 @@ void Syncmer_roll_minimizers_comp(digest::Syncmer<T>& dig1, digest::Syncmer<T>& 
 	}
 }
 
-template <class T>
-void WindowMin_dig_comp(digest::WindowMin<T>& dig1, digest::WindowMin<T>& dig2){
+template <class P, class T>
+void WindowMin_dig_comp(digest::WindowMin<P, T>& dig1, digest::WindowMin<P, T>& dig2){
 	base_dig_comp(dig1, dig2);
 	CHECK(dig1.get_large_wind_kmer_am() == dig2.get_large_wind_kmer_am());
 	CHECK(dig1.get_ds_size() == dig2.get_ds_size());
@@ -137,8 +142,8 @@ void WindowMin_dig_comp(digest::WindowMin<T>& dig1, digest::WindowMin<T>& dig2){
 	WindowMin_roll_minimizers_comp(dig1, dig2);
 }
 
-template <class T, class U>
-void Syncmer_dig_comp(digest::Syncmer<T>& dig1, digest::Syncmer<U>& dig2){
+template <class P, class T>
+void Syncmer_dig_comp(digest::Syncmer<P, T>& dig1, digest::Syncmer<P, T>& dig2){
 	base_dig_comp(dig1, dig2);
 	CHECK(dig1.get_large_wind_kmer_am() == dig2.get_large_wind_kmer_am());
 	CHECK(dig1.get_ds_size() == dig2.get_ds_size());
@@ -147,7 +152,8 @@ void Syncmer_dig_comp(digest::Syncmer<T>& dig1, digest::Syncmer<U>& dig2){
 	Syncmer_roll_minimizers_comp(dig1, dig2);
 }
 
-void roll_one(digest::Digester& dig, std::string& str, unsigned k){
+template <class P>
+void roll_one(digest::Digester<P>& dig, std::string& str, unsigned k){
 	INFO(str);
 	INFO(k);
 	nthash::NtHash tHash(str, 1, k, 0);
@@ -173,7 +179,8 @@ void roll_one(digest::Digester& dig, std::string& str, unsigned k){
 	CHECK(dig.get_is_valid_hash() == worked);
 }
 
-void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, uint32_t prime){
+template <class P>
+void ModMin_roll_minimizer(digest::ModMin<P>& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, uint32_t prime){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<size_t> positions;
 	std::vector<uint32_t> hashes;
@@ -210,8 +217,8 @@ void ModMin_roll_minimizer(digest::ModMin& dig, std::string& str, unsigned k, di
 	}
 }
 
-template <class T>
-void WindowMin_roll_minimizer(digest::WindowMin<T>& dig, std::string& str, unsigned k, unsigned large_wind_kmer_am, digest::MinimizedHashType minimized_h){
+template <class P, class T>
+void WindowMin_roll_minimizer(digest::WindowMin<P, T>& dig, std::string& str, unsigned k, unsigned large_wind_kmer_am, digest::MinimizedHashType minimized_h){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<std::pair<uint32_t, size_t>> hashes;
 	while(tHash.roll()){
@@ -269,8 +276,8 @@ void WindowMin_roll_minimizer(digest::WindowMin<T>& dig, std::string& str, unsig
 	}
 }
 
-template <class T>
-void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned k, unsigned large_wind_kmer_am, digest::MinimizedHashType minimized_h){
+template <class P, class T>
+void Syncmer_roll_minimizer(digest::Syncmer<P, T>& dig, std::string& str, unsigned k, unsigned large_wind_kmer_am, digest::MinimizedHashType minimized_h){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<std::pair<uint32_t, size_t>> hashes;
 	while(tHash.roll()){
@@ -320,7 +327,8 @@ void Syncmer_roll_minimizer(digest::Syncmer<T>& dig, std::string& str, unsigned 
 	
 }
 
-void append_seq_compare(std::string& str1, std::string& str2, digest::Digester& dig, unsigned  k){
+template <class P>
+void append_seq_compare(std::string& str1, std::string& str2, digest::Digester<P>& dig, unsigned  k){
 	INFO(str1);
 	INFO(str2);
 	INFO(str1.size());
@@ -362,7 +370,8 @@ void append_seq_compare(std::string& str1, std::string& str2, digest::Digester& 
 	}
 }
 
-void append_seq_compare3(std::string& str1, std::string& str2, std::string str3, digest::Digester& dig, unsigned  k){
+template <class P>
+void append_seq_compare3(std::string& str1, std::string& str2, std::string str3, digest::Digester<P>& dig, unsigned  k){
 	INFO(str1);
 	INFO(str2);
 	INFO(str3);
@@ -412,6 +421,7 @@ void append_seq_compare3(std::string& str1, std::string& str2, std::string str3,
 	}
 }
 
+template <class P>
 void append_seq_small_cases(){
 	std::string str1 = "CCGTGT";
 	std::string str2 = "CCGNGT";
@@ -419,27 +429,28 @@ void append_seq_small_cases(){
 	std::string str4 = "ANCCTT";
 	std::string str5 = "A";
 
-	digest::Digester* dig = new digest::ModMin(str1, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	digest::Digester<P>* dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str1, str3, *dig, 4);
 	delete dig;
 
-	dig = new digest::ModMin(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str2, str4, *dig, 4);
 	delete dig;
 
-	dig = new digest::ModMin(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str2, str3, *dig, 4);
 	delete dig;
 
-	dig = new digest::ModMin(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str2, str5, *dig, 4);
 	delete dig;
 
-	dig = new digest::ModMin(str1, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare(str1, str5, *dig, 4);
 	delete dig;
 }
 
+template <class P>
 void append_seq_small_cases2(){
 	std::string str1_good = "CATACCGGT";
 	std::string str1_short = "TAG";
@@ -453,31 +464,31 @@ void append_seq_small_cases2(){
 	std::string str3_good = "CAACGACCGC";
 	std::string str3_badCh = "NCAACGACCGC";
 
-	digest::Digester* dig = new digest::ModMin(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	digest::Digester<P>* dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_good, str2_good, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_good, str2_badCh, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_good, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_short, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1_short, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_short, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_badCh, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1_badCh, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_badCh, str2A, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_good, str2_short, str3_good, *dig, 6);
 	delete dig;
 
-	dig = new digest::ModMin(str1_short, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str1_short, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
 	append_seq_compare3(str1_short, str2A, str3_badCh, *dig, 6);
 	delete dig;
 }
@@ -486,6 +497,7 @@ void append_seq_small_cases2(){
 	like the constructor and roll_minimizer, but put the more general stuff, append_seq
 	and roll_one in the general testing group
 */
+
 TEST_CASE("Digester Testing"){
 	setupStrings();
 	// These use the ModMinimizer Class because Digester can't be instantiated, but correctness
@@ -506,7 +518,8 @@ TEST_CASE("Digester Testing"){
 			minimized_h = static_cast<digest::MinimizedHashType>(i);
 			mod = 2;
 			congruence = 1;
-			digest::ModMin* dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h);
+
+			digest::ModMin<digest::BadCharPolicy>* dig = new digest::ModMin<digest::BadCharPolicy::SKIPOVER>(str, k, mod, congruence, pos, minimized_h);
 			ModMin_constructor(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
 		}
@@ -520,6 +533,7 @@ TEST_CASE("Digester Testing"){
 			minimized_h = static_cast<digest::MinimizedHashType>(i);
 			mod = 2;
 			congruence = 1;
+
 			digest::ModMin* dig = new digest::ModMin(str, k, mod, congruence, pos, minimized_h);
 			ModMin_constructor(*dig, str, k, pos, minimized_h, mod, congruence);
 			delete dig;
@@ -534,6 +548,7 @@ TEST_CASE("Digester Testing"){
 						minimized_h = static_cast<digest::MinimizedHashType>(p);
 						mod = 1e9+7;
 						congruence = 0;
+
 						digest::ModMin* dig = new digest::ModMin(test_strs[i], k, mod, congruence, pos, minimized_h);
 						ModMin_constructor(*dig, test_strs[i], k, pos, minimized_h, mod, congruence);
 						delete dig;
@@ -793,30 +808,30 @@ TEST_CASE("ModMin Testing"){
 }
 
 #define do64(F) \
-	{ F(data_structure::SegmentTree<4>, 4) } \
-	{ F(data_structure::SegmentTree<31>, 31) } \
-	{ F(data_structure::SegmentTree<32>, 32) } \
-	{ F(data_structure::SegmentTree<33>, 33) } \
-	{ F(data_structure::SegmentTree<63>, 63) } \
-	{ F(data_structure::SegmentTree<64>, 64) } \
-	{ F(data_structure::Naive<4>, 4) } \
-	{ F(data_structure::Naive<31>, 31) } \
-	{ F(data_structure::Naive<32>, 32) } \
-	{ F(data_structure::Naive<33>, 33) } \
-	{ F(data_structure::Naive<63>, 63) } \
-	{ F(data_structure::Naive<64>, 64) } \
-	{ F(data_structure::Naive2<4>, 4) } \
-	{ F(data_structure::Naive2<31>, 31) } \
-	{ F(data_structure::Naive2<32>, 32) } \
-	{ F(data_structure::Naive2<33>, 33) } \
-	{ F(data_structure::Naive2<63>, 63) } \
-	{ F(data_structure::Naive2<64>, 64) } \
-	{ F(data_structure::Adaptive, 4) } \
-	{ F(data_structure::Adaptive, 31) } \
-	{ F(data_structure::Adaptive, 32) } \
-	{ F(data_structure::Adaptive, 33) } \
-	{ F(data_structure::Adaptive, 63) } \
-	{ F(data_structure::Adaptive, 64) }
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<4>, 4) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<31>, 31) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<32>, 32) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<33>, 33) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<63>, 63) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<64>, 64) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<4>, 4) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<31>, 31) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<32>, 32) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<33>, 33) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<63>, 63) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<64>, 64) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<4>, 4) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<31>, 31) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<32>, 32) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<33>, 33) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<63>, 63) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<64>, 64) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 4) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 31) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 32) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 33) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 63) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 64) }
 
 TEST_CASE("WindowMin Testing"){
 	SECTION("Constructor Testing"){
@@ -846,8 +861,8 @@ TEST_CASE("WindowMin Testing"){
 			pos = 0;
 			minimized_h = digest::MinimizedHashType::CANON;
 
-			# define TEST_CONSTRUCTOR_0(T, j) \
-				digest::WindowMin<T>* dig = new digest::WindowMin<T>(test_strs[i], k, j, pos, minimized_h); \
+			# define TEST_CONSTRUCTOR_0(P, T, j) \
+				digest::WindowMin<P, T>* dig = new digest::WindowMin<P, T>(test_strs[i], k, j, pos, minimized_h); \
 				WindowMin_constructor(*dig, test_strs[i], k, j, pos, minimized_h); \
 				delete dig; \
 

@@ -1,7 +1,7 @@
 #include "digest/syncmer.hpp"
 
 namespace digest{
-	template <BadCharPolicy P, class T>
+	template <class P, class T>
     void Syncmer<P, T>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
 		amount += vec.size();
 
@@ -23,7 +23,7 @@ namespace digest{
         }
     }
 
-	template <BadCharPolicy P, class T>
+	template <class P, class T>
     void Syncmer<P, T>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		amount += vec.size();
 
@@ -45,7 +45,7 @@ namespace digest{
         }
     }     
 
-	template<BadCharPolicy P, class T>
+	template<class P, class T>
     void Syncmer<P, T>::roll_ds_sync(std::vector<uint32_t>& vec){
 		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 			this->ds.insert(this->get_pos(), this->chash);
@@ -59,7 +59,7 @@ namespace digest{
 		this->roll_one();
     }
 
-	template<BadCharPolicy P, class T>
+	template<class P, class T>
     void Syncmer<P, T>::roll_ds_sync(std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 			this->ds.insert(this->get_pos(), this->chash);

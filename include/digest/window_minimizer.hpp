@@ -15,7 +15,7 @@ class BadWindowSizeException : public std::exception
 };
 
 // number of k-mers to be considered in the large window
-template <BadCharPolicy P,class T>
+template <class P,class T>
 class WindowMin : public Digester<P>{
 	public:
 		/**
