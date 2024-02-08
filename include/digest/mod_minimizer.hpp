@@ -14,8 +14,8 @@ class BadModException : public std::exception
     	return "mod must be greater than congruence.";
     }
 };
-
-class ModMin : public Digester{
+template <BadCharPolicy P>
+class ModMin : public Digester<P>{
     public:
         /**
          * 

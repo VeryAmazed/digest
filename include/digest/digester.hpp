@@ -30,7 +30,12 @@ enum class MinimizedHashType{
     CANON, FORWARD, REVERSE
 };
 
+enum class BadCharPolicy{
+    WRITEOVER, SKIPOVER
+};
+
 // Only supports characters in DNA and N, upper or lower case
+template <BadCharPolicy P>
 class Digester{
     public:
         /**

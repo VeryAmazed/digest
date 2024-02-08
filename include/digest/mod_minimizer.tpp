@@ -2,7 +2,7 @@
 #include <cstdint>
 
 namespace digest{
-    void ModMin::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
+    void ModMin<P>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
         if(!is_valid_hash) return;
 
 		if(get_minimized_h() == digest::MinimizedHashType::CANON) {
@@ -31,7 +31,7 @@ namespace digest{
         } while(roll_one() && vec.size() < amount);
     }
 
-	void ModMin::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
+	void ModMin<P>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
         if(!is_valid_hash) return;
 
 		if(get_minimized_h() == digest::MinimizedHashType::CANON) {

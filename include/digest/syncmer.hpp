@@ -6,8 +6,8 @@
 namespace digest{
 
 // number of k-mers to be considered in the large window
-template <class T>
-class Syncmer : public WindowMin<T> {
+template <BadCharPolicy P, class T>
+class Syncmer : public WindowMin<P, T> {
     public:
       /**
          * 
