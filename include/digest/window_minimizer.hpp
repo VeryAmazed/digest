@@ -15,7 +15,7 @@ class BadWindowSizeException : public std::exception
 };
 
 // number of k-mers to be considered in the large window
-template <class P,class T>
+template <BadCharPolicy P,class T>
 class WindowMin : public Digester<P>{
 	public:
 		/**
@@ -29,7 +29,7 @@ class WindowMin : public Digester<P>{
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         WindowMin(const char* seq, size_t len, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  Digester(seq, len, k, start, minimized_h), ds(large_window), large_window(large_window), ds_size(0), is_minimized(false)
+        :  Digester<P>(seq, len, k, start, minimized_h), ds(large_window), large_window(large_window), ds_size(0), is_minimized(false)
         {	
             if(large_window == 0){
 				throw BadWindowSizeException();
@@ -46,7 +46,7 @@ class WindowMin : public Digester<P>{
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         WindowMin(const std::string& seq, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
-            WindowMin(seq.c_str(), seq.size(), k, large_window, start, minimized_h)
+            WindowMin<P, T>(seq.c_str(), seq.size(), k, large_window, start, minimized_h)
         {}
 
 		/**

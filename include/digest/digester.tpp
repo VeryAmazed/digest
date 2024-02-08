@@ -2,7 +2,7 @@
 
 namespace digest{
     
-    template <class P>
+    template <BadCharPolicy P>
     void Digester<P>::append_seq(const char* seq, size_t len){
         if(end < this->len){
             throw NotRolledTillEndException();
@@ -71,12 +71,12 @@ namespace digest{
         this->len = len;
     }
 
-    template <class P>
+    template <BadCharPolicy P>
     void Digester<P>::append_seq(const std::string& seq){
         append_seq(seq.c_str(), seq.size());
     }
 
-    template <class P>
+    template <BadCharPolicy P>
     bool Digester<P>::init_hash(){
         c_outs.clear();
         while(end-1 < len){
@@ -103,7 +103,7 @@ namespace digest{
         return false;
     }
 
-    template <class P>
+    template <BadCharPolicy P>
     bool Digester<P>::roll_one(){
         if(!is_valid_hash){
             return false;

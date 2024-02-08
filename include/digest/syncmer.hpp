@@ -6,7 +6,7 @@
 namespace digest{
 
 // number of k-mers to be considered in the large window
-template <class P, class T>
+template <BadCharPolicy P, class T>
 class Syncmer : public WindowMin<P, T> {
     public:
       /**
@@ -21,7 +21,7 @@ class Syncmer : public WindowMin<P, T> {
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         Syncmer(const char* seq, size_t len, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  WindowMin<T>(seq, len, k, large_window, start, minimized_h)
+        :  WindowMin<P, T>(seq, len, k, large_window, start, minimized_h)
         {}
 
         /**
@@ -35,7 +35,7 @@ class Syncmer : public WindowMin<P, T> {
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         Syncmer(const std::string& seq, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
-            Syncmer(seq.c_str(), seq.size(), k, large_window, start, minimized_h)
+            Syncmer<P, T>(seq.c_str(), seq.size(), k, large_window, start, minimized_h)
         {}
 
         /**
