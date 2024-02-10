@@ -258,7 +258,7 @@ void WindowMin_roll_minimizer(digest::WindowMin<P, T>& dig, std::string& str, un
 		}
 	}
 
-	digest::WindowMin<T> dig2 = dig;
+	digest::WindowMin<P, T> dig2 = dig;
 
 	std::vector<uint32_t> wind_mins;
 	dig.roll_minimizer(1000, wind_mins);
@@ -305,7 +305,7 @@ void Syncmer_roll_minimizer(digest::Syncmer<P, T>& dig, std::string& str, unsign
 		}
 	}
 
-	digest::Syncmer<T> dig2 = dig;
+	digest::Syncmer<P, T> dig2 = dig;
 
 	std::vector<uint32_t> syncs;
 	dig.roll_minimizer(1000, syncs);

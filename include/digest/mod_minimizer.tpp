@@ -5,61 +5,61 @@ namespace digest{
 
 	template <BadCharPolicy P>
     void ModMin<P>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
-        if(!is_valid_hash) return;
+        if(!this->is_valid_hash) return;
 
-		if(get_minimized_h() == digest::MinimizedHashType::CANON) {
+		if(this->get_minimized_h() == digest::MinimizedHashType::CANON) {
 			do {
-                if((uint32_t)chash % mod == congruence){
-                    vec.emplace_back(get_pos());
+                if((uint32_t)this->chash % mod == congruence){
+                    vec.emplace_back(this->get_pos());
                 }
-			} while(roll_one() && vec.size() < amount);
+			} while(this->roll_one() && vec.size() < amount);
 			return;
 		}
 
-        if(get_minimized_h() == digest::MinimizedHashType::FORWARD) {
+        if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD) {
 			do {
-                if((uint32_t)fhash % mod == congruence){
-                    vec.emplace_back(get_pos());
+                if((uint32_t)this->fhash % mod == congruence){
+                    vec.emplace_back(this->get_pos());
                 }
-			} while(roll_one() && vec.size() < amount);
+			} while(this->roll_one() && vec.size() < amount);
 			return;
 		}
 
 		// reverse
 		do {
-			if((uint32_t)rhash % mod == congruence){
-				vec.emplace_back(get_pos());
+			if((uint32_t)this->rhash % mod == congruence){
+				vec.emplace_back(this->get_pos());
 			}
-        } while(roll_one() && vec.size() < amount);
+        } while(this->roll_one() && vec.size() < amount);
     }
 
 	template <BadCharPolicy P>
 	void ModMin<P>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
-        if(!is_valid_hash) return;
+        if(!this->is_valid_hash) return;
 
-		if(get_minimized_h() == digest::MinimizedHashType::CANON) {
+		if(this->get_minimized_h() == digest::MinimizedHashType::CANON) {
 			do {
-                if((uint32_t)chash % mod == congruence){
-                    vec.emplace_back(get_pos(), chash);
+                if((uint32_t)this->chash % mod == congruence){
+                    vec.emplace_back(this->get_pos(), this->chash);
                 }
-			} while(roll_one() && vec.size() < amount);
+			} while(this->roll_one() && vec.size() < amount);
 			return;
 		}
 
-        if(get_minimized_h() == digest::MinimizedHashType::FORWARD) {
+        if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD) {
 			do {
-                if((uint32_t)fhash % mod == congruence){
-                    vec.emplace_back(get_pos(), fhash);
+                if((uint32_t)this->fhash % mod == congruence){
+                    vec.emplace_back(this->get_pos(), this->fhash);
                 }
-			} while(roll_one() && vec.size() < amount);
+			} while(this->roll_one() && vec.size() < amount);
 			return;
 		}
 
 		// reverse
 		do {
-			if((uint32_t)rhash % mod == congruence){
-				vec.emplace_back(get_pos(), rhash);
+			if((uint32_t)this->rhash % mod == congruence){
+				vec.emplace_back(this->get_pos(), this->rhash);
 			}
-        } while(roll_one() && vec.size() < amount);
+        } while(this->roll_one() && vec.size() < amount);
     }
 }

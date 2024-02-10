@@ -288,4 +288,5 @@ class Digester{
 
 }
 
+#include "digester.tpp"
 #endif

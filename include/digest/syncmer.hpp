@@ -1,7 +1,7 @@
 #ifndef SYNC_HPP
 #define SYNC_HPP
-#include "digester.hpp"
-#include "window_minimizer.hpp"
+#include "digest/digester.hpp"
+#include "digest/window_minimizer.hpp"
 
 namespace digest{
 

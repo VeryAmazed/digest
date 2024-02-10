@@ -1,7 +1,7 @@
 #ifndef MOD_MINI_HPP
 #define MOD_MINI_HPP
 
-#include "digester.hpp"
+#include "digest/digester.hpp"
 #include <cassert>
 #include <cstdint>
 
@@ -93,4 +93,5 @@ class ModMin : public Digester<P>{
 
 }
 
+#include "mod_minimizer.tpp"
 #endif

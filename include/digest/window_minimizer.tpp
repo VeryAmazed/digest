@@ -5,20 +5,20 @@ namespace digest{
     void WindowMin<P, T>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
 		amount += vec.size();
 
-		while (ds_size + 1 < large_window and is_valid_hash) {
-			if(get_minimized_h() == digest::MinimizedHashType::CANON){
-				ds.insert(get_pos(), chash);
-			}else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
-				ds.insert(get_pos(), fhash);
+		while (ds_size + 1 < large_window and this->is_valid_hash) {
+			if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
+				ds.insert(this->get_pos(), this->chash);
+			}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
+				ds.insert(this->get_pos(), this->fhash);
 			}else{
-				ds.insert(get_pos(), rhash);
+				ds.insert(this->get_pos(), this->rhash);
 			}
 			
-			roll_one();
+			this->roll_one();
 			ds_size++;
 		}
 
-        while (is_valid_hash and vec.size() < amount){
+        while (this->is_valid_hash and vec.size() < amount){
             roll_ds_wind(vec);
         }
     }
@@ -27,50 +27,50 @@ namespace digest{
     void WindowMin<P, T>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		amount += vec.size();
 
-		while (ds_size + 1 < large_window and is_valid_hash) {
-			if(get_minimized_h() == digest::MinimizedHashType::CANON){
-				ds.insert(get_pos(), chash);
-			}else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
-				ds.insert(get_pos(), fhash);
+		while (ds_size + 1 < large_window and this->is_valid_hash) {
+			if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
+				ds.insert(this->get_pos(), this->chash);
+			}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
+				ds.insert(this->get_pos(), this->fhash);
 			}else{
-				ds.insert(get_pos(), rhash);
+				ds.insert(this->get_pos(), this->rhash);
 			}
 			
-			roll_one();
+			this->roll_one();
 			ds_size++;
 		}
 
-        while (is_valid_hash and vec.size() < amount){
+        while (this->is_valid_hash and vec.size() < amount){
             roll_ds_wind(vec);
         }
     }
 
 	template<BadCharPolicy P, class T>
     void WindowMin<P, T>::roll_ds_wind(std::vector<uint32_t>& vec){
-		if(get_minimized_h() == digest::MinimizedHashType::CANON){
-			ds.insert(get_pos(), chash);
-		}else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
-			ds.insert(get_pos(), fhash);
+		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
+			ds.insert(this->get_pos(), this->chash);
+		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
+			ds.insert(this->get_pos(), this->fhash);
 		}else{
-			ds.insert(get_pos(), rhash);
+			ds.insert(this->get_pos(), this->rhash);
 		}
 		check(vec);
 		
-		roll_one();
+		this->roll_one();
     }
 
 	template<BadCharPolicy P, class T>
     void WindowMin<P, T>::roll_ds_wind(std::vector<std::pair<uint32_t, uint32_t>>& vec){
-		if(get_minimized_h() == digest::MinimizedHashType::CANON){
-			ds.insert(get_pos(), chash);
-		}else if(get_minimized_h() == digest::MinimizedHashType::FORWARD){
-			ds.insert(get_pos(), fhash);
+		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
+			ds.insert(this->get_pos(), this->chash);
+		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
+			ds.insert(this->get_pos(), this->fhash);
 		}else{
-			ds.insert(get_pos(), rhash);
+			ds.insert(this->get_pos(), this->rhash);
 		}
 		check(vec);
 		
-		roll_one();
+		this->roll_one();
     }
 
 	template<BadCharPolicy P, class T>

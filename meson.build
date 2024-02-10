@@ -26,7 +26,7 @@ install_headers(
 	'include/digest/digester.hpp', 'include/digest/mod_minimizer.hpp',
 	'include/digest/syncmer.hpp', 'include/digest/window_minimizer.hpp',
 	'include/digest/data_structure.hpp',
-  	'include/digest/syncmer.tpp', 'include/digest/window_minimizer.tpp',
+  'include/digest/syncmer.tpp', 'include/digest/window_minimizer.tpp',
 	'include/digest/mod_minimizer.tpp', 'include/digest/digester.tpp',
 	'include/digest/thread_out.hpp', 'include/digest/thread_out.tpp',
 	install_dir: 'include/digest'
