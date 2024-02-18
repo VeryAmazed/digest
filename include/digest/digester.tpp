@@ -3,7 +3,7 @@
 namespace digest{
     
     template <BadCharPolicy P>
-    void Digester<P>::append_seq(const char* seq, size_t len){
+    void Digester<P>::append_seq_skip_over(const char* seq, size_t len){
         if(end < this->len){
             throw NotRolledTillEndException();
         }
@@ -72,12 +72,7 @@ namespace digest{
     }
 
     template <BadCharPolicy P>
-    void Digester<P>::append_seq(const std::string& seq){
-        append_seq(seq.c_str(), seq.size());
-    }
-
-    template <BadCharPolicy P>
-    bool Digester<P>::init_hash(){
+    bool Digester<P>::init_hash_skip_over(){
         c_outs.clear();
         while(end-1 < len){
             bool works = true;
@@ -104,7 +99,7 @@ namespace digest{
     }
 
     template <BadCharPolicy P>
-    bool Digester<P>::roll_one(){
+    bool Digester<P>::roll_one_skip_over(){
         if(!is_valid_hash){
             return false;
         }
