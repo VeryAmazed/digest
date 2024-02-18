@@ -549,6 +549,180 @@ void append_seq_small_cases2(){
 	append_seq_compare3(str1_short, str2A, str3_badCh, *dig, 6);
 	delete dig;
 }
+
+template <digest::BadCharPolicy P>
+void append_seq_compare_write_over(std::string& str1, std::string& str2, digest::Digester<P>& dig, unsigned  k){
+	INFO(str1);
+	INFO(str2);
+	INFO(str1.size());
+	INFO(str2.size());
+	INFO(k);
+	
+	std::string str3 = str1 + str2;
+	for(int i =0; i < (int)str3.size(); i++){
+		if(str3[i] == 'N' || str3[i] == 'n'){
+			str3[i] = 'A';
+		}
+	}
+	nthash::NtHash tHash(str3, 1, k);
+	std::vector<uint64_t> vec1;
+	std::vector<size_t> positions1;
+	while(tHash.roll()){
+		vec1.push_back(*(tHash.hashes()));
+		positions1.push_back(tHash.get_pos());
+	}
+	std::vector<uint64_t> vec2;
+	std::vector<size_t> positions2;
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	dig.append_seq(str2);
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	REQUIRE(vec1.size() == vec2.size());
+	for(size_t i =0; i < vec1.size(); i++){
+		INFO(i);
+		CHECK(vec1[i] == vec2[i]);
+		CHECK(positions1[i] == positions2[i]);
+	}
+}
+
+template <digest::BadCharPolicy P>
+void append_seq_compare3_write_over(std::string& str1, std::string& str2, std::string str3, digest::Digester<P>& dig, unsigned  k){
+	INFO(str1);
+	INFO(str2);
+	INFO(str3);
+	INFO(k);
+	// Make sure to check positions too
+	std::string str4 = str1 + str2 + str3;
+	for(int i =0; i < (int)str4.size(); i++){
+		if(str4[i] == 'N' || str4[i] == 'n'){
+			str4[i] = 'A';
+		}
+	}
+	nthash::NtHash tHash(str4, 1, k);
+	std::vector<uint64_t> vec1;
+	std::vector<size_t> positions1;
+	while(tHash.roll()){
+		vec1.push_back(*(tHash.hashes()));
+		positions1.push_back(tHash.get_pos());
+	}
+	std::vector<uint64_t> vec2;
+	std::vector<size_t> positions2;
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	dig.append_seq(str2);
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	dig.append_seq(str3);
+	if(dig.get_is_valid_hash()){
+		vec2.push_back(dig.get_chash());
+		positions2.push_back(dig.get_pos());
+		while(dig.roll_one()){
+			vec2.push_back(dig.get_chash());
+			positions2.push_back(dig.get_pos());
+		}
+	}
+	REQUIRE(vec1.size() == vec2.size());
+	for(size_t i =0; i < vec1.size(); i++){
+		INFO(i);
+		CHECK(vec1[i] == vec2[i]);
+		CHECK(positions1[i] == positions2[i]);
+	}
+}
+
+void append_seq_small_cases_write_over(){
+	std::string str1 = "CCGTGT";
+	std::string str2 = "CCGNGT";
+	std::string str3 = "AGCCTT";
+	std::string str4 = "ANCCTT";
+	std::string str5 = "A";
+
+	digest::Digester<digest::BadCharPolicy::WRITEOVER>* dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare_write_over(str1, str3, *dig, 4);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare_write_over(str2, str4, *dig, 4);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare_write_over(str2, str3, *dig, 4);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str2, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare_write_over(str2, str5, *dig, 4);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1, 4, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare_write_over(str1, str5, *dig, 4);
+	delete dig;
+}
+
+void append_seq_small_cases2_write_over(){
+	std::string str1_good = "CATACCGGT";
+	std::string str1_short = "TAG";
+	std::string str1_badCh = "CATACNCGGT";
+
+	std::string str2_good = "GTTCTCGCTT";
+	std::string str2_badCh = "GTNTCTCGCTT";
+	std::string str2A = "A";
+	std::string str2_short = "TGGA";
+
+	std::string str3_good = "CAACGACCGC";
+	std::string str3_badCh = "NCAACGACCGC";
+
+	digest::Digester<digest::BadCharPolicy::WRITEOVER>* dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare3_write_over(str1_good, str2_good, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare3_write_over(str1_good, str2_badCh, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare3_write_over(str1_good, str2A, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1_short, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare3_write_over(str1_short, str2A, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1_badCh, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare3_write_over(str1_badCh, str2A, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1_good, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare3_write_over(str1_good, str2_short, str3_good, *dig, 6);
+	delete dig;
+
+	dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1_short, 6, 17, 0, 0, digest::MinimizedHashType::CANON);
+	append_seq_compare3_write_over(str1_short, str2A, str3_badCh, *dig, 6);
+	delete dig;
+}
 /*
 	consider re-organizing this so this only tests the UM_Digester specific stuff
 	like the constructor and roll_minimizer, but put the more general stuff, append_seq
@@ -706,7 +880,35 @@ TEST_CASE("Digester Testing"){
 					
 				}
 			}
-		}	
+		}
+
+		// testing append_seq for writeover
+		append_seq_small_cases_write_over();
+		for(int j =0; j < 8; j++){
+			for(int l = 15; l < 91; l += 15){
+				std::string str1 = test_strs[4].substr(0, l);
+				std::string str2 = test_strs[4].substr(l, 100);
+				digest::ModMin<digest::BadCharPolicy::WRITEOVER>* dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1, ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
+				append_seq_compare_write_over(str1, str2, *dig, ks[j]);
+				delete dig;
+			}
+		}
+		
+		append_seq_small_cases2_write_over();
+		for(int j =0; j < 8; j++){
+			for(int l = 15; l < 91; l += 15){
+				for(int r = 12; r < 85; r += 24){
+					std::string str1 = test_strs[4].substr(0, l);
+					std::string str2 = test_strs[4].substr(l, r);
+					std::string str3 = test_strs[4].substr(l+r, 75);
+					digest::ModMin<digest::BadCharPolicy::WRITEOVER>* dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(str1, ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
+					append_seq_compare3_write_over(str1, str2, str3, *dig, ks[j]);
+					delete dig;
+				}
+				
+			}
+		}
+			
 	}
 
 	

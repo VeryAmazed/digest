@@ -273,9 +273,7 @@ class Digester{
 
         void append_seq_skip_over(const char* seq, size_t len);
 
-        void append_seq_write_over(const char* seq, size_t len){
-
-        };
+        void append_seq_write_over(const char* seq, size_t len);
 
         bool init_hash_skip_over();
 
