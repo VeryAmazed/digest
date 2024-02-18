@@ -161,7 +161,34 @@ namespace digest{
                 end = start + k;
                 return init_hash();
             }
+        }   
+    }
+
+    template <BadCharPolicy P>
+    bool Digester<P>::roll_one_write_over(){
+        if(!is_valid_hash){
+            return false;
         }
+        if(end >= len){
+            is_valid_hash = false;
+            return false;
+        }
+        char next_char = is_ACTG(seq[end]) ? seq[end] : 'A';
+        if(c_outs.size() > 0){
+            fhash = next_forward_hash(fhash, k, c_outs.front(), next_char);
+            rhash = next_reverse_hash(rhash, k, c_outs.front(), next_char);
+            c_outs.pop_front();
+            end++;
+            
+        }else{
+            char out_char = is_ACTG(seq[start]) ? seq[start] : 'A';
+            fhash = next_forward_hash(fhash, k, out_char, next_char);
+            rhash = next_reverse_hash(rhash, k, out_char, next_char);
+            start++;
+            end++;
+        }
+        chash = nthash::canonical(fhash, rhash);
+        return true;
         
     }
 } 

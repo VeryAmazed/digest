@@ -212,6 +212,33 @@ void roll_one(digest::Digester<P>& dig, std::string& str, unsigned k){
 }
 
 template <digest::BadCharPolicy P>
+void roll_one_write_over(digest::Digester<P>& dig, std::string& str, unsigned k){
+	INFO(str);
+	INFO(k);
+	nthash::NtHash tHash(test_strs[7], 1, k, 0);
+	uint64_t true_fhash;
+	uint64_t true_rhash;
+	uint64_t dig_fhash;
+	uint64_t dig_rhash;
+	bool worked = tHash.roll();
+	while ((worked = tHash.roll())){
+		dig.roll_one();
+		CHECK(dig.get_is_valid_hash() == worked);
+		if(worked){
+			CHECK(dig.get_pos() == tHash.get_pos());
+			true_fhash = tHash.get_forward_hash();
+			true_rhash = tHash.get_reverse_hash();
+			dig_fhash= dig.get_fhash();
+			dig_rhash = dig.get_rhash();
+			CHECK(dig_fhash == true_fhash);
+			CHECK(dig_rhash == true_rhash);
+		}
+	}
+	dig.roll_one();
+	CHECK(dig.get_is_valid_hash() == worked);
+}
+
+template <digest::BadCharPolicy P>
 void ModMin_roll_minimizer(digest::ModMin<P>& dig, std::string& str, unsigned k, digest::MinimizedHashType minimized_h, uint32_t prime){
 	nthash::NtHash tHash(str, 1, k, 0);
 	std::vector<size_t> positions;
@@ -636,6 +663,13 @@ TEST_CASE("Digester Testing"){
 				roll_one(*dig, test_strs[i], ks[j]);
 				delete dig;
 			}
+		}
+
+		// testing roll_one for writeover
+		for(int j =0; j < 8; j++){
+			digest::ModMin<digest::BadCharPolicy::WRITEOVER>* dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(test_strs[4], ks[j], 1e9+7, 0, 0, digest::MinimizedHashType::FORWARD);
+			roll_one_write_over(*dig, test_strs[4], ks[j]);
+			delete dig;
 		}
 	}
 
