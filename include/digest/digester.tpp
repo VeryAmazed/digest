@@ -98,6 +98,32 @@ namespace digest{
         return false;
     }
 
+    // need to do a good bit of rewriting
+    // not performance critical so it's kinda whatever
+    template <BadCharPolicy P>
+    bool Digester<P>::init_hash_write_over(){
+        c_outs.clear();
+        while(end-1 < len){
+            std::string init_str;
+            for(size_t i = start; i < end; i++){
+                if(!is_ACTG(seq[i])){
+                    init_str.push_back('A');
+                }else{
+                    init_str.push_back(seq[i]);
+                }
+            }
+            
+            // nthash::ntc64(seq + start, k, fhash, rhash, chash, locn_useless);
+            fhash = base_forward_hash(init_str.c_str(), k);
+            rhash = base_reverse_hash(init_str.c_str(), k);
+            chash = nthash::canonical(fhash, rhash);
+            is_valid_hash = true;
+            return true;
+        }
+        is_valid_hash = false;
+        return false;
+    }
+
     template <BadCharPolicy P>
     bool Digester<P>::roll_one_skip_over(){
         if(!is_valid_hash){

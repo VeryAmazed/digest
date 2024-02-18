@@ -23,6 +23,7 @@ void setupStrings(){
 		"../tests/test/random.txt",
 		"../tests/test/random_lowercase.txt",
 		"../tests/test/N.txt",
+		"../tests/test/random_N_to_A.txt",
 	};
 	
 	for (auto& file : files) {
@@ -46,6 +47,30 @@ void base_constructor(digest::Digester<P>& dig, std::string& str, unsigned k, si
 	CHECK(dig.get_minimized_h() == minimized_h);
 	if(k <= str.size()){
 		nthash::NtHash tHash(str, 1, k, pos);
+		CHECK(dig.get_is_valid_hash() == tHash.roll());
+		if(dig.get_is_valid_hash()){
+			CHECK(dig.get_pos() == tHash.get_pos());
+			INFO("ntHash pos is: " << tHash.get_pos());
+			CHECK(dig.get_fhash() == tHash.get_forward_hash());
+			CHECK(dig.get_rhash() == tHash.get_reverse_hash());
+		}
+	}else{
+		CHECK(dig.get_is_valid_hash() == false);
+	}
+}
+
+template <digest::BadCharPolicy P>
+void base_constructor_writeover(digest::Digester<P>& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h){
+	INFO("String is: " << str);
+	INFO("K is: " << k);
+	INFO("Pos is: " << dig.get_pos());
+	
+	CHECK(strcmp(str.c_str(), dig.get_sequence()) == 0);
+	CHECK(str.size() == dig.get_len());
+	CHECK(dig.get_k() == k);
+	CHECK(dig.get_minimized_h() == minimized_h);
+	if(k <= str.size()){
+		nthash::NtHash tHash(test_strs[7], 1, k, pos);
 		CHECK(dig.get_is_valid_hash() == tHash.roll());
 		if(dig.get_is_valid_hash()){
 			CHECK(dig.get_pos() == tHash.get_pos());
@@ -87,6 +112,13 @@ void base_dig_roll(digest::Digester<P>& dig1, digest::Digester<P>& dig2){
 template <digest::BadCharPolicy P>
 void ModMin_constructor(digest::ModMin<P>& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h, uint64_t mod, uint64_t congruence){
 	base_constructor(dig, str, k, pos, minimized_h);
+	CHECK(dig.get_mod() ==  mod);
+	CHECK(dig.get_congruence() == congruence);
+}
+
+template <digest::BadCharPolicy P>
+void ModMin_constructor_writeover(digest::ModMin<P>& dig, std::string& str, unsigned k, size_t pos, digest::MinimizedHashType minimized_h, uint64_t mod, uint64_t congruence){
+	base_constructor_writeover(dig, str, k, pos, minimized_h);
 	CHECK(dig.get_mod() ==  mod);
 	CHECK(dig.get_congruence() == congruence);
 }
@@ -507,8 +539,6 @@ TEST_CASE("Digester Testing"){
 		size_t pos;
 		std::string str;
 		// string is length 1, k = 1
-		
-		
 		str = "AAAA";
 		k = 4;
 		pos = 0;
@@ -552,9 +582,25 @@ TEST_CASE("Digester Testing"){
 						delete dig;
 					}
 				}
-				
 			}
 		}
+
+		// test writeover policy
+		for(int j =0; j < 8; j++){
+				k = ks[j];
+				for(int l =0; l < 16; l++){
+					pos = l;
+					for(int p =0; p < 3; p++){
+						minimized_h = static_cast<digest::MinimizedHashType>(p);
+						mod = 1e9+7;
+						congruence = 0;
+
+						digest::ModMin<digest::BadCharPolicy::WRITEOVER>* dig = new digest::ModMin<digest::BadCharPolicy::WRITEOVER>(test_strs[4], k, mod, congruence, pos, minimized_h);
+						ModMin_constructor_writeover(*dig, test_strs[4], k, pos, minimized_h, mod, congruence);
+						delete dig;
+					}
+				}
+			}
 
 		// Throwing Exceptions
 		// Shouldn't/Doesn't leak any memory
