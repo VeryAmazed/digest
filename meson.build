@@ -52,11 +52,11 @@ if get_option('buildtype') != 'release'
 
   ### benchmark ###
   bench = dependency('benchmark')
-  # executable(
-  #  'bench',
-  #  'tests/bench/benchmark.cpp',
-  #  dependencies : [bench, digest_dep],
-  # )
+  executable(
+   'bench',
+   'tests/bench/benchmark.cpp',
+   dependencies : [bench, digest_dep],
+  )
 
   ### benchmark data structures ###
   # executable(

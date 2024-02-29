@@ -138,7 +138,7 @@ static void BM_ThreadMod(benchmark::State& state) {
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_mod(state.range(0), vec, s, DEFAULT_KMER_LEN, 17);
+		thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(state.range(0), vec, s, DEFAULT_KMER_LEN, 17);
 		benchmark::ClobberMemory();
 	}
 }
@@ -151,7 +151,7 @@ static void BM_ThreadWind(benchmark::State& state) {
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_wind<data_structure::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+		thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
 		benchmark::ClobberMemory();
     }
 }
@@ -165,7 +165,7 @@ static void BM_ThreadSync(benchmark::State& state){
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_sync<data_structure::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+		thread_out::thread_sync<digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
 		benchmark::ClobberMemory();
     }
 }
