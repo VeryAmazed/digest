@@ -186,30 +186,15 @@ TEST_CASE("thread_wind function testing"){
         const uint32_t large_wind_kmer_am = 4;
         size_t start = 0;
         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
-        
-        /*
-        The two assertions below won't compile
-        error: macro "CHECK_THROWS_AS" passed 3 arguments, but takes just 2
-        193 |         CHECK_THROWS_AS(thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, 4, 4, start, digest::MinimizedHashType::CANON), thread_out::BadThreadOutParams);
-        ...
-        ../tests/test/test_thread.cpp:185:18: warning: unused variable ‘k’ [-Wunused-variable]
-        185 |         unsigned k = 4;
-            |                  ^
-        ../tests/test/test_thread.cpp:186:24: warning: unused variable ‘large_wind_kmer_am’ [-Wunused-variable]
-        186 |         const uint32_t large_wind_kmer_am = 4;
-            |                        ^~~~~~~~~~~~~~~~~~
-        ../tests/test/test_thread.cpp:188:35: warning: unused variable ‘minimized_h’ [-Wunused-variable]
-        188 |         digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON;
-        */
 
         // num_lwinds is negative
         start = 9;
-        //CHECK_THROWS_AS(thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h), thread_out::BadThreadOutParams);
+        CHECK_THROWS_AS((thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h)), thread_out::BadThreadOutParams);
         start = 0;
         // num_lwinds < thread_count
         thread_count = 8;
 
-        //CHECK_THROWS_AS(thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h), thread_out::BadThreadOutParams);
+        CHECK_THROWS_AS((thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h)), thread_out::BadThreadOutParams);
         thread_count = 4;
     }
 
