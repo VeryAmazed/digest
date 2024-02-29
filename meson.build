@@ -51,7 +51,7 @@ if get_option('buildtype') != 'release'
   )
 
   ### benchmark ###
-  # bench = dependency('benchmark')
+  bench = dependency('benchmark')
   # executable(
   #  'bench',
   #  'tests/bench/benchmark.cpp',
@@ -80,9 +80,9 @@ if get_option('buildtype') != 'release'
   # )
   
   ### test thread functions ###
-  # executable(
-  #	 'test_thread',
-  #	 'tests/test/test_thread.cpp',
-  #	 dependencies : [catch2, digest_dep],
-  # )
+  executable(
+   'test_thread',
+   'tests/test/test_thread.cpp',
+   dependencies : [catch2, digest_dep],
+  )
 endif

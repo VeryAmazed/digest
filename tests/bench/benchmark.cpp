@@ -56,7 +56,7 @@ BENCHMARK(BM_NtHashRoll)
 static void BM_ModMinRoll(benchmark::State& state) {
 	for(auto _ : state) {
 		state.PauseTiming();
-		digest::ModMin dig(s, state.range(0), 17);
+		digest::ModMin<digest::BadCharPolicy::SKIPOVER> dig(s, state.range(0), 17);
 		std::vector<uint32_t> vec;
 		vec.reserve(STR_LEN);
 		state.ResumeTiming();
@@ -76,7 +76,7 @@ static void BM_WindowMinRoll(benchmark::State& state) {
     for(auto _ : state){
 		state.PauseTiming();
 		# define WINDOW(k) \
-			digest::WindowMin<data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
+			digest::WindowMin<digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<uint32_t> vec; \
 			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
@@ -106,7 +106,7 @@ static void BM_SyncmerRoll(benchmark::State& state){
     for(auto _ : state){
 		state.PauseTiming();
 		# define SYNCMER(k) \
-			digest::Syncmer<data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
+			digest::Syncmer<digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<uint32_t> vec; \
 			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
