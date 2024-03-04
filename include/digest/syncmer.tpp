@@ -1,8 +1,8 @@
 #include "digest/syncmer.hpp"
 
 namespace digest{
-	template <class T>
-    void Syncmer<T>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
+	template <BadCharPolicy P, class T>
+    void Syncmer<P, T>::roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
 		amount += vec.size();
 
 		while (this->ds_size + 1 < this->large_window and this->is_valid_hash) {
@@ -23,8 +23,8 @@ namespace digest{
         }
     }
 
-	template <class T>
-    void Syncmer<T>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
+	template <BadCharPolicy P, class T>
+    void Syncmer<P, T>::roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		amount += vec.size();
 
 		while (this->ds_size + 1 < this->large_window and this->is_valid_hash) {
@@ -45,8 +45,8 @@ namespace digest{
         }
     }     
 
-	template<class T>
-    void Syncmer<T>::roll_ds_sync(std::vector<uint32_t>& vec){
+	template<BadCharPolicy P, class T>
+    void Syncmer<P, T>::roll_ds_sync(std::vector<uint32_t>& vec){
 		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 			this->ds.insert(this->get_pos(), this->chash);
 		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
@@ -59,8 +59,8 @@ namespace digest{
 		this->roll_one();
     }
 
-	template<class T>
-    void Syncmer<T>::roll_ds_sync(std::vector<std::pair<uint32_t, uint32_t>>& vec){
+	template<BadCharPolicy P, class T>
+    void Syncmer<P, T>::roll_ds_sync(std::vector<std::pair<uint32_t, uint32_t>>& vec){
 		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
 			this->ds.insert(this->get_pos(), this->chash);
 		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){

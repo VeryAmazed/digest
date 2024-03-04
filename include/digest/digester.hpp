@@ -30,7 +30,12 @@ enum class MinimizedHashType{
     CANON, FORWARD, REVERSE
 };
 
+enum class BadCharPolicy{
+    WRITEOVER, SKIPOVER
+};
+
 // Only supports characters in DNA and N, upper or lower case
+template <BadCharPolicy P>
 class Digester{
     public:
         /**
@@ -87,7 +92,13 @@ class Digester{
          * 
          * @return bool, true if we were able generate a valid hash, false otherwise
          */
-        bool roll_one();
+        bool roll_one(){
+            if(P == BadCharPolicy::SKIPOVER){
+                return roll_one_skip_over();
+            }else{
+                return roll_one_write_over();
+            }  
+        };
 
         /**
          * @brief returns the positions, as defined by get_pos(), of minimizers up to the amount specified 
@@ -174,7 +185,13 @@ class Digester{
          * 
          * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
          */
-        void append_seq(const char* seq, size_t len);
+        void append_seq(const char* seq, size_t len){
+            if(P == BadCharPolicy::SKIPOVER){
+                append_seq_skip_over(seq, len);
+            }else{
+                append_seq_write_over(seq, len);
+            }  
+        }
 
         /**
          * @brief simulates the appending of a new sequence to the end of the old sequence
@@ -188,7 +205,13 @@ class Digester{
          * 
          * @throws NotRolledTillEndException Thrown when the internal iterator is not at the end of the current sequence
          */
-        void append_seq(const std::string& seq);
+        void append_seq(const std::string& seq){
+            if(P == BadCharPolicy::SKIPOVER){
+                append_seq_skip_over(seq.c_str(), seq.size());
+            }else{
+                append_seq_write_over(seq.c_str(), seq.size());
+            }  
+        }
 
         /**
          * @return unsigned, a number representing the hash you are minimizing, 0 for canoncial, 1 for forward, 2 for reverse 
@@ -240,8 +263,25 @@ class Digester{
          * 
          * @return bool, true on success, a valid hash is initialized, false otherwise
          */
-        bool init_hash();
+        bool init_hash(){
+            if(P == BadCharPolicy::SKIPOVER){
+                return init_hash_skip_over();
+            }else{
+                return init_hash_write_over();
+            }   
+        };
 
+        void append_seq_skip_over(const char* seq, size_t len);
+
+        void append_seq_write_over(const char* seq, size_t len);
+
+        bool init_hash_skip_over();
+
+        bool init_hash_write_over();
+
+        bool roll_one_skip_over();
+
+        bool roll_one_write_over();
 
         // sequence to be digested, memory is owned by the user
         const char* seq;
@@ -283,4 +323,5 @@ class Digester{
 
 }
 
+#include "digester.tpp"
 #endif

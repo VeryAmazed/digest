@@ -51,6 +51,7 @@ class BadThreadOutParams : public std::exception
  * 
  * @throws BadThreadOutParams 
  */
+template <digest::BadCharPolicy P>
 void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -58,6 +59,7 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
 /**
  * @param seq C++ string of DNA sequence to be hashed.
  */
+template <digest::BadCharPolicy P>
 void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -66,10 +68,12 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
  * @param vec vec will contain both the index and the hash of minimizers. 
  * All other things previously stated about vec remain true
  */
+template <digest::BadCharPolicy P>
 void thread_mod(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
-    
+
+template <digest::BadCharPolicy P>    
 void thread_mod(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -91,7 +95,7 @@ void thread_mod(unsigned thread_count, std::vector<std::vector<std::pair<uint32_
  * @throws BadThreadOutParams 
  */
 // number of k-mers to be considered in the large window
-template <class T>
+template <digest::BadCharPolicy P, class T>
 void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -99,7 +103,7 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
 /**
  * @param seq C++ string of DNA sequence to be hashed.
  */
-template <class T>
+template <digest::BadCharPolicy P, class T>
 void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -108,12 +112,12 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
  * @param vec vec will contain both the index and the hash of minimizers. 
  * All other things previously stated about vec remain true
  */
-template <class T>
+template <digest::BadCharPolicy P, class T>
 void thread_wind(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
-template <class T>
+template <digest::BadCharPolicy P, class T>
 void thread_wind(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -135,7 +139,7 @@ void thread_wind(unsigned thread_count, std::vector<std::vector<std::pair<uint32
  * @throws BadThreadOutParams 
  */
 // number of k-mers to be considered in the large window
-template <class T>
+template <digest::BadCharPolicy P, class T>
 void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -143,7 +147,7 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
 /**
  * @param seq C++ string of DNA sequence to be hashed.
  */
-template <class T>
+template <digest::BadCharPolicy P, class T>
 void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -152,12 +156,12 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
  * @param vec vec will contain both the index and the hash of minimizers. 
  * All other things previously stated about vec remain true
  */
-template <class T>
+template <digest::BadCharPolicy P, class T>
 void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const char* seq, size_t len, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
 
-template <class T>
+template <digest::BadCharPolicy P, class T>
 void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32_t, uint32_t>>>& vec, 
     const std::string& seq, unsigned k, uint32_t large_wind_kmer_am, size_t start = 0, 
     digest::MinimizedHashType minimized_h = digest::MinimizedHashType::CANON);
@@ -165,34 +169,36 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<std::pair<uint32
 //------------- WORKER FUNCTIONS ----------------
 
 // function that's passed to the thread for ModMinmizers
+template<digest::BadCharPolicy P>
 std::vector<uint32_t> thread_mod_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
+template<digest::BadCharPolicy P>
 std::vector<std::pair<uint32_t,uint32_t>> thread_mod_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t mod, uint32_t congruence, 
     digest::MinimizedHashType minimized_h, unsigned assigned_kmer_am);
 
 
 // function that's passed to the thread for WindowMinimizers
-template <class T>
+template <digest::BadCharPolicy P, class T>
 std::vector<uint32_t> thread_wind_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
-template <class T>
+template <digest::BadCharPolicy P, class T>
 std::vector<std::pair<uint32_t,uint32_t>> thread_wind_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am, 
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 
 // function that's passed to the thread for Syncmers
-template <class T>
+template <digest::BadCharPolicy P, class T>
 std::vector<uint32_t> thread_sync_roll1(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
-template <class T>
+template <digest::BadCharPolicy P, class T>
 std::vector<std::pair<uint32_t,uint32_t>> thread_sync_roll2(const char* seq, 
     size_t ind, unsigned k, uint32_t large_wind_kmer_am,
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);

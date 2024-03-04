@@ -1,7 +1,7 @@
 #ifndef MOD_MINI_HPP
 #define MOD_MINI_HPP
 
-#include "digester.hpp"
+#include "digest/digester.hpp"
 #include <cassert>
 #include <cstdint>
 
@@ -14,8 +14,8 @@ class BadModException : public std::exception
     	return "mod must be greater than congruence.";
     }
 };
-
-class ModMin : public Digester{
+template <BadCharPolicy P>
+class ModMin : public Digester<P>{
     public:
         /**
          * 
@@ -30,7 +30,7 @@ class ModMin : public Digester{
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
         ModMin(const char* seq, size_t len, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  Digester(seq, len, k, start, minimized_h), mod(mod), congruence(congruence)
+        :  Digester<P>(seq, len, k, start, minimized_h), mod(mod), congruence(congruence)
         {
             if (congruence >= mod){
                 throw BadModException();
@@ -49,7 +49,7 @@ class ModMin : public Digester{
          * @throws BadModException Thrown when congruence is greater or equal to mod
          */
         ModMin(const std::string& seq, unsigned k, uint32_t mod, uint32_t congruence = 0, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
-            ModMin(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
+            ModMin<P>(seq.c_str(), seq.size(), k, mod, congruence, start, minimized_h)
         {}
         
         /**
@@ -93,4 +93,5 @@ class ModMin : public Digester{
 
 }
 
+#include "mod_minimizer.tpp"
 #endif

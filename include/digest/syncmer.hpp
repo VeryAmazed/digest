@@ -1,13 +1,13 @@
 #ifndef SYNC_HPP
 #define SYNC_HPP
-#include "digester.hpp"
-#include "window_minimizer.hpp"
+#include "digest/digester.hpp"
+#include "digest/window_minimizer.hpp"
 
 namespace digest{
 
 // number of k-mers to be considered in the large window
-template <class T>
-class Syncmer : public WindowMin<T> {
+template <BadCharPolicy P, class T>
+class Syncmer : public WindowMin<P, T> {
     public:
       /**
          * 
@@ -21,7 +21,7 @@ class Syncmer : public WindowMin<T> {
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         Syncmer(const char* seq, size_t len, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON)
-        :  WindowMin<T>(seq, len, k, large_window, start, minimized_h)
+        :  WindowMin<P, T>(seq, len, k, large_window, start, minimized_h)
         {}
 
         /**
@@ -35,7 +35,7 @@ class Syncmer : public WindowMin<T> {
          * @throws BadWindowException Thrown when congruence is greater or equal to mod
          */
         Syncmer(const std::string& seq, unsigned k, unsigned large_window, size_t start = 0, MinimizedHashType minimized_h = MinimizedHashType::CANON) :
-            Syncmer(seq.c_str(), seq.size(), k, large_window, start, minimized_h)
+            Syncmer<P, T>(seq.c_str(), seq.size(), k, large_window, start, minimized_h)
         {}
 
         /**
@@ -59,7 +59,7 @@ class Syncmer : public WindowMin<T> {
          * @brief helper function which handles adding the next hash into the data structure
          * 
          */
-		    void roll_ds_sync(std::vector<uint32_t>& vec);
+		void roll_ds_sync(std::vector<uint32_t>& vec);
         
         /**
          * @brief helper function which handles adding the next hash into the data structure

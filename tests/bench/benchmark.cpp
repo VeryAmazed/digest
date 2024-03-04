@@ -51,12 +51,12 @@ static void BM_NtHashRoll(benchmark::State& state) {
 BENCHMARK(BM_NtHashRoll)
     ->Args({4}) // spumoni2
     ->Args({15}) // minimap
-    ->Args({31}); // kraken v1
+    ->Args({31})->Iterations(16); // kraken v1
 
 static void BM_ModMinRoll(benchmark::State& state) {
 	for(auto _ : state) {
 		state.PauseTiming();
-		digest::ModMin dig(s, state.range(0), 17);
+		digest::ModMin<digest::BadCharPolicy::SKIPOVER> dig(s, state.range(0), 17);
 		std::vector<uint32_t> vec;
 		vec.reserve(STR_LEN);
 		state.ResumeTiming();
@@ -70,13 +70,13 @@ BENCHMARK(BM_ModMinRoll)
     ->Args({4}) // spumoni2
     ->Args({15}) // minimap
     ->Args({31}) // kraken v1
-	->Args({16}); // comparison for threads
+	->Args({16})->Iterations(16); // comparison for threads
 
 static void BM_WindowMinRoll(benchmark::State& state) {
     for(auto _ : state){
 		state.PauseTiming();
 		# define WINDOW(k) \
-			digest::WindowMin<data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
+			digest::WindowMin<digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<uint32_t> vec; \
 			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
@@ -99,14 +99,14 @@ BENCHMARK(BM_WindowMinRoll)
     ->Args({4, 11}) // spumoni2
     ->Args({15, 10}) // minimap
     ->Args({31, 15}) // kraken v1
-	->Args({16, 16}); // comparison for threads
+	->Args({16, 16})->Iterations(16); // comparison for threads
 
 
 static void BM_SyncmerRoll(benchmark::State& state){
     for(auto _ : state){
 		state.PauseTiming();
 		# define SYNCMER(k) \
-			digest::Syncmer<data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
+			digest::Syncmer<digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<uint32_t> vec; \
 			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
@@ -127,7 +127,7 @@ BENCHMARK(BM_SyncmerRoll)
     ->Args({4, 12}) // spumoni2
     ->Args({15, 11}) // minimap
     ->Args({31, 16}) // kraken v1
-	->Args({16, 16}); // comparison for threads
+	->Args({16, 16})->Iterations(16); // comparison for threads
 
 
 // thread benchmarking ---------------------------------------------------------------------
@@ -138,11 +138,11 @@ static void BM_ThreadMod(benchmark::State& state) {
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_mod(state.range(0), vec, s, DEFAULT_KMER_LEN, 17);
+		thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(state.range(0), vec, s, DEFAULT_KMER_LEN, 17);
 		benchmark::ClobberMemory();
 	}
 }
-BENCHMARK(BM_ThreadMod)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadMod)->RangeMultiplier(2)->Range(1, 128)->UseRealTime()->Iterations(16);
 
 static void BM_ThreadWind(benchmark::State& state) {
     for(auto _ : state){
@@ -151,11 +151,11 @@ static void BM_ThreadWind(benchmark::State& state) {
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_wind<data_structure::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+		thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_ThreadWind)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadWind)->RangeMultiplier(2)->Range(1, 128)->UseRealTime()->Iterations(16);
 
 
 static void BM_ThreadSync(benchmark::State& state){
@@ -165,11 +165,11 @@ static void BM_ThreadSync(benchmark::State& state){
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_sync<data_structure::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+		thread_out::thread_sync<digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_ThreadSync)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadSync)->RangeMultiplier(2)->Range(1, 128)->UseRealTime()->Iterations(16);
 
 
 
