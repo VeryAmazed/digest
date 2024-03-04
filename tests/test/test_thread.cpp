@@ -2,8 +2,6 @@
 #include "digest/thread_out.hpp"
 #include <cstdint>
 #include <fstream>
-#include <iostream>
-#include <iterator>
 #include <string>
 #include <vector>
 
@@ -61,9 +59,9 @@ void test_thread_wind(unsigned thread_count,
     digest::MinimizedHashType minimized_h){
     std::vector<uint32_t> single_thread;
 	std::vector<std::vector<uint32_t>> vec;
-    digest::WindowMin<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive> dig(str, k, large_wind_kmer_am, start, minimized_h);
+    digest::WindowMin<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive> dig(str, k, large_wind_kmer_am, start, minimized_h);
     dig.roll_minimizer(str.size(), single_thread);
-    thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+    thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
     std::vector<uint32_t> multi_thread = multi_to_single_vec(vec);
     
     REQUIRE(single_thread.size() == multi_thread.size());
@@ -77,9 +75,9 @@ void test_thread_sync(unsigned thread_count,
     digest::MinimizedHashType minimized_h){
     std::vector<uint32_t> single_thread;
 	std::vector<std::vector<uint32_t>> vec;
-    digest::Syncmer<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive> dig(str, k, large_wind_kmer_am, start, minimized_h);
+    digest::Syncmer<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive> dig(str, k, large_wind_kmer_am, start, minimized_h);
     dig.roll_minimizer(str.size(), single_thread);
-    thread_out::thread_sync<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
+    thread_out::thread_sync<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
     std::vector<uint32_t> multi_thread = multi_to_single_vec(vec);
     
     REQUIRE(single_thread.size() == multi_thread.size());
@@ -189,12 +187,12 @@ TEST_CASE("thread_wind function testing"){
 
         // num_lwinds is negative
         start = 9;
-        CHECK_THROWS_AS((thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h)), thread_out::BadThreadOutParams);
+        CHECK_THROWS_AS((thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h)), thread_out::BadThreadOutParams);
         start = 0;
         // num_lwinds < thread_count
         thread_count = 8;
 
-        CHECK_THROWS_AS((thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h)), thread_out::BadThreadOutParams);
+        CHECK_THROWS_AS((thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive>(thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h)), thread_out::BadThreadOutParams);
         thread_count = 4;
     }
 

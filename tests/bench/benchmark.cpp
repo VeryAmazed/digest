@@ -76,7 +76,7 @@ static void BM_WindowMinRoll(benchmark::State& state) {
     for(auto _ : state){
 		state.PauseTiming();
 		# define WINDOW(k) \
-			digest::WindowMin<digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
+			digest::WindowMin<digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<uint32_t> vec; \
 			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
@@ -106,7 +106,7 @@ static void BM_SyncmerRoll(benchmark::State& state){
     for(auto _ : state){
 		state.PauseTiming();
 		# define SYNCMER(k) \
-			digest::Syncmer<digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<k>> dig(s, state.range(0), k); \
+			digest::Syncmer<digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<k>> dig(s, state.range(0), k); \
 			std::vector<uint32_t> vec; \
 			vec.reserve(STR_LEN); \
 			state.ResumeTiming(); \
@@ -151,7 +151,7 @@ static void BM_ThreadWind(benchmark::State& state) {
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+		thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
 		benchmark::ClobberMemory();
     }
 }
@@ -165,7 +165,7 @@ static void BM_ThreadSync(benchmark::State& state){
 		state.ResumeTiming();
 		
 		benchmark::DoNotOptimize(vec);
-		thread_out::thread_sync<digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
+		thread_out::thread_sync<digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<DEFAULT_LARGE_WIND>>(state.range(0), vec, s, DEFAULT_KMER_LEN, DEFAULT_LARGE_WIND);
 		benchmark::ClobberMemory();
     }
 }

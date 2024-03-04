@@ -1087,30 +1087,30 @@ TEST_CASE("ModMin Testing"){
 }
 
 #define do64(F) \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<4>, 4) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<31>, 31) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<32>, 32) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<33>, 33) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<63>, 63) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::SegmentTree<64>, 64) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<4>, 4) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<31>, 31) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<32>, 32) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<33>, 33) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<63>, 63) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive<64>, 64) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<4>, 4) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<31>, 31) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<32>, 32) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<33>, 33) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<63>, 63) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Naive2<64>, 64) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 4) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 31) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 32) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 33) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 63) } \
-	{ F(digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive, 64) }
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<4>, 4) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<31>, 31) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<32>, 32) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<33>, 33) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<63>, 63) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::SegmentTree<64>, 64) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive<4>, 4) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive<31>, 31) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive<32>, 32) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive<33>, 33) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive<63>, 63) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive<64>, 64) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive2<4>, 4) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive2<31>, 31) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive2<32>, 32) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive2<33>, 33) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive2<63>, 63) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Naive2<64>, 64) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 4) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 31) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 32) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 33) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 63) } \
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 64) }
 
 TEST_CASE("WindowMin Testing"){
 	SECTION("Constructor Testing"){
