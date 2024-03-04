@@ -66,18 +66,18 @@ if get_option('buildtype') != 'release'
   # )
 
   ### Expected Density ACTG ###
-  # executable(
-  #  'expected_ACTG',
-  #	 'tests/density/ACTG.cpp',
-  #	 dependencies : [digest_dep]
-  # )
+  executable(
+   'expected_ACTG',
+   'tests/density/ACTG.cpp',
+   dependencies : [digest_dep]
+  )
   
   ### Expected Density non-ACTG ###
-  # executable(
-  #  'expected_non-ACTG',
-  #  'tests/density/non-ACTG.cpp',
-  #	 dependencies : [digest_dep]
-  # )
+  executable(
+   'expected_non-ACTG',
+   'tests/density/non-ACTG.cpp',
+   dependencies : [digest_dep]
+  )
   
   ### test thread functions ###
   executable(
