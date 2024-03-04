@@ -4,9 +4,94 @@
 #include <cstdint>
 #include <iostream>
 #include <random>
+#include <array>
 
 // segtee wins at 12
 // naive2 wins at 17
+
+namespace digest::ds {
+
+template<uint32_t k>
+struct MonoQueue {
+ 	int head = 0, tail = 0;
+	// one extra slot so empty() works when full
+	// {hash, index, time}
+	std::array<std::array<uint32_t,k+1>,3> queue;
+	uint32_t time = 0;
+
+ 	bool empty() {
+ 		return head == tail;
+ 	}
+
+	MonoQueue(uint32_t) {
+		queue[2].fill(0); // necessary to avoid 1 in a billion collision
+		queue[0].fill(0); // gets rid of warning
+	}
+	MonoQueue(const MonoQueue& other) = default;
+	MonoQueue &operator=(const MonoQueue& other) = default;
+
+ 	void insert(uint32_t index, uint32_t hash) {
+ 		if (queue[2][head] == time - k) {
+			if (++head == k+1) {
+				head = 0;
+			}
+ 		}
+
+ 		while (not empty() and queue[0][tail == 0 ? k : tail - 1] >= hash) {
+			if (--tail == -1) {
+				tail = k;
+			}
+ 		}
+
+		queue[0][tail] = hash;
+		queue[1][tail] = index;
+		queue[2][tail] = time++;
+
+ 		if (++tail == k+1) tail = 0;
+
+ 	}
+
+	uint32_t min() {
+ 		return queue[1][head];
+	}
+
+	// void min_syncmer(std::vector<uint32_t> &vec) {
+	// 	if (queue[2][head] == time - k or queue[2][head] == time - 1) {
+	// 		vec.emplace_back(queue[1][head]);
+	// 	}
+	// }
+};
+
+template<uint32_t k>
+struct Set {
+	std::set<uint64_t> mset;
+	std::array<std::set<uint64_t>::iterator,k> vec;
+	int i = 0;
+
+	Set(uint32_t) {
+		// edge case where hash == all 1's can cause a set collision.
+		for (unsigned i = 0; i < k; i++) {
+			vec[i] = mset.emplace(i).first;
+		}
+	}
+	Set(const Set& other) = delete; // have to copy over iterators
+	Set &operator=(const Set& other) = delete;
+
+	void insert(uint32_t index, uint32_t hash) {
+		mset.erase(vec[i]);
+
+		vec[i] = mset.emplace((uint64_t)~hash << 32 | index).first;
+		if (++i == k) i = 0;
+	}
+
+	uint32_t min() {
+		return *mset.rbegin();
+	}
+};
+
+
+}
+
 
 const int INPUT_SIZE = 1e7;
 std::array<uint32_t,2*INPUT_SIZE> hashes;
@@ -47,7 +132,6 @@ static void BM(benchmark::State& state){
 #define test(name, out) \
 	BENCHMARK_TEMPLATE(BM, 4, name<4>, out); \
 	BENCHMARK_TEMPLATE(BM, 5, name<5>, out); \
-	/*
 	BENCHMARK_TEMPLATE(BM, 8, name<8>, out); \
 	BENCHMARK_TEMPLATE(BM, 9, name<9>, out); \
 	BENCHMARK_TEMPLATE(BM, 12, name<12>, out); \
@@ -61,12 +145,10 @@ static void BM(benchmark::State& state){
 	BENCHMARK_TEMPLATE(BM, 256, name<256>, out); \
 	BENCHMARK_TEMPLATE(BM, 512, name<512>, out); \
 	BENCHMARK_TEMPLATE(BM, 1024, name<1024>, out);
-	*/
 
 #define test2(name, out) \
 	BENCHMARK_TEMPLATE(BM, 4, name, out); \
 	BENCHMARK_TEMPLATE(BM, 5, name, out); \
-	/*
 	BENCHMARK_TEMPLATE(BM, 8, name, out); \
 	BENCHMARK_TEMPLATE(BM, 9, name, out); \
 	BENCHMARK_TEMPLATE(BM, 12, name, out); \
@@ -80,15 +162,14 @@ static void BM(benchmark::State& state){
 	BENCHMARK_TEMPLATE(BM, 256, name, out); \
 	BENCHMARK_TEMPLATE(BM, 512, name, out); \
 	BENCHMARK_TEMPLATE(BM, 1024, name, out);
-	*/
 
-test(data_structure::Naive, 0);
-test(data_structure::Naive2, 1);
-test(data_structure::MonoQueue, 2);
-test(data_structure::SegmentTree, 3);
-test(data_structure::Set, 4);
-test2(data_structure::Adaptive, 5);
-test2(data_structure::Adaptive64, 6);
+test(digest::ds::Naive, 0);
+test(digest::ds::Naive2, 1);
+test(digest::ds::MonoQueue, 2);
+test(digest::ds::SegmentTree, 3);
+test(digest::ds::Set, 4);
+test2(digest::ds::Adaptive, 5);
+test2(digest::ds::Adaptive64, 6);
 
 int main(int argc, char** argv)
 {

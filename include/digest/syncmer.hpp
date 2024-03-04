@@ -59,7 +59,7 @@ class Syncmer : public WindowMin<P, T> {
          * @brief helper function which handles adding the next hash into the data structure
          * 
          */
-		    void roll_ds_sync(std::vector<uint32_t>& vec);
+		void roll_ds_sync(std::vector<uint32_t>& vec);
         
         /**
          * @brief helper function which handles adding the next hash into the data structure
