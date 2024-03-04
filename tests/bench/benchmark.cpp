@@ -51,7 +51,7 @@ static void BM_NtHashRoll(benchmark::State& state) {
 BENCHMARK(BM_NtHashRoll)
     ->Args({4}) // spumoni2
     ->Args({15}) // minimap
-    ->Args({31}); // kraken v1
+    ->Args({31})->Iterations(16); // kraken v1
 
 static void BM_ModMinRoll(benchmark::State& state) {
 	for(auto _ : state) {
@@ -70,7 +70,7 @@ BENCHMARK(BM_ModMinRoll)
     ->Args({4}) // spumoni2
     ->Args({15}) // minimap
     ->Args({31}) // kraken v1
-	->Args({16}); // comparison for threads
+	->Args({16})->Iterations(16); // comparison for threads
 
 static void BM_WindowMinRoll(benchmark::State& state) {
     for(auto _ : state){
@@ -99,7 +99,7 @@ BENCHMARK(BM_WindowMinRoll)
     ->Args({4, 11}) // spumoni2
     ->Args({15, 10}) // minimap
     ->Args({31, 15}) // kraken v1
-	->Args({16, 16}); // comparison for threads
+	->Args({16, 16})->Iterations(16); // comparison for threads
 
 
 static void BM_SyncmerRoll(benchmark::State& state){
@@ -127,7 +127,7 @@ BENCHMARK(BM_SyncmerRoll)
     ->Args({4, 12}) // spumoni2
     ->Args({15, 11}) // minimap
     ->Args({31, 16}) // kraken v1
-	->Args({16, 16}); // comparison for threads
+	->Args({16, 16})->Iterations(16); // comparison for threads
 
 
 // thread benchmarking ---------------------------------------------------------------------
@@ -142,7 +142,7 @@ static void BM_ThreadMod(benchmark::State& state) {
 		benchmark::ClobberMemory();
 	}
 }
-BENCHMARK(BM_ThreadMod)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadMod)->RangeMultiplier(2)->Range(1, 128)->UseRealTime()->Iterations(16);
 
 static void BM_ThreadWind(benchmark::State& state) {
     for(auto _ : state){
@@ -155,7 +155,7 @@ static void BM_ThreadWind(benchmark::State& state) {
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_ThreadWind)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadWind)->RangeMultiplier(2)->Range(1, 128)->UseRealTime()->Iterations(16);
 
 
 static void BM_ThreadSync(benchmark::State& state){
@@ -169,7 +169,7 @@ static void BM_ThreadSync(benchmark::State& state){
 		benchmark::ClobberMemory();
     }
 }
-BENCHMARK(BM_ThreadSync)->RangeMultiplier(2)->Range(1, 32)->UseRealTime();
+BENCHMARK(BM_ThreadSync)->RangeMultiplier(2)->Range(1, 128)->UseRealTime()->Iterations(16);
 
 
 

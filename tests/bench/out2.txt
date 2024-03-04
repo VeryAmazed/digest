@@ -1,0 +1,42 @@
+------------------------------------------------------------------------------------
+Benchmark                                          Time             CPU   Iterations
+------------------------------------------------------------------------------------
+BM_NtHashRoll/4/iterations:16              525823563 ns    523864037 ns           16
+BM_NtHashRoll/15/iterations:16             540320933 ns    538108657 ns           16
+BM_NtHashRoll/31/iterations:16             595853493 ns    593640859 ns           16
+BM_ModMinRoll/4/iterations:16              808201924 ns    804918373 ns           16
+BM_ModMinRoll/15/iterations:16             781303301 ns    778000266 ns           16
+BM_ModMinRoll/31/iterations:16             872530580 ns    868955697 ns           16
+BM_ModMinRoll/16/iterations:16             781739101 ns    778525982 ns           16
+BM_WindowMinRoll/4/11/iterations:16       1094515920 ns   1090060115 ns           16
+BM_WindowMinRoll/15/10/iterations:16      1082492590 ns   1077808452 ns           16
+BM_WindowMinRoll/31/15/iterations:16      1130982667 ns   1126383167 ns           16
+BM_WindowMinRoll/16/16/iterations:16      1017281443 ns   1013186464 ns           16
+BM_SyncmerRoll/4/12/iterations:16         1157861516 ns   1152829354 ns           16
+BM_SyncmerRoll/15/11/iterations:16        1162637159 ns   1157592076 ns           16
+BM_SyncmerRoll/31/16/iterations:16        1192278236 ns   1186885724 ns           16
+BM_SyncmerRoll/16/16/iterations:16        1105144963 ns   1100258180 ns           16
+BM_ThreadMod/1/iterations:16/real_time     762733087 ns       272686 ns           16
+BM_ThreadMod/2/iterations:16/real_time     381279469 ns       175064 ns           16
+BM_ThreadMod/4/iterations:16/real_time     195192158 ns       340592 ns           16
+BM_ThreadMod/8/iterations:16/real_time     109710589 ns       782561 ns           16
+BM_ThreadMod/16/iterations:16/real_time     76397777 ns      1575984 ns           16
+BM_ThreadMod/32/iterations:16/real_time     45323804 ns      2640770 ns           16
+BM_ThreadMod/64/iterations:16/real_time     42301625 ns      4821215 ns           16
+BM_ThreadMod/128/iterations:16/real_time    44003755 ns      9971386 ns           16
+BM_ThreadWind/1/iterations:16/real_time   1040755227 ns      2345807 ns           16
+BM_ThreadWind/2/iterations:16/real_time    510378554 ns       119358 ns           16
+BM_ThreadWind/4/iterations:16/real_time    251954630 ns       149401 ns           16
+BM_ThreadWind/8/iterations:16/real_time    138267666 ns       369747 ns           16
+BM_ThreadWind/16/iterations:16/real_time    94592348 ns       955399 ns           16
+BM_ThreadWind/32/iterations:16/real_time    58459759 ns      1969980 ns           16
+BM_ThreadWind/64/iterations:16/real_time    52992120 ns      4027659 ns           16
+BM_ThreadWind/128/iterations:16/real_time   54682508 ns      9089638 ns           16
+BM_ThreadSync/1/iterations:16/real_time   1119603097 ns      2377927 ns           16
+BM_ThreadSync/2/iterations:16/real_time    550888211 ns       137407 ns           16
+BM_ThreadSync/4/iterations:16/real_time    273458973 ns       208040 ns           16
+BM_ThreadSync/8/iterations:16/real_time    147253394 ns       471453 ns           16
+BM_ThreadSync/16/iterations:16/real_time    90406746 ns       990708 ns           16
+BM_ThreadSync/32/iterations:16/real_time    61018780 ns      1851053 ns           16
+BM_ThreadSync/64/iterations:16/real_time    51618010 ns      4109694 ns           16
+BM_ThreadSync/128/iterations:16/real_time   49648151 ns      7804714 ns           16
