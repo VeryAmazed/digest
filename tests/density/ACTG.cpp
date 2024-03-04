@@ -65,7 +65,7 @@ int main() {
     
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::WindowMin<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive> wm(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
+            digest::WindowMin<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive> wm(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
             std::vector<uint32_t> temp;
             wm.roll_minimizer(100000, temp);
             double am = temp.size();
@@ -76,7 +76,7 @@ int main() {
 
     for(int i =0; i < 4; i++){
         for(int j =0; j < 100; j++){
-            digest::Syncmer<digest::BadCharPolicy::SKIPOVER, data_structure::Adaptive> syn(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
+            digest::Syncmer<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive> syn(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
             std::vector<uint32_t> temp;
             syn.roll_minimizer(100000, temp);
             double am = temp.size();
