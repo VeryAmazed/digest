@@ -59,7 +59,7 @@ public:
    * @param vec
    */
   void roll_minimizer(unsigned amount,
-                      std::vector<std::pair<uint32_t, uint32_t>> &vec);
+                      std::vector<std::pair<uint32_t, uint32_t>> &vec) override;
 
 private:
   /**
