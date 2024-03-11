@@ -1,4 +1,4 @@
 [wrap-git]
-url = https://github.com/bcgsc/ntHash.git
-revision = master
+url = https://github.com/ishmeals/ntHash.git
+revision = patch-1
 depth = 1

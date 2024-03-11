@@ -35,7 +35,7 @@ This will generate `include` and `lib` folders.
 
 # Example
 ```cpp
-digest::WindowMin<data_structure::Naive<8>> wm(str, 16, 8);
+digest::WindowMin<digest::ds::Naive<8>> wm(str, 16, 8);
 std::vector<size_t> temp;
 wm.roll_minimizer(100000, temp);
 ```
@@ -58,9 +58,3 @@ meson setup build
 cd build && meson compile
 ```
 this will generate proper executables for benchmark/testing
-
-# Todo
-license  
-clean up branches  
-policy for only actg  
-threading (why no join at end)  
