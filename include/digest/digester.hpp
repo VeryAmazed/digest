@@ -1,5 +1,4 @@
-#ifndef DIGESTER_HPP
-#define DIGESTER_HPP
+#pragma once
 
 #include <cstdint>
 #include <deque>
@@ -327,6 +326,3 @@ protected:
 };
 
 } // namespace digest
-
-#include "digester.tpp"
-#endif

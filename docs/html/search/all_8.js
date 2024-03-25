@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['tests_0',['Benchmark / Tests',['../md_README.html#autotoc_md7',1,'']]],
-  ['the_20correct_20tt_20data_5fstructure_20tt_1',['Selecting the correct &lt;tt&gt;data_structure&lt;/tt&gt;',['../md_README.html#autotoc_md5',1,'']]],
-  ['the_20documentation_20is_20in_20the_20code_2',['Implementation (Most of the documentation is in the code)',['../md_README.html#autotoc_md1',1,'']]],
-  ['tt_20data_5fstructure_20tt_3',['Selecting the correct &lt;tt&gt;data_structure&lt;/tt&gt;',['../md_README.html#autotoc_md5',1,'']]]
+  ['segmenttree_0',['SegmentTree',['../structdigest_1_1ds_1_1SegmentTree.html',1,'digest::ds']]],
+  ['syncmer_1',['Syncmer',['../classdigest_1_1Syncmer.html',1,'digest::Syncmer&lt; P, T &gt;'],['../classdigest_1_1Syncmer.html#abcce53eb14f0a1626dbae3ee29f484c9',1,'digest::Syncmer::Syncmer(const char *seq, size_t len, unsigned k, unsigned large_window, size_t start=0, MinimizedHashType minimized_h=MinimizedHashType::CANON)'],['../classdigest_1_1Syncmer.html#ac505ccfc168184016f2c2a7d0886c95f',1,'digest::Syncmer::Syncmer(const std::string &amp;seq, unsigned k, unsigned large_window, size_t start=0, MinimizedHashType minimized_h=MinimizedHashType::CANON)']]]
 ];

@@ -1,0 +1,42 @@
+\doxysection{syncmer.\+hpp}
+\hypertarget{syncmer_8hpp_source}{}\label{syncmer_8hpp_source}\index{include/digest/syncmer.hpp@{include/digest/syncmer.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ SYNC\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ SYNC\_HPP}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}digest/digester.hpp"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}digest/window\_minimizer.hpp"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{namespace\ }digest\ \{}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ number\ of\ k-\/mers\ to\ be\ considered\ in\ the\ large\ window}}
+\DoxyCodeLine{00009\ \textcolor{keyword}{template}\ <BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classdigest_1_1Syncmer}{Syncmer}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classdigest_1_1WindowMin}{WindowMin}}<P,\ T>\ \{}
+\DoxyCodeLine{00010\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00023\ \ \ \mbox{\hyperlink{classdigest_1_1Syncmer_abcce53eb14f0a1626dbae3ee29f484c9}{Syncmer}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{unsigned}\ k,\ \textcolor{keywordtype}{unsigned}\ large\_window,}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \ \ MinimizedHashType\ minimized\_h\ =\ MinimizedHashType::CANON)}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ :\ \mbox{\hyperlink{classdigest_1_1WindowMin}{WindowMin}}<P,\ T>(seq,\ len,\ k,\ large\_window,\ start,\ minimized\_h)\ \{\}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00039\ \ \ \mbox{\hyperlink{classdigest_1_1Syncmer_ac505ccfc168184016f2c2a7d0886c95f}{Syncmer}}(\textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{unsigned}\ k,\ \textcolor{keywordtype}{unsigned}\ large\_window,}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ MinimizedHashType\ minimized\_h\ =\ MinimizedHashType::CANON)}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ :\ \mbox{\hyperlink{classdigest_1_1Syncmer}{Syncmer}}<P,\ T>(seq.c\_str(),\ seq.size(),\ k,\ large\_window,\ start,}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ minimized\_h)\ \{\}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00051\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classdigest_1_1Syncmer_a89172ad3aea6f949b9e56f1839f61e14}{roll\_minimizer}}(\textcolor{keywordtype}{unsigned}\ amount,\ std::vector<uint32\_t>\ \&vec)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00061\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classdigest_1_1Syncmer_ae966953db4fb68cfea89819df9d5e53b}{roll\_minimizer}}(\textcolor{keywordtype}{unsigned}\ amount,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::pair<uint32\_t,\ uint32\_t>>\ \&vec)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00070\ \ \ \textcolor{keywordtype}{void}\ roll\_ds\_sync(std::vector<uint32\_t>\ \&vec);}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00077\ \ \ \textcolor{keywordtype}{void}\ roll\_ds\_sync(std::vector<std::pair<uint32\_t,\ uint32\_t>>\ \&vec);}
+\DoxyCodeLine{00078\ \};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \}\ \textcolor{comment}{//\ namespace\ digest}}
+\DoxyCodeLine{00081\ }
+\DoxyCodeLine{00082\ \textcolor{preprocessor}{\#include\ "{}syncmer.tpp"{}}}
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

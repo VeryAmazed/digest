@@ -1,0 +1,176 @@
+\doxysection{thread\+\_\+out.\+hpp}
+\hypertarget{thread__out_8hpp_source}{}\label{thread__out_8hpp_source}\index{include/digest/thread\_out.hpp@{include/digest/thread\_out.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ THREAD\_OUT\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ THREAD\_OUT\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}digest/mod\_minimizer.hpp"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}digest/syncmer.hpp"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}digest/window\_minimizer.hpp"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{comment}{/*}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ \ \ \ Possible\ implementation\ for\ multi-\/threading\ the\ digestion\ of\ a\ single}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ \ \ sequence.\ The\ key\ thing\ to\ note\ is\ basically\ by\ carefully\ telling\ where\ each}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ \ \ digester\ should\ start\ digesting\ you\ can\ make\ it\ so\ each\ kmer\ is\ only}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ \ \ considered\ once.\ I\ have\ very\ little\ experience\ with\ threading,\ so\ you\ could}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ \ \ probably\ thread\ this\ out\ better\ than\ me}}
+\DoxyCodeLine{00017\ \textcolor{comment}{}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ \ \ \ IMPORTANT:\ This\ approach\ will\ not\ generate\ correct\ results\ for\ sequences}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ \ \ that\ contain\ non-\/ACTG\ characters.\ Take\ this\ example,\ seq\ =\ ACTGANACNACTGA,\ k}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ \ \ =\ 4,\ l\_wind\ =\ 4,\ thread\_count\ =\ 2,\ there\ is\ a\ total\ of\ 4\ valid\ kmers\ in\ this}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ \ \ sequence,\ and\ thus\ only\ 1\ valid\ large\ window,\ but\ we\ can't\ know\ this\ until\ it}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ \ \ actually\ goes\ through\ the\ sequence,\ so\ it's\ going\ to\ try\ to\ partition\ the}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ \ \ \ sequence\ into\ ACTGANACNA,\ and\ ANACNACTGA\ and\ feed\ it\ into\ 2\ digester\ objects}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ \ \ which\ now\ each\ have\ 0\ valid\ large\ windows}}
+\DoxyCodeLine{00025\ \textcolor{comment}{*/}}
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }thread\_out\ \{}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classthread__out_1_1BadThreadOutParams}{BadThreadOutParams}}\ :\ \textcolor{keyword}{public}\ std::exception\ \{}
+\DoxyCodeLine{00029\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *what()\ \textcolor{keyword}{const}\ \textcolor{keywordflow}{throw}()\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}k\ must\ be\ greater\ than\ 3,\ start\ must\ be\ less\ than\ len,\ \(\backslash\)}}
+\DoxyCodeLine{00031\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ and\ num\ threads\ must\ be\ greater\ or\ equal\ to\ the\ number\ of\ kmers/large\ windows\ \(\backslash\)}}
+\DoxyCodeLine{00032\ \textcolor{stringliteral}{\ \ \ \ \ \ \ \ large\_wind\_kmer\_am\ can't\ be\ 0"{}};}
+\DoxyCodeLine{00033\ \ \ \}}
+\DoxyCodeLine{00034\ \};}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00056\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P>}
+\DoxyCodeLine{00057\ \textcolor{keywordtype}{void}\ thread\_mod(}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,\ std::vector<std::vector<uint32\_t>>\ \&vec,}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ mod,}
+\DoxyCodeLine{00060\ \ \ \ \ uint32\_t\ congruence\ =\ 0,\ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00061\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00066\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P>}
+\DoxyCodeLine{00067\ \textcolor{keywordtype}{void}\ thread\_mod(}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,\ std::vector<std::vector<uint32\_t>>\ \&vec,}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ mod,\ uint32\_t\ congruence\ =\ 0,}
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00071\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P>}
+\DoxyCodeLine{00078\ \textcolor{keywordtype}{void}\ thread\_mod(}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,}
+\DoxyCodeLine{00080\ \ \ \ \ std::vector<std::vector<std::pair<uint32\_t,\ uint32\_t>>>\ \&vec,}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ mod,}
+\DoxyCodeLine{00082\ \ \ \ \ uint32\_t\ congruence\ =\ 0,\ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00083\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P>}
+\DoxyCodeLine{00086\ \textcolor{keywordtype}{void}\ thread\_mod(}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,}
+\DoxyCodeLine{00088\ \ \ \ \ std::vector<std::vector<std::pair<uint32\_t,\ uint32\_t>>>\ \&vec,}
+\DoxyCodeLine{00089\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ mod,\ uint32\_t\ congruence\ =\ 0,}
+\DoxyCodeLine{00090\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00091\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00111\ \textcolor{comment}{//\ number\ of\ k-\/mers\ to\ be\ considered\ in\ the\ large\ window}}
+\DoxyCodeLine{00112\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00113\ \textcolor{keywordtype}{void}\ thread\_wind(}
+\DoxyCodeLine{00114\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,\ std::vector<std::vector<uint32\_t>>\ \&vec,}
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00117\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00122\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00123\ \textcolor{keywordtype}{void}\ thread\_wind(}
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,\ std::vector<std::vector<uint32\_t>>\ \&vec,}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00126\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00127\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00133\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00134\ \textcolor{keywordtype}{void}\ thread\_wind(}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,}
+\DoxyCodeLine{00136\ \ \ \ \ std::vector<std::vector<std::pair<uint32\_t,\ uint32\_t>>>\ \&vec,}
+\DoxyCodeLine{00137\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00138\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00139\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00142\ \textcolor{keywordtype}{void}\ thread\_wind(}
+\DoxyCodeLine{00143\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,}
+\DoxyCodeLine{00144\ \ \ \ \ std::vector<std::vector<std::pair<uint32\_t,\ uint32\_t>>>\ \&vec,}
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00146\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00147\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00167\ \textcolor{comment}{//\ number\ of\ k-\/mers\ to\ be\ considered\ in\ the\ large\ window}}
+\DoxyCodeLine{00168\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00169\ \textcolor{keywordtype}{void}\ thread\_sync(}
+\DoxyCodeLine{00170\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,\ std::vector<std::vector<uint32\_t>>\ \&vec,}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00173\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00178\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00179\ \textcolor{keywordtype}{void}\ thread\_sync(}
+\DoxyCodeLine{00180\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,\ std::vector<std::vector<uint32\_t>>\ \&vec,}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00183\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00189\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00190\ \textcolor{keywordtype}{void}\ thread\_sync(}
+\DoxyCodeLine{00191\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,}
+\DoxyCodeLine{00192\ \ \ \ \ std::vector<std::vector<std::pair<uint32\_t,\ uint32\_t>>>\ \&vec,}
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00194\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00195\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00198\ \textcolor{keywordtype}{void}\ thread\_sync(}
+\DoxyCodeLine{00199\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ thread\_count,}
+\DoxyCodeLine{00200\ \ \ \ \ std::vector<std::vector<std::pair<uint32\_t,\ uint32\_t>>>\ \&vec,}
+\DoxyCodeLine{00201\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00202\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00203\ \ \ \ \ digest::MinimizedHashType\ minimized\_h\ =\ digest::MinimizedHashType::CANON);}
+\DoxyCodeLine{00204\ }
+\DoxyCodeLine{00205\ \textcolor{comment}{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ WORKER\ FUNCTIONS\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \textcolor{comment}{//\ function\ that's\ passed\ to\ the\ thread\ for\ ModMinmizers}}
+\DoxyCodeLine{00208\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P>}
+\DoxyCodeLine{00209\ std::vector<uint32\_t>\ thread\_mod\_roll1(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ ind,\ \textcolor{keywordtype}{unsigned}\ k,}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ mod,\ uint32\_t\ congruence,}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ digest::MinimizedHashType\ minimized\_h,}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ assigned\_kmer\_am);}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P>}
+\DoxyCodeLine{00215\ std::vector<std::pair<uint32\_t,\ uint32\_t>>}
+\DoxyCodeLine{00216\ thread\_mod\_roll2(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ ind,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ mod,}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ congruence,\ digest::MinimizedHashType\ minimized\_h,}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ assigned\_kmer\_am);}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \textcolor{comment}{//\ function\ that's\ passed\ to\ the\ thread\ for\ WindowMinimizers}}
+\DoxyCodeLine{00221\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00222\ std::vector<uint32\_t>\ thread\_wind\_roll1(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ ind,\ \textcolor{keywordtype}{unsigned}\ k,}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ digest::MinimizedHashType\ minimized\_h,}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ assigned\_lwind\_am);}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00228\ std::vector<std::pair<uint32\_t,\ uint32\_t>>\ thread\_wind\_roll2(}
+\DoxyCodeLine{00229\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ ind,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00230\ \ \ \ \ digest::MinimizedHashType\ minimized\_h,\ \textcolor{keywordtype}{unsigned}\ assigned\_lwind\_am);}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \textcolor{comment}{//\ function\ that's\ passed\ to\ the\ thread\ for\ Syncmers}}
+\DoxyCodeLine{00233\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00234\ std::vector<uint32\_t>\ thread\_sync\_roll1(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ ind,\ \textcolor{keywordtype}{unsigned}\ k,}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ digest::MinimizedHashType\ minimized\_h,}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{unsigned}\ assigned\_lwind\_am);}
+\DoxyCodeLine{00238\ }
+\DoxyCodeLine{00239\ \textcolor{keyword}{template}\ <digest::BadCharPolicy\ P,\ \textcolor{keyword}{class}\ T>}
+\DoxyCodeLine{00240\ std::vector<std::pair<uint32\_t,\ uint32\_t>>\ thread\_sync\_roll2(}
+\DoxyCodeLine{00241\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ ind,\ \textcolor{keywordtype}{unsigned}\ k,\ uint32\_t\ large\_wind\_kmer\_am,}
+\DoxyCodeLine{00242\ \ \ \ \ digest::MinimizedHashType\ minimized\_h,\ \textcolor{keywordtype}{unsigned}\ assigned\_lwind\_am);}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \}\ \textcolor{comment}{//\ namespace\ thread\_out}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \textcolor{preprocessor}{\#include\ "{}thread\_out.tpp"{}}}
+\DoxyCodeLine{00247\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

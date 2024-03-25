@@ -8,4 +8,4 @@ fi
 set -euo pipefail
 
 cd "${MESON_SOURCE_ROOT}"
-doxygen
+doxygen docs/Doxyfile
