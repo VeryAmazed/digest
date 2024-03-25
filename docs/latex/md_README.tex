@@ -57,13 +57,19 @@ our general guidelines\+:
 \end{DoxyItemize}
 
 adaptive performs at worst about 10\% slower than best ~\newline
- adaptive64 performs at worst about 100\% slower than best\hypertarget{md_README_autotoc_md6}{}\doxysection{\texorpdfstring{Benchmark / Tests}{Benchmark / Tests}}\label{md_README_autotoc_md6}
+ adaptive64 performs at worst about 100\% slower than best\hypertarget{md_README_autotoc_md6}{}\doxysection{\texorpdfstring{Contributing}{Contributing}}\label{md_README_autotoc_md6}
+run 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ninja\ clang-\/format}
+\DoxyCodeLine{ninja\ clang-\/tidy}
+\DoxyCodeLine{ninja\ docs}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md7}{}\doxysection{\texorpdfstring{Benchmark / Tests}{Benchmark / Tests}}\label{md_README_autotoc_md7}
 
 \begin{DoxyCode}{0}
 \DoxyCodeLine{meson\ setup\ build}
 \DoxyCodeLine{cd\ build\ \&\&\ meson\ compile}
 
 \end{DoxyCode}
- this will generate proper executables for benchmark/testing
-
-fix digester array 
+ this will generate proper executables for benchmark/testing 
