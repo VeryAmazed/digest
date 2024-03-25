@@ -150,7 +150,7 @@ static void BM_ThreadMod(benchmark::State &state) {
   }
 }
 BENCHMARK(BM_ThreadMod)
-	->Args({1})
+    ->Args({1})
     ->ArgsProduct({benchmark::CreateDenseRange(2, 64, 2)})
     ->UseRealTime()
     ->Iterations(16);
@@ -169,7 +169,7 @@ static void BM_ThreadWind(benchmark::State &state) {
   }
 }
 BENCHMARK(BM_ThreadWind)
-	->Args({1})
+    ->Args({1})
     ->ArgsProduct({benchmark::CreateDenseRange(2, 64, 2)})
     ->UseRealTime()
     ->Iterations(16);
@@ -188,7 +188,7 @@ static void BM_ThreadSync(benchmark::State &state) {
   }
 }
 BENCHMARK(BM_ThreadSync)
-	->Args({1})
+    ->Args({1})
     ->ArgsProduct({benchmark::CreateDenseRange(2, 64, 2)})
     ->UseRealTime()
     ->Iterations(16);

@@ -52,6 +52,14 @@ our general guidelines:
 adaptive performs at worst about 10% slower than best  
 adaptive64 performs at worst about 100% slower than best
 
+# Contributing
+run
+```bash
+ninja clang-format
+ninja clang-tidy
+ninja docs
+```
+
 # Benchmark / Tests
 ```bash
 meson setup build

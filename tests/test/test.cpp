@@ -1,4 +1,3 @@
-// #include "nthash.hpp"
 #include "digest/data_structure.hpp"
 #include "digest/mod_minimizer.hpp"
 #include "digest/syncmer.hpp"
