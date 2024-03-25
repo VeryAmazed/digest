@@ -2,6 +2,10 @@
 build
 .cache
 
+# doxygen output
+docs/html
+docs/latex
+
 # don't track subprojects
 subprojects/*
 # keep wrap files
