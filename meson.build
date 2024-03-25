@@ -85,4 +85,11 @@ if get_option('buildtype') != 'release'
    'tests/test/test_thread.cpp',
    dependencies : [catch2, digest_dep],
   )
+
+  doxygen = find_program('doxygen', required: false)
+  if doxygen.found()
+      run_target('docs', command: [meson.project_source_root() + '/docs/build.sh'])
+  else
+      warning('Documentation disabled without doxygen')
+  endif
 endif
