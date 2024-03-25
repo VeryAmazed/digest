@@ -23,9 +23,7 @@ using nthash::TRIMER_TAB;
  * @return `true` if any of the first k characters is not an ACGTU, `false`
  * otherwise
  */
-inline bool
-is_invalid_kmer(const char* seq, unsigned k, size_t& pos_n)
-{
+inline bool is_invalid_kmer(const char *seq, unsigned k, size_t &pos_n) {
   for (int i = (int)k - 1; i >= 0; i--) {
     if (SEED_TAB[(unsigned char)seq[i]] == SEED_N) {
       pos_n = i;
@@ -41,9 +39,7 @@ is_invalid_kmer(const char* seq, unsigned k, size_t& pos_n)
  * @param k k-mer size
  * @return Hash value of k-mer_0
  */
-inline uint64_t
-base_forward_hash(const char* seq, unsigned k)
-{
+inline uint64_t base_forward_hash(const char *seq, unsigned k) {
   uint64_t h_val = 0;
   for (unsigned i = 0; i < k - 3; i += 4) {
     h_val = srol(h_val, 4);
@@ -82,12 +78,9 @@ base_forward_hash(const char* seq, unsigned k)
  * @param char_in Character to be included
  * @return Rolled forward hash value
  */
-inline uint64_t
-next_forward_hash(uint64_t fh_val,
-                  unsigned k,
-                  unsigned char char_out,
-                  unsigned char char_in)
-{
+inline uint64_t next_forward_hash(uint64_t fh_val, unsigned k,
+                                  unsigned char char_out,
+                                  unsigned char char_in) {
   uint64_t h_val = srol(fh_val);
   h_val ^= SEED_TAB[char_in];
   h_val ^= srol_table(char_out, k);
@@ -102,12 +95,9 @@ next_forward_hash(uint64_t fh_val,
  * @param char_in Character to be included
  * @return Forward hash value rolled back
  */
-inline uint64_t
-prev_forward_hash(uint64_t fh_val,
-                  unsigned k,
-                  unsigned char char_out,
-                  unsigned char char_in)
-{
+inline uint64_t prev_forward_hash(uint64_t fh_val, unsigned k,
+                                  unsigned char char_out,
+                                  unsigned char char_in) {
   uint64_t h_val = fh_val ^ srol_table(char_in, k);
   h_val ^= SEED_TAB[char_out];
   h_val = sror(h_val);
@@ -121,9 +111,7 @@ prev_forward_hash(uint64_t fh_val,
  * @param k k-mer size
  * @return Hash value of the reverse-complement of k-mer_0
  */
-inline uint64_t
-base_reverse_hash(const char* seq, unsigned k)
-{
+inline uint64_t base_reverse_hash(const char *seq, unsigned k) {
   uint64_t h_val = 0;
   const unsigned remainder = k % 4;
   if (remainder == 3) {
@@ -162,12 +150,9 @@ base_reverse_hash(const char* seq, unsigned k)
  * @param char_in Character to be included
  * @return Rolled hash value for the reverse-complement
  */
-inline uint64_t
-next_reverse_hash(uint64_t rh_val,
-                  unsigned k,
-                  unsigned char char_out,
-                  unsigned char char_in)
-{
+inline uint64_t next_reverse_hash(uint64_t rh_val, unsigned k,
+                                  unsigned char char_out,
+                                  unsigned char char_in) {
   uint64_t h_val = rh_val ^ srol_table(char_in & CP_OFF, k);
   h_val ^= SEED_TAB[char_out & CP_OFF];
   h_val = sror(h_val);
@@ -182,12 +167,9 @@ next_reverse_hash(uint64_t rh_val,
  * @param char_in Character to be included
  * @return Reverse hash value rolled back
  */
-inline uint64_t
-prev_reverse_hash(uint64_t rh_val,
-                  unsigned k,
-                  unsigned char char_out,
-                  unsigned char char_in)
-{
+inline uint64_t prev_reverse_hash(uint64_t rh_val, unsigned k,
+                                  unsigned char char_out,
+                                  unsigned char char_in) {
   uint64_t h_val = srol(rh_val);
   h_val ^= SEED_TAB[char_in & CP_OFF];
   h_val ^= srol_table(char_out & CP_OFF, k);

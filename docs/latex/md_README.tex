@@ -1,0 +1,69 @@
+\chapter{Digest}
+\hypertarget{md_README}{}\label{md_README}\index{Digest@{Digest}}
+\label{md_README_autotoc_md0}%
+\Hypertarget{md_README_autotoc_md0}%
+C++ library which supports various minimizer schemes for digestion of DNA sequences ~\newline
+\hypertarget{md_README_autotoc_md1}{}\doxysection{\texorpdfstring{Implementation (Most of the documentation is in the code)}{Implementation (Most of the documentation is in the code)}}\label{md_README_autotoc_md1}
+Supports Mod Minimizers, Window Minimizers, and Syncmers ~\newline
+
+
+Uses the cyclic or hash provided by \href{https://github.com/bcgsc/ntHash}{\texttt{ nt\+Hash}}. For now I just downloaded the essential files off their github and compiled it myself but I may change how I link in nt\+Hash in the future. ~\newline
+
+
+Tests were written using the \href{https://github.com/catchorg/Catch2}{\texttt{ Catch2}} unit testing framework. ~\newline
+
+
+As nt\+Hash only hashes ACTG characters, this library can also only hash ACTG characters. Any kmer that contains a non-\/\+ACTG character will be skipped over, for example is the kmer size is 4, and the sequence is ACCGNATTGC, only ACCG, ATTG, and TTGC will be hashed and considered for being a minimizer. ~\newline
+
+
+Mod Minimzer classifies a kmer as a minimizer if the hash of the kmer is congruent to the user specified value in the user specified mod-\/space. ~\newline
+
+
+Window Minimizer classifies a kmer as a minimizer if it is the smallest in the user specifed large window, using rightmost kmer to break ties. ~\newline
+
+
+Syncmer classifies a large window as a minimizer if its smallest value is equal to the value of the hashes of the leftmost or rightmost kmer in the window (doesn\textquotesingle{}t care if the smallest hash value is not unique). Because of how the large window is defined and how this library handles skipping over non-\/\+ACTG characters, if your sequence has non-\/\+ACTG characters, it is possible for this large window to have varying lengths in terms of number of characters. ~\newline
+\hypertarget{md_README_autotoc_md2}{}\doxysection{\texorpdfstring{Install}{Install}}\label{md_README_autotoc_md2}
+We use \href{https://mesonbuild.com}{\texttt{ Meson}}. (Very) old version will not work.
+
+PREFIX is an absolute path to install location. If excluded, will install to system libraries. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{meson\ setup\ -\/-\/prefix=PREFIX\ -\/-\/buildtype=release\ build}
+\DoxyCodeLine{meson\ install\ -\/C\ build}
+
+\end{DoxyCode}
+ This will generate {\ttfamily include} and {\ttfamily lib} folders.\hypertarget{md_README_autotoc_md3}{}\doxysection{\texorpdfstring{Usage}{Usage}}\label{md_README_autotoc_md3}
+
+\begin{DoxyItemize}
+\item Headers at {\ttfamily \#include \texorpdfstring{$<$}{<}digest/\+\_\+\+\_\+\+\_\+.\+hpp\texorpdfstring{$>$}{>}}
+\item Classes are in {\ttfamily digest} namespace
+\item example compile\+: {\ttfamily g++ file.\+cpp -\/IPREFIX/include -\/LPREFIX/lib -\/ldigest}
+\item may need {\ttfamily std=c++17}
+\item nt\+Hash does not support {\ttfamily large\+\_\+window \texorpdfstring{$<$}{<} 4}
+\end{DoxyItemize}\hypertarget{md_README_autotoc_md4}{}\doxysection{\texorpdfstring{Example}{Example}}\label{md_README_autotoc_md4}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{digest::WindowMin<digest::ds::Naive<8>>\ wm(str,\ 16,\ 8);}
+\DoxyCodeLine{std::vector<size\_t>\ temp;}
+\DoxyCodeLine{wm.roll\_minimizer(100000,\ temp);}
+
+\end{DoxyCode}
+ Example snippet to collect up to 100000 indices of minimizers. A vector must be passed in, which will be appended to. Each Window\+Min / Syncmer object is templated by the algorithm / data structure to find minimizers.\hypertarget{md_README_autotoc_md5}{}\doxysection{\texorpdfstring{Selecting the correct {\ttfamily data\+\_\+structure}}{Selecting the correct {\ttfamily data\+\_\+structure}}}\label{md_README_autotoc_md5}
+our general guidelines\+:
+\begin{DoxyItemize}
+\item for {\ttfamily large\+\_\+window} \texorpdfstring{$<$}{<} 12, use Naive
+\item for 12 \texorpdfstring{$<$}{<}= {\ttfamily large\+\_\+window} \texorpdfstring{$<$}{<}= 16 use Segment\+Tree
+\item for {\ttfamily large\+\_\+window} \texorpdfstring{$>$}{>} 16 use Naive2
+\end{DoxyItemize}
+
+adaptive performs at worst about 10\% slower than best ~\newline
+ adaptive64 performs at worst about 100\% slower than best\hypertarget{md_README_autotoc_md6}{}\doxysection{\texorpdfstring{Benchmark / Tests}{Benchmark / Tests}}\label{md_README_autotoc_md6}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{meson\ setup\ build}
+\DoxyCodeLine{cd\ build\ \&\&\ meson\ compile}
+
+\end{DoxyCode}
+ this will generate proper executables for benchmark/testing
+
+fix digester array 
