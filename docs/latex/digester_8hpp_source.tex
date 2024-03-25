@@ -1,0 +1,201 @@
+\doxysection{digester.\+hpp}
+\hypertarget{digester_8hpp_source}{}\label{digester_8hpp_source}\index{include/digest/digester.hpp@{include/digest/digester.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <deque>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <nthash/kmer.hpp>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <nthash/nthash.hpp>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{namespace\ }digest\ \{}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classdigest_1_1BadConstructionException}{BadConstructionException}}\ :\ \textcolor{keyword}{public}\ std::exception\ \{}
+\DoxyCodeLine{00011\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *what()\ \textcolor{keyword}{const}\ \textcolor{keywordflow}{throw}()\ \{}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}k\ must\ be\ greater\ than\ 3,\ start\ must\ be\ less\ than\ len"{}};}
+\DoxyCodeLine{00013\ \ \ \}}
+\DoxyCodeLine{00014\ \};}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classdigest_1_1NotRolledTillEndException}{NotRolledTillEndException}}\ :\ \textcolor{keyword}{public}\ std::exception\ \{}
+\DoxyCodeLine{00017\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *what()\ \textcolor{keyword}{const}\ \textcolor{keywordflow}{throw}()\ \{}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}Iterator\ must\ be\ at\ the\ end\ of\ the\ current\ sequence\ before\ "{}}}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}appending\ a\ new\ one."{}};}
+\DoxyCodeLine{00020\ \ \ \}}
+\DoxyCodeLine{00021\ \};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{enum\ class}\ MinimizedHashType\ \{\ CANON,\ FORWARD,\ REVERSE\ \};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{enum\ class}\ BadCharPolicy\ \{\ WRITEOVER,\ SKIPOVER\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ Only\ supports\ characters\ in\ DNA\ and\ N,\ upper\ or\ lower\ case}}
+\DoxyCodeLine{00028\ \textcolor{keyword}{template}\ <BadCharPolicy\ P>\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classdigest_1_1Digester}{Digester}}\ \{}
+\DoxyCodeLine{00029\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00043\ \ \ \mbox{\hyperlink{classdigest_1_1Digester_a506f39bd2ad543c5d112dc0f5ca00640}{Digester}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{unsigned}\ k,\ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ MinimizedHashType\ minimized\_h\ =\ MinimizedHashType::CANON)}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ :\ seq(seq),\ len(len),\ offset(0),\ start(start),\ end(start\ +\ k),\ chash(0),}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ \ \ fhash(0),\ rhash(0),\ k(k),\ minimized\_h(minimized\_h)\ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 4\ or\ start\ >=\ len\ or\ (\textcolor{keywordtype}{int})\ minimized\_h\ >\ 2)\ \{}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ \mbox{\hyperlink{classdigest_1_1BadConstructionException}{BadConstructionException}}();}
+\DoxyCodeLine{00049\ \ \ \ \ \}}
+\DoxyCodeLine{00050\ \ \ \ \ \mbox{\hyperlink{classdigest_1_1Digester_a6fd6daf175a36f74c19d5654f4e4d85b}{init\_hash}}();}
+\DoxyCodeLine{00051\ \ \ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00063\ \ \ \mbox{\hyperlink{classdigest_1_1Digester_a4b026b422b243ec36dfb70b1118dc683}{Digester}}(\textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{unsigned}\ k,\ \textcolor{keywordtype}{size\_t}\ start\ =\ 0,}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ MinimizedHashType\ minimized\_h\ =\ MinimizedHashType::CANON)}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ :\ \mbox{\hyperlink{classdigest_1_1Digester}{Digester}}(seq.c\_str(),\ seq.size(),\ k,\ start,\ minimized\_h)\ \{\}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classdigest_1_1Digester}{\string~Digester}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00068\ }
+\DoxyCodeLine{00074\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classdigest_1_1Digester_a661a9725bd51816e21c9053c21acbe36}{get\_is\_valid\_hash}}()\ \{\ \textcolor{keywordflow}{return}\ is\_valid\_hash;\ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \textcolor{keywordtype}{unsigned}\ get\_k()\ \{\ \textcolor{keywordflow}{return}\ k;\ \}}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \textcolor{keywordtype}{size\_t}\ get\_len()\ \{\ \textcolor{keywordflow}{return}\ len;\ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00087\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classdigest_1_1Digester_a433d6eadec5753c4b815e720804e699a}{roll\_one}}()\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \textcolor{keywordflow}{if}\ (P\ ==\ BadCharPolicy::SKIPOVER)\ \{}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ roll\_one\_skip\_over();}
+\DoxyCodeLine{00090\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ roll\_one\_write\_over();}
+\DoxyCodeLine{00092\ \ \ \ \ \}}
+\DoxyCodeLine{00093\ \ \ \};}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00103\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classdigest_1_1Digester_a1bbaa63689a9efeedd66fcd6285a3b8c}{roll\_minimizer}}(\textcolor{keywordtype}{unsigned}\ amount,\ std::vector<uint32\_t>\ \&vec)\ =\ 0;}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00113\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}}
+\DoxyCodeLine{00114\ \ \ \mbox{\hyperlink{classdigest_1_1Digester_a9c104095843a4dd2ff8e79859eddacc2}{roll\_minimizer}}(\textcolor{keywordtype}{unsigned}\ amount,}
+\DoxyCodeLine{00115\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<std::pair<uint32\_t,\ uint32\_t>>\ \&vec)\ =\ 0;}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00125\ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classdigest_1_1Digester_aeb98424a350736b0c7a81a85cf441222}{get\_pos}}()\ \{\ \textcolor{keywordflow}{return}\ offset\ +\ start\ -\/\ c\_outs.size();\ \}}
+\DoxyCodeLine{00126\ }
+\DoxyCodeLine{00127\ \ \ uint64\_t\ get\_chash()\ \{\ \textcolor{keywordflow}{return}\ chash;\ \}}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ uint64\_t\ get\_fhash()\ \{\ \textcolor{keywordflow}{return}\ fhash;\ \}}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ uint64\_t\ get\_rhash()\ \{\ \textcolor{keywordflow}{return}\ rhash;\ \}}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00144\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classdigest_1_1Digester_ab3c0db63c891b891181846eed10963da}{new\_seq}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len,\ \textcolor{keywordtype}{size\_t}\ start)\ \{}
+\DoxyCodeLine{00145\ \ \ \ \ this-\/>seq\ =\ seq;}
+\DoxyCodeLine{00146\ \ \ \ \ this-\/>len\ =\ len;}
+\DoxyCodeLine{00147\ \ \ \ \ this-\/>offset\ =\ 0;}
+\DoxyCodeLine{00148\ \ \ \ \ this-\/>start\ =\ start;}
+\DoxyCodeLine{00149\ \ \ \ \ this-\/>end\ =\ start\ +\ this-\/>k;}
+\DoxyCodeLine{00150\ \ \ \ \ is\_valid\_hash\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keywordflow}{if}\ (start\ >=\ len)\ \{}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ \mbox{\hyperlink{classdigest_1_1BadConstructionException}{BadConstructionException}}();}
+\DoxyCodeLine{00153\ \ \ \ \ \}}
+\DoxyCodeLine{00154\ \ \ \ \ \mbox{\hyperlink{classdigest_1_1Digester_a6fd6daf175a36f74c19d5654f4e4d85b}{init\_hash}}();}
+\DoxyCodeLine{00155\ \ \ \}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00167\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classdigest_1_1Digester_aa7db7b7bc923eb48e5b855653bf69d9b}{new\_seq}}(\textcolor{keyword}{const}\ std::string\ \&seq,\ \textcolor{keywordtype}{size\_t}\ pos)\ \{}
+\DoxyCodeLine{00168\ \ \ \ \ \mbox{\hyperlink{classdigest_1_1Digester_ab3c0db63c891b891181846eed10963da}{new\_seq}}(seq.c\_str(),\ seq.size(),\ pos);}
+\DoxyCodeLine{00169\ \ \ \}}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00188\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classdigest_1_1Digester_a3fdd5a8a29c0e479156b8d52ea1c32ed}{append\_seq}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len)\ \{}
+\DoxyCodeLine{00189\ \ \ \ \ \textcolor{keywordflow}{if}\ (P\ ==\ BadCharPolicy::SKIPOVER)\ \{}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ append\_seq\_skip\_over(seq,\ len);}
+\DoxyCodeLine{00191\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ append\_seq\_write\_over(seq,\ len);}
+\DoxyCodeLine{00193\ \ \ \ \ \}}
+\DoxyCodeLine{00194\ \ \ \}}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00212\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classdigest_1_1Digester_aa1b59300cc23481fd8ed40d5fe247e8a}{append\_seq}}(\textcolor{keyword}{const}\ std::string\ \&seq)\ \{}
+\DoxyCodeLine{00213\ \ \ \ \ \textcolor{keywordflow}{if}\ (P\ ==\ BadCharPolicy::SKIPOVER)\ \{}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ append\_seq\_skip\_over(seq.c\_str(),\ seq.size());}
+\DoxyCodeLine{00215\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ append\_seq\_write\_over(seq.c\_str(),\ seq.size());}
+\DoxyCodeLine{00217\ \ \ \ \ \}}
+\DoxyCodeLine{00218\ \ \ \}}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00224\ \ \ MinimizedHashType\ \mbox{\hyperlink{classdigest_1_1Digester_a696a1452ff7df41fbb8f46070e77b978}{get\_minimized\_h}}()\ \{\ \textcolor{keywordflow}{return}\ minimized\_h;\ \}}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00229\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *\mbox{\hyperlink{classdigest_1_1Digester_aed14b0e621523c388b550f8da7688d35}{get\_sequence}}()\ \{\ \textcolor{keywordflow}{return}\ seq;\ \}}
+\DoxyCodeLine{00230\ }
+\DoxyCodeLine{00231\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00232\ \ \ \textcolor{comment}{//\ 0x41\ =\ 'A',\ 0x43\ =\ 'C',\ 0x47\ =\ 'G'\ 0x54\ =\ 'T'}}
+\DoxyCodeLine{00233\ \ \ \textcolor{comment}{//\ 0x61\ =\ 'a',\ 0x63\ =\ 'c',\ 0x67\ =\ 'g'\ 0x74\ =\ 't'}}
+\DoxyCodeLine{00234\ \ \ std::array<bool,\ 256>\ actg\{}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ 0,\ 1,\ 0,\ 1,\ 0,\ 0,\ 0,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00241\ \ \ \ \ \ \ 0,\ 1,\ 0,\ 1,\ 0,\ 0,\ 0,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 1,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00244\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00245\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00246\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00247\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ 0,\ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00251\ \ \ \};}
+\DoxyCodeLine{00252\ }
+\DoxyCodeLine{00260\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classdigest_1_1Digester_a2c53dd5f454485afb2198da6cb6f3f89}{is\_ACTG}}(\textcolor{keywordtype}{char}\ in)\ \{\ \textcolor{keywordflow}{return}\ actg[in];\ \}}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00268\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classdigest_1_1Digester_a6fd6daf175a36f74c19d5654f4e4d85b}{init\_hash}}()\ \{}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keywordflow}{if}\ (P\ ==\ BadCharPolicy::SKIPOVER)\ \{}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ init\_hash\_skip\_over();}
+\DoxyCodeLine{00271\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ init\_hash\_write\_over();}
+\DoxyCodeLine{00273\ \ \ \ \ \}}
+\DoxyCodeLine{00274\ \ \ \};}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \ \ \textcolor{keywordtype}{void}\ append\_seq\_skip\_over(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ \ \ \textcolor{keywordtype}{void}\ append\_seq\_write\_over(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq,\ \textcolor{keywordtype}{size\_t}\ len);}
+\DoxyCodeLine{00279\ }
+\DoxyCodeLine{00280\ \ \ \textcolor{keywordtype}{bool}\ init\_hash\_skip\_over();}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00282\ \ \ \textcolor{keywordtype}{bool}\ init\_hash\_write\_over();}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \ \ \textcolor{keywordtype}{bool}\ roll\_one\_skip\_over();}
+\DoxyCodeLine{00285\ }
+\DoxyCodeLine{00286\ \ \ \textcolor{keywordtype}{bool}\ roll\_one\_write\_over();}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \ \ \textcolor{comment}{//\ sequence\ to\ be\ digested,\ memory\ is\ owned\ by\ the\ user}}
+\DoxyCodeLine{00289\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ *seq;}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \textcolor{comment}{//\ length\ of\ seq}}
+\DoxyCodeLine{00292\ \ \ \textcolor{keywordtype}{size\_t}\ len;}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00294\ \ \ \textcolor{comment}{//\ the\ combined\ length\ of\ all\ the\ previous\ strings\ that\ have\ been\ appended}}
+\DoxyCodeLine{00295\ \ \ \textcolor{comment}{//\ together,\ not\ counting\ the\ current\ string}}
+\DoxyCodeLine{00296\ \ \ \textcolor{keywordtype}{size\_t}\ offset;}
+\DoxyCodeLine{00297\ }
+\DoxyCodeLine{00298\ \ \ \textcolor{comment}{//\ internal\ index\ of\ the\ next\ character\ to\ be\ thrown\ out,\ junk\ if\ c\_outs\ is}}
+\DoxyCodeLine{00299\ \ \ \textcolor{comment}{//\ not\ empty}}
+\DoxyCodeLine{00300\ \ \ \textcolor{keywordtype}{size\_t}\ start;}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \ \ \textcolor{comment}{//\ internal\ index\ of\ next\ character\ to\ be\ added}}
+\DoxyCodeLine{00303\ \ \ \textcolor{keywordtype}{size\_t}\ end;}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \ \textcolor{comment}{//\ canonical\ hash\ of\ current\ k-\/mer}}
+\DoxyCodeLine{00306\ \ \ uint64\_t\ chash;}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \ \ \textcolor{comment}{//\ forward\ hash\ of\ current\ k-\/mer}}
+\DoxyCodeLine{00309\ \ \ uint64\_t\ fhash;}
+\DoxyCodeLine{00310\ }
+\DoxyCodeLine{00311\ \ \ \textcolor{comment}{//\ reverse\ hash\ of\ current\ k-\/mer}}
+\DoxyCodeLine{00312\ \ \ uint64\_t\ rhash;}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \ \ \textcolor{comment}{//\ length\ of\ kmer}}
+\DoxyCodeLine{00315\ \ \ \textcolor{keywordtype}{unsigned}\ k;}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \ \ \textcolor{comment}{//\ deque\ of\ characters\ to\ be\ rolled\ out\ in\ the\ rolling\ hash\ from\ left\ to\ right}}
+\DoxyCodeLine{00318\ \ \ std::deque<char>\ c\_outs;}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00320\ \ \ \textcolor{comment}{//\ Hash\ value\ to\ be\ minimized,\ 0\ for\ canonical,\ 1\ for\ forward,\ 2\ for\ reverse}}
+\DoxyCodeLine{00321\ \ \ MinimizedHashType\ minimized\_h;}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \ \ \textcolor{comment}{//\ bool\ representing\ whether\ the\ current\ hash\ is\ meaningful,\ i.e.\ corresponds}}
+\DoxyCodeLine{00324\ \ \ \textcolor{comment}{//\ to\ the\ k-\/mer\ at\ get\_pos()}}
+\DoxyCodeLine{00325\ \ \ \textcolor{keywordtype}{bool}\ is\_valid\_hash\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00326\ \};}
+\DoxyCodeLine{00327\ }
+\DoxyCodeLine{00328\ \}\ \textcolor{comment}{//\ namespace\ digest}}
+
+\end{DoxyCode}

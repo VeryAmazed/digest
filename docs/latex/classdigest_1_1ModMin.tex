@@ -1,0 +1,238 @@
+\doxysection{digest\+::Mod\+Min\texorpdfstring{$<$}{<} P \texorpdfstring{$>$}{>} Class Template Reference}
+\hypertarget{classdigest_1_1ModMin}{}\label{classdigest_1_1ModMin}\index{digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}}
+Inheritance diagram for digest\+::Mod\+Min\texorpdfstring{$<$}{<} P \texorpdfstring{$>$}{>}\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classdigest_1_1ModMin}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classdigest_1_1ModMin_a40d242e857babb9d5357667b418ae411}{Mod\+Min}} (const char \texorpdfstring{$\ast$}{*}seq, size\+\_\+t len, unsigned k, uint32\+\_\+t mod, uint32\+\_\+t congruence=0, size\+\_\+t start=0, Minimized\+Hash\+Type minimized\+\_\+h=Minimized\+Hash\+Type\+::\+CANON)
+\item 
+\mbox{\hyperlink{classdigest_1_1ModMin_abf903ff3fef6e107129ab23c03979718}{Mod\+Min}} (const std\+::string \&seq, unsigned k, uint32\+\_\+t mod, uint32\+\_\+t congruence=0, size\+\_\+t start=0, Minimized\+Hash\+Type minimized\+\_\+h=Minimized\+Hash\+Type\+::\+CANON)
+\item 
+void \mbox{\hyperlink{classdigest_1_1ModMin_a87c2431cdabb982db55b759e1034a8ad}{roll\+\_\+minimizer}} (unsigned amount, std\+::vector$<$ uint32\+\_\+t $>$ \&vec) override
+\begin{DoxyCompactList}\small\item\em adds up to amount of positions of minimizers into vec, here a k-\/mer is considered a minimizer if its hash is congruent to congruence in the mod space Time Complexity\+: O(1) per k-\/mer tested \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classdigest_1_1ModMin_a3d292932508ce65dadf80cfe1d9f5b34}{roll\+\_\+minimizer}} (unsigned amount, std\+::vector$<$ std\+::pair$<$ uint32\+\_\+t, uint32\+\_\+t $>$ $>$ \&vec) override
+\begin{DoxyCompactList}\small\item\em adds up to amount of positions and hashes of minimizers into vec, here a k-\/mer is considered a minimizer if its hash is congruent to congruence in the mod space Time Complexity\+: O(1) per k-\/mer tested \end{DoxyCompactList}\item 
+uint32\+\_\+t \mbox{\hyperlink{classdigest_1_1ModMin_a96d016e90095835f19c2b8a521d97a15}{get\+\_\+mod}} ()
+\item 
+uint32\+\_\+t \mbox{\hyperlink{classdigest_1_1ModMin_a77ae7fde4feb4b2eccc9b37a19bf8ec5}{get\+\_\+congruence}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classdigest_1_1Digester}{digest\+::\+Digester$<$ P $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classdigest_1_1Digester_a506f39bd2ad543c5d112dc0f5ca00640}{Digester}} (const char \texorpdfstring{$\ast$}{*}seq, size\+\_\+t len, unsigned k, size\+\_\+t start=0, Minimized\+Hash\+Type minimized\+\_\+h=Minimized\+Hash\+Type\+::\+CANON)
+\item 
+\mbox{\hyperlink{classdigest_1_1Digester_a4b026b422b243ec36dfb70b1118dc683}{Digester}} (const std\+::string \&seq, unsigned k, size\+\_\+t start=0, Minimized\+Hash\+Type minimized\+\_\+h=Minimized\+Hash\+Type\+::\+CANON)
+\item 
+bool \mbox{\hyperlink{classdigest_1_1Digester_a661a9725bd51816e21c9053c21acbe36}{get\+\_\+is\+\_\+valid\+\_\+hash}} ()
+\item 
+unsigned {\bfseries get\+\_\+k} ()
+\item 
+size\+\_\+t {\bfseries get\+\_\+len} ()
+\item 
+bool \mbox{\hyperlink{classdigest_1_1Digester_a433d6eadec5753c4b815e720804e699a}{roll\+\_\+one}} ()
+\begin{DoxyCompactList}\small\item\em moves the internal pointer to the next valid k-\/mer, skipping over any k-\/mers that have contain a non ACTG character, and returns hash for that k-\/mer Time Complexity\+: O(1) \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{classdigest_1_1Digester_aeb98424a350736b0c7a81a85cf441222}{get\+\_\+pos}} ()
+\item 
+uint64\+\_\+t {\bfseries get\+\_\+chash} ()
+\item 
+uint64\+\_\+t {\bfseries get\+\_\+fhash} ()
+\item 
+uint64\+\_\+t {\bfseries get\+\_\+rhash} ()
+\item 
+void \mbox{\hyperlink{classdigest_1_1Digester_ab3c0db63c891b891181846eed10963da}{new\+\_\+seq}} (const char \texorpdfstring{$\ast$}{*}seq, size\+\_\+t len, size\+\_\+t start)
+\begin{DoxyCompactList}\small\item\em replaces the current sequence with the new one, it\textquotesingle{}s like starting over with a completely new string \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classdigest_1_1Digester_aa7db7b7bc923eb48e5b855653bf69d9b}{new\+\_\+seq}} (const std\+::string \&seq, size\+\_\+t pos)
+\begin{DoxyCompactList}\small\item\em replaces the current sequence with the new one, it\textquotesingle{}s like starting over with a completely new string \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classdigest_1_1Digester_a3fdd5a8a29c0e479156b8d52ea1c32ed}{append\+\_\+seq}} (const char \texorpdfstring{$\ast$}{*}seq, size\+\_\+t len)
+\begin{DoxyCompactList}\small\item\em simulates the appending of a new sequence to the end of the old sequence The old string will no longer be stored, but the rolling hashes will be able to preceed as if the strings were appended Can only be called when you\textquotesingle{}ve reached the end of the current string i.\+e. if you\textquotesingle{}re current sequence is ACTGAC, and you have reached the end of this sequence, and you call append\+\_\+seq with the sequence CCGGCCGG, then the minimizers you will get after calling append\+\_\+seq plus the minimizers you got from going through ACTGAC, will be equivalent to the minimizers you would have gotten from rolling across ACTGACCCGGCCGG \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classdigest_1_1Digester_aa1b59300cc23481fd8ed40d5fe247e8a}{append\+\_\+seq}} (const std\+::string \&seq)
+\begin{DoxyCompactList}\small\item\em simulates the appending of a new sequence to the end of the old sequence The old string will no longer be stored, but the rolling hashes will be able to preceed as if the strings were appended Can only be called when you\textquotesingle{}ve reached the end of the current string i.\+e. if you\textquotesingle{}re current sequence is ACTGAC, and you have reached the end of this sequence, and you call append\+\_\+seq with the sequence CCGGCCGG, then the minimizers you will get after calling append\+\_\+seq plus the minimizers you got from going through ACTGAC, will be equivalent to the minimizers you would have gotten from rolling across ACTGACCCGGCCGG \end{DoxyCompactList}\item 
+Minimized\+Hash\+Type \mbox{\hyperlink{classdigest_1_1Digester_a696a1452ff7df41fbb8f46070e77b978}{get\+\_\+minimized\+\_\+h}} ()
+\item 
+const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classdigest_1_1Digester_aed14b0e621523c388b550f8da7688d35}{get\+\_\+sequence}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{classdigest_1_1Digester}{digest\+::\+Digester$<$ P $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{classdigest_1_1Digester_a2c53dd5f454485afb2198da6cb6f3f89}{is\+\_\+\+ACTG}} (char in)
+\item 
+bool \mbox{\hyperlink{classdigest_1_1Digester_a6fd6daf175a36f74c19d5654f4e4d85b}{init\+\_\+hash}} ()
+\begin{DoxyCompactList}\small\item\em Helper function that initializes the hash values at the first valid k-\/mer at or after start Sets is\+\_\+valid\+\_\+hash to be equal to its return value. \end{DoxyCompactList}\item 
+void {\bfseries append\+\_\+seq\+\_\+skip\+\_\+over} (const char \texorpdfstring{$\ast$}{*}seq, size\+\_\+t len)
+\item 
+void {\bfseries append\+\_\+seq\+\_\+write\+\_\+over} (const char \texorpdfstring{$\ast$}{*}seq, size\+\_\+t len)
+\item 
+bool {\bfseries init\+\_\+hash\+\_\+skip\+\_\+over} ()
+\item 
+bool {\bfseries init\+\_\+hash\+\_\+write\+\_\+over} ()
+\item 
+bool {\bfseries roll\+\_\+one\+\_\+skip\+\_\+over} ()
+\item 
+bool {\bfseries roll\+\_\+one\+\_\+write\+\_\+over} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classdigest_1_1Digester}{digest\+::\+Digester$<$ P $>$}}}
+\begin{DoxyCompactItemize}
+\item 
+std\+::array$<$ bool, 256 $>$ \mbox{\hyperlink{classdigest_1_1Digester_aab8ba0195ebef8815cd1033c41a73e00}{actg}}
+\item 
+const char \texorpdfstring{$\ast$}{*} {\bfseries seq}
+\item 
+size\+\_\+t {\bfseries len}
+\item 
+size\+\_\+t {\bfseries offset}
+\item 
+size\+\_\+t {\bfseries start}
+\item 
+size\+\_\+t {\bfseries end}
+\item 
+uint64\+\_\+t {\bfseries chash}
+\item 
+uint64\+\_\+t {\bfseries fhash}
+\item 
+uint64\+\_\+t {\bfseries rhash}
+\item 
+unsigned {\bfseries k}
+\item 
+std\+::deque$<$ char $>$ {\bfseries c\+\_\+outs}
+\item 
+Minimized\+Hash\+Type {\bfseries minimized\+\_\+h}
+\item 
+bool {\bfseries is\+\_\+valid\+\_\+hash} = false
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classdigest_1_1ModMin_a40d242e857babb9d5357667b418ae411}\label{classdigest_1_1ModMin_a40d242e857babb9d5357667b418ae411} 
+\index{digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}!ModMin@{ModMin}}
+\index{ModMin@{ModMin}!digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}}
+\doxysubsubsection{\texorpdfstring{ModMin()}{ModMin()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$Bad\+Char\+Policy P$>$ \\
+\mbox{\hyperlink{classdigest_1_1ModMin}{digest\+::\+Mod\+Min}}$<$ P $>$\+::\+Mod\+Min (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{seq,  }\item[{size\+\_\+t}]{len,  }\item[{unsigned}]{k,  }\item[{uint32\+\_\+t}]{mod,  }\item[{uint32\+\_\+t}]{congruence = {\ttfamily 0},  }\item[{size\+\_\+t}]{start = {\ttfamily 0},  }\item[{Minimized\+Hash\+Type}]{minimized\+\_\+h = {\ttfamily MinimizedHashType\+:\+:CANON} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em seq} & \\
+\hline
+{\em len} & \\
+\hline
+{\em k} & \\
+\hline
+{\em mod} & mod space to be used to calculate universal minimizers \\
+\hline
+{\em congruence} & value we want minimizer hashes to be congruent to in the mod space \\
+\hline
+{\em start} & \\
+\hline
+{\em minimized\+\_\+h} & \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{classdigest_1_1BadModException}{Bad\+Mod\+Exception}} & Thrown when congruence is greater or equal to mod \\
+\hline
+\end{DoxyExceptions}
+\Hypertarget{classdigest_1_1ModMin_abf903ff3fef6e107129ab23c03979718}\label{classdigest_1_1ModMin_abf903ff3fef6e107129ab23c03979718} 
+\index{digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}!ModMin@{ModMin}}
+\index{ModMin@{ModMin}!digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}}
+\doxysubsubsection{\texorpdfstring{ModMin()}{ModMin()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$Bad\+Char\+Policy P$>$ \\
+\mbox{\hyperlink{classdigest_1_1ModMin}{digest\+::\+Mod\+Min}}$<$ P $>$\+::\+Mod\+Min (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{seq,  }\item[{unsigned}]{k,  }\item[{uint32\+\_\+t}]{mod,  }\item[{uint32\+\_\+t}]{congruence = {\ttfamily 0},  }\item[{size\+\_\+t}]{start = {\ttfamily 0},  }\item[{Minimized\+Hash\+Type}]{minimized\+\_\+h = {\ttfamily MinimizedHashType\+:\+:CANON} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em seq} & \\
+\hline
+{\em k} & \\
+\hline
+{\em mod} & mod space to be used to calculate universal minimizers \\
+\hline
+{\em congruence} & value we want minimizer hashes to be congruent to in the mod space \\
+\hline
+{\em start} & \\
+\hline
+{\em minimized\+\_\+h} & \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em \doxylink{classdigest_1_1BadModException}{Bad\+Mod\+Exception}} & Thrown when congruence is greater or equal to mod \\
+\hline
+\end{DoxyExceptions}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classdigest_1_1ModMin_a77ae7fde4feb4b2eccc9b37a19bf8ec5}\label{classdigest_1_1ModMin_a77ae7fde4feb4b2eccc9b37a19bf8ec5} 
+\index{digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}!get\_congruence@{get\_congruence}}
+\index{get\_congruence@{get\_congruence}!digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}}
+\doxysubsubsection{\texorpdfstring{get\_congruence()}{get\_congruence()}}
+{\footnotesize\ttfamily template$<$Bad\+Char\+Policy P$>$ \\
+uint32\+\_\+t \mbox{\hyperlink{classdigest_1_1ModMin}{digest\+::\+Mod\+Min}}$<$ P $>$\+::get\+\_\+congruence (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+uint32\+\_\+t, the value the minimized hash must be congruent to 
+\end{DoxyReturn}
+\Hypertarget{classdigest_1_1ModMin_a96d016e90095835f19c2b8a521d97a15}\label{classdigest_1_1ModMin_a96d016e90095835f19c2b8a521d97a15} 
+\index{digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}!get\_mod@{get\_mod}}
+\index{get\_mod@{get\_mod}!digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}}
+\doxysubsubsection{\texorpdfstring{get\_mod()}{get\_mod()}}
+{\footnotesize\ttfamily template$<$Bad\+Char\+Policy P$>$ \\
+uint32\+\_\+t \mbox{\hyperlink{classdigest_1_1ModMin}{digest\+::\+Mod\+Min}}$<$ P $>$\+::get\+\_\+mod (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+uint32\+\_\+t, the mod space being used 
+\end{DoxyReturn}
+\Hypertarget{classdigest_1_1ModMin_a3d292932508ce65dadf80cfe1d9f5b34}\label{classdigest_1_1ModMin_a3d292932508ce65dadf80cfe1d9f5b34} 
+\index{digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}!roll\_minimizer@{roll\_minimizer}}
+\index{roll\_minimizer@{roll\_minimizer}!digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}}
+\doxysubsubsection{\texorpdfstring{roll\_minimizer()}{roll\_minimizer()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$Bad\+Char\+Policy P$>$ \\
+void \mbox{\hyperlink{classdigest_1_1ModMin}{digest\+::\+Mod\+Min}}$<$ P $>$\+::roll\+\_\+minimizer (\begin{DoxyParamCaption}\item[{unsigned}]{amount,  }\item[{std\+::vector$<$ std\+::pair$<$ uint32\+\_\+t, uint32\+\_\+t $>$ $>$ \&}]{vec }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+adds up to amount of positions and hashes of minimizers into vec, here a k-\/mer is considered a minimizer if its hash is congruent to congruence in the mod space Time Complexity\+: O(1) per k-\/mer tested 
+
+
+\begin{DoxyParams}{Parameters}
+{\em amount} & \\
+\hline
+{\em vec} & \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classdigest_1_1Digester_a9c104095843a4dd2ff8e79859eddacc2}{digest\+::\+Digester$<$ P $>$}}.
+
+\Hypertarget{classdigest_1_1ModMin_a87c2431cdabb982db55b759e1034a8ad}\label{classdigest_1_1ModMin_a87c2431cdabb982db55b759e1034a8ad} 
+\index{digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}!roll\_minimizer@{roll\_minimizer}}
+\index{roll\_minimizer@{roll\_minimizer}!digest::ModMin$<$ P $>$@{digest::ModMin$<$ P $>$}}
+\doxysubsubsection{\texorpdfstring{roll\_minimizer()}{roll\_minimizer()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$Bad\+Char\+Policy P$>$ \\
+void \mbox{\hyperlink{classdigest_1_1ModMin}{digest\+::\+Mod\+Min}}$<$ P $>$\+::roll\+\_\+minimizer (\begin{DoxyParamCaption}\item[{unsigned}]{amount,  }\item[{std\+::vector$<$ uint32\+\_\+t $>$ \&}]{vec }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+adds up to amount of positions of minimizers into vec, here a k-\/mer is considered a minimizer if its hash is congruent to congruence in the mod space Time Complexity\+: O(1) per k-\/mer tested 
+
+
+\begin{DoxyParams}{Parameters}
+{\em amount} & \\
+\hline
+{\em vec} & \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classdigest_1_1Digester_a1bbaa63689a9efeedd66fcd6285a3b8c}{digest\+::\+Digester$<$ P $>$}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/digest/mod\+\_\+minimizer.\+hpp\end{DoxyCompactItemize}

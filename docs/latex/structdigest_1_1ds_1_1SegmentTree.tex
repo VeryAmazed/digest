@@ -1,0 +1,55 @@
+\doxysection{digest\+::ds\+::Segment\+Tree\texorpdfstring{$<$}{<} k \texorpdfstring{$>$}{>} Struct Template Reference}
+\hypertarget{structdigest_1_1ds_1_1SegmentTree}{}\label{structdigest_1_1ds_1_1SegmentTree}\index{digest::ds::SegmentTree$<$ k $>$@{digest::ds::SegmentTree$<$ k $>$}}
+
+
+{\ttfamily \#include $<$data\+\_\+structure.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_a15a5bdde9ad3c26a8c0dc7af537afbcc}\label{structdigest_1_1ds_1_1SegmentTree_a15a5bdde9ad3c26a8c0dc7af537afbcc} 
+constexpr int {\bfseries log2} ()
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_a4f59f87414510c207a4527816841749a}\label{structdigest_1_1ds_1_1SegmentTree_a4f59f87414510c207a4527816841749a} 
+{\bfseries Segment\+Tree} (uint32\+\_\+t)
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_a0e2e0b84e680ead8511ca7af7e0e0d40}\label{structdigest_1_1ds_1_1SegmentTree_a0e2e0b84e680ead8511ca7af7e0e0d40} 
+{\bfseries Segment\+Tree} (const \mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{Segment\+Tree}} \&other)=default
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_ad6971caef16d16cc993348edf136fead}\label{structdigest_1_1ds_1_1SegmentTree_ad6971caef16d16cc993348edf136fead} 
+\mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{Segment\+Tree}} \& {\bfseries operator=} (const \mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{Segment\+Tree}} \&other)=default
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_ae3ba6ba961267d9d5554872fe28db364}\label{structdigest_1_1ds_1_1SegmentTree_ae3ba6ba961267d9d5554872fe28db364} 
+void {\bfseries insert} (uint32\+\_\+t index, uint32\+\_\+t hash)
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_aa17d9213e017f128e46d56e7fbb5751f}\label{structdigest_1_1ds_1_1SegmentTree_aa17d9213e017f128e46d56e7fbb5751f} 
+uint32\+\_\+t {\bfseries min} ()
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_a3943f14ca973ed2bcb4260a57eb7575c}\label{structdigest_1_1ds_1_1SegmentTree_a3943f14ca973ed2bcb4260a57eb7575c} 
+uint32\+\_\+t {\bfseries min\+\_\+hash} ()
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_a1628015445cc6acf248194abede46adb}\label{structdigest_1_1ds_1_1SegmentTree_a1628015445cc6acf248194abede46adb} 
+void {\bfseries min\+\_\+syncmer} (std\+::vector$<$ uint32\+\_\+t $>$ \&vec)
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_a41ca1c2ee81dfbd57527b93ad8c42cdd}\label{structdigest_1_1ds_1_1SegmentTree_a41ca1c2ee81dfbd57527b93ad8c42cdd} 
+void {\bfseries min\+\_\+syncmer} (std\+::vector$<$ std\+::pair$<$ uint32\+\_\+t, uint32\+\_\+t $>$ $>$ \&vec)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_aeb58235ffc3761b4de1299007dc26fe2}\label{structdigest_1_1ds_1_1SegmentTree_aeb58235ffc3761b4de1299007dc26fe2} 
+int {\bfseries i} = k
+\item 
+\Hypertarget{structdigest_1_1ds_1_1SegmentTree_a8451213c7c52e7f29cbacfe6196803e8}\label{structdigest_1_1ds_1_1SegmentTree_a8451213c7c52e7f29cbacfe6196803e8} 
+std\+::array$<$ uint64\+\_\+t, 2 \texorpdfstring{$\ast$}{*}k $>$ {\bfseries segtree} = \{\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$int k$>$\newline
+struct digest\+::ds\+::\+Segment\+Tree$<$ k $>$}
+A data structure that can answer point update \& range minimum queries. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/digest/data\+\_\+structure.\+hpp\end{DoxyCompactItemize}

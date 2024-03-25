@@ -1,0 +1,400 @@
+\doxysection{data\+\_\+structure.\+hpp}
+\hypertarget{data__structure_8hpp_source}{}\label{data__structure_8hpp_source}\index{include/digest/data\_structure.hpp@{include/digest/data\_structure.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ requirement\ on\ all\ data\_structures}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ constructor\ which\ accepts\ uint32\_t}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ void\ set(uint32\_t\ index,\ (uint\ 32/64)\ hash)}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ uint32\_t\ min()\ //\ returns\ minimum}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ pair<uint32\_t,\ uint\ 32/64>\ min\_hash()\ //\ returns\ index,\ hash}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ void\ min\_syncmer(vector<uint\ 32/64>\ \&vec)\ //\ appends\ minimum\ if\ syncmer}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ void\ min\_syncmer(vector<pair<uint\ 32,\ uint\ 32>>\ \&vec)\ //\ appends\ (left}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//\ syncmer\ index,\ right\ syncmer\ index)\ if\ syncmer\ assignment/copy\ constructors}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ if\ you\ want\ to\ use\ them}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{namespace\ }digest::ds\ \{}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ Based\ on\ a\ template\ taken\ from\ USACO.guide\ and\ then\ modified\ by\ me\ (for}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ competitive\ programming),\ and\ now\ modified\ again\ (for\ this)}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ https://usaco.guide/gold/PURS?lang=cpp}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ https://codeforces.com/blog/entry/18051\ (USACO.guide\ was\ probably\ heavily}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ inspired\ by\ this)}}
+\DoxyCodeLine{00027\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{int}\ k>\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{SegmentTree}}\ \{}
+\DoxyCodeLine{00028\ \ \ \textcolor{keywordtype}{int}\ i\ =\ k;}
+\DoxyCodeLine{00029\ \ \ std::array<uint64\_t,\ 2\ *\ k>\ segtree\ =\ \{\};}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{int}\ log2()\ \{\ \textcolor{keywordflow}{return}\ std::ceil(std::log2(k));\ \}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{SegmentTree}}(uint32\_t)\ \{\}}
+\DoxyCodeLine{00034\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{SegmentTree}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{SegmentTree}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00035\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{SegmentTree}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1SegmentTree}{SegmentTree}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \textcolor{keywordtype}{void}\ insert(uint32\_t\ index,\ uint32\_t\ hash)\ \{}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{int}\ ind\ =\ i;}
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keywordflow}{if}\ (++i\ ==\ 2\ *\ k)}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ i\ =\ k;}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{comment}{//\ negate\ so\ we\ can\ use\ max\ so\ that\ ties\ are\ broken\ by\ rightmost}}
+\DoxyCodeLine{00043\ \ \ \ \ segtree[ind]\ =\ (uint64\_t)\string~hash\ <<\ 32\ |\ index;}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ rep\ =\ 0;\ rep\ <\ log2();\ rep++)\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ segtree[ind\ >>\ 1]\ =\ std::max(segtree[ind],\ segtree[ind\ \string^\ 1]);}
+\DoxyCodeLine{00046\ \ \ \ \ \ \ ind\ >>=\ 1;}
+\DoxyCodeLine{00047\ \ \ \ \ \}}
+\DoxyCodeLine{00048\ \ \ \}}
+\DoxyCodeLine{00049\ }
+\DoxyCodeLine{00050\ \ \ uint32\_t\ min()\ \{\ \textcolor{keywordflow}{return}\ segtree[1];\ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ uint32\_t\ min\_hash()\ \{\ \textcolor{keywordflow}{return}\ \string~(segtree[1]\ >>\ 32);\ \}}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<uint32\_t>\ \&vec)\ \{}
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordflow}{if}\ (segtree[1]\ >>\ 32\ ==}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ std::max(uint32\_t(segtree[i]\ >>\ 32),}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(segtree[i\ ==\ k\ ?\ 2\ *\ k\ -\/\ 1\ :\ i\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ vec.emplace\_back(segtree[i]);}
+\DoxyCodeLine{00059\ \ \ \ \ \}}
+\DoxyCodeLine{00060\ \ \ \}}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<std::pair<uint32\_t,\ uint32\_t>>\ \&vec)\ \{}
+\DoxyCodeLine{00063\ \ \ \ \ \textcolor{keywordflow}{if}\ (segtree[1]\ >>\ 32\ ==}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ std::max(uint32\_t(segtree[i]\ >>\ 32),}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(segtree[i\ ==\ k\ ?\ 2\ *\ k\ -\/\ 1\ :\ i\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00066\ \ \ \ \ \ \ vec.emplace\_back(segtree[i],\ \string~(segtree[1]\ >>\ 32));}
+\DoxyCodeLine{00067\ \ \ \ \ \}}
+\DoxyCodeLine{00068\ \ \ \}}
+\DoxyCodeLine{00069\ \};}
+\DoxyCodeLine{00070\ }
+\DoxyCodeLine{00071\ \textcolor{keyword}{template}\ <u\textcolor{keywordtype}{int}32\_t\ k>\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structdigest_1_1ds_1_1Naive}{Naive}}\ \{}
+\DoxyCodeLine{00072\ \ \ std::array<uint64\_t,\ k>\ arr;}
+\DoxyCodeLine{00073\ \ \ uint\ i\ =\ 0;}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive}{Naive}}(uint32\_t)\{\};}
+\DoxyCodeLine{00076\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive}{Naive}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive}{Naive}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00077\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive}{Naive}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive}{Naive}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00079\ \ \ \textcolor{keywordtype}{void}\ insert(uint32\_t\ index,\ uint32\_t\ hash)\ \{}
+\DoxyCodeLine{00080\ \ \ \ \ arr[i]\ =\ (uint64\_t)\string~hash\ <<\ 32\ |\ index;}
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordflow}{if}\ (++i\ ==\ k)}
+\DoxyCodeLine{00082\ \ \ \ \ \ \ i\ =\ 0;}
+\DoxyCodeLine{00083\ \ \ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ uint32\_t\ min()\ \{}
+\DoxyCodeLine{00086\ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ -\/\ 2;\ j\ >=\ 0;\ j-\/-\/)\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[i])\ \{}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ i\ =\ j;}
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00091\ \ \ \ \ \}}
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordflow}{return}\ arr[i];}
+\DoxyCodeLine{00093\ \ \ \}}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ uint32\_t\ min\_hash()\ \{}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00097\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ -\/\ 2;\ j\ >=\ 0;\ j-\/-\/)\ \{}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[i])\ \{}
+\DoxyCodeLine{00099\ \ \ \ \ \ \ \ \ i\ =\ j;}
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00101\ \ \ \ \ \}}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{keywordflow}{return}\ \string~(uint32\_t)(arr[i]\ >>\ 32);}
+\DoxyCodeLine{00103\ \ \ \}}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<uint32\_t>\ \&vec)\ \{}
+\DoxyCodeLine{00106\ \ \ \ \ uint\ j\ =\ 0;}
+\DoxyCodeLine{00107\ \ \ \ \ \textcolor{keywordflow}{for}\ (uint\ l\ =\ 1;\ l\ <\ k;\ l++)\ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[l]\ >\ arr[j])\ \{}
+\DoxyCodeLine{00109\ \ \ \ \ \ \ \ \ j\ =\ l;}
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00111\ \ \ \ \ \}}
+\DoxyCodeLine{00112\ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ vec.emplace\_back(arr[i]);}
+\DoxyCodeLine{00115\ \ \ \ \ \}}
+\DoxyCodeLine{00116\ \ \ \}}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<std::pair<uint32\_t,\ uint32\_t>>\ \&vec)\ \{}
+\DoxyCodeLine{00119\ \ \ \ \ uint\ j\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ l\ =\ k\ -\/\ 2;\ l\ >=\ 0;\ l-\/-\/)\ \{}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[l]\ >\ arr[j])\ \{}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ j\ =\ l;}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00124\ \ \ \ \ \}}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ vec.emplace\_back(arr[i],\ \string~(uint32\_t)(arr[j]\ >>\ 32));}
+\DoxyCodeLine{00128\ \ \ \ \ \}}
+\DoxyCodeLine{00129\ \ \ \}}
+\DoxyCodeLine{00130\ \};}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{keyword}{template}\ <u\textcolor{keywordtype}{int}32\_t\ k>\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structdigest_1_1ds_1_1Naive2}{Naive2}}\ \{}
+\DoxyCodeLine{00133\ \ \ uint\ i\ =\ 0;}
+\DoxyCodeLine{00134\ \ \ uint\ last\ =\ 0;}
+\DoxyCodeLine{00135\ \ \ std::vector<uint64\_t>\ arr\ =\ std::vector<uint64\_t>(k);}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive2}{Naive2}}(uint32\_t)\{\};}
+\DoxyCodeLine{00138\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive2}{Naive2}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive2}{Naive2}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00139\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive2}{Naive2}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1Naive2}{Naive2}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \textcolor{keywordtype}{void}\ insert(uint32\_t\ index,\ uint32\_t\ hash)\ \{}
+\DoxyCodeLine{00142\ \ \ \ \ \textcolor{comment}{//\ flip\ the\ hash\ bits\ so\ we\ can\ take\ the\ maximum}}
+\DoxyCodeLine{00143\ \ \ \ \ arr[i]\ =\ (uint64\_t)\string~hash\ <<\ 32\ |\ index;}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[i]\ >\ arr[last])\ \{}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ last\ =\ i;}
+\DoxyCodeLine{00147\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (last\ ==\ i)\ \{}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{unsigned}\ j\ =\ 0;\ j\ <\ k;\ j++)\ \{}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[last])\ \{}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \ \ last\ =\ j;}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00153\ \ \ \ \ \}}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keywordflow}{if}\ (++i\ ==\ k)}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ i\ =\ 0;}
+\DoxyCodeLine{00157\ \ \ \}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ uint32\_t\ min()\ \{\ \textcolor{keywordflow}{return}\ arr[last];\ \}}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \ \ uint32\_t\ min\_hash()\ \{\ \textcolor{keywordflow}{return}\ \string~(uint32\_t)(arr[last]\ >>\ 32);\ \}}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<uint32\_t>\ \&vec)\ \{}
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[last]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ vec.emplace\_back(arr[i]);}
+\DoxyCodeLine{00167\ \ \ \ \ \}}
+\DoxyCodeLine{00168\ \ \ \}}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<std::pair<uint32\_t,\ uint32\_t>>\ \&vec)\ \{}
+\DoxyCodeLine{00171\ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[last]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ vec.emplace\_back(arr[i],\ \string~(uint32\_t)(arr[last]\ >>\ 32));}
+\DoxyCodeLine{00174\ \ \ \ \ \}}
+\DoxyCodeLine{00175\ \ \ \}}
+\DoxyCodeLine{00176\ \};}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive}{Adaptive}}\ \{}
+\DoxyCodeLine{00179\ \ \ uint32\_t\ k,\ i\ =\ 0,\ last\ =\ 0;}
+\DoxyCodeLine{00180\ \ \ std::vector<uint64\_t>\ arr;}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive}{Adaptive}}(uint32\_t\ k)\ :\ k(k),\ arr(k)\ \{\}}
+\DoxyCodeLine{00183\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive}{Adaptive}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive}{Adaptive}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00184\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive}{Adaptive}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive}{Adaptive}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00185\ }
+\DoxyCodeLine{00186\ \ \ \textcolor{keywordtype}{void}\ naive(uint32\_t\ index,\ uint32\_t\ hash)\ \{}
+\DoxyCodeLine{00187\ \ \ \ \ arr[i]\ =\ (uint64\_t)\string~hash\ <<\ 32\ |\ index;}
+\DoxyCodeLine{00188\ \ \ \ \ \textcolor{keywordflow}{if}\ (++i\ ==\ k)}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ i\ =\ 0;}
+\DoxyCodeLine{00190\ \ \ \}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \ \ \textcolor{keywordtype}{void}\ naive2(uint32\_t\ index,\ uint32\_t\ hash)\ \{}
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{comment}{//\ flip\ the\ hash\ bits\ so\ we\ can\ take\ the\ maximum}}
+\DoxyCodeLine{00194\ \ \ \ \ arr[i]\ =\ (uint64\_t)\string~hash\ <<\ 32\ |\ index;}
+\DoxyCodeLine{00195\ }
+\DoxyCodeLine{00196\ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[i]\ >\ arr[last])\ \{}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ last\ =\ i;}
+\DoxyCodeLine{00198\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (last\ ==\ i)\ \{}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{unsigned}\ j\ =\ 0;\ j\ <\ k;\ j++)\ \{}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[last])\ \{}
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ last\ =\ j;}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00204\ \ \ \ \ \}}
+\DoxyCodeLine{00205\ }
+\DoxyCodeLine{00206\ \ \ \ \ \textcolor{keywordflow}{if}\ (++i\ ==\ k)}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ i\ =\ 0;}
+\DoxyCodeLine{00208\ \ \ \}}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \ \ \textcolor{keywordtype}{void}\ insert(uint32\_t\ index,\ uint32\_t\ hash)\ \{}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ naive(index,\ hash);}
+\DoxyCodeLine{00213\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ naive2(index,\ hash);}
+\DoxyCodeLine{00215\ \ \ \ \ \}}
+\DoxyCodeLine{00216\ \ \ \}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \ \ uint32\_t\ min()\ \{}
+\DoxyCodeLine{00219\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ -\/\ 2;\ j\ >=\ 0;\ j-\/-\/)\ \{}
+\DoxyCodeLine{00222\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[i])\ \{}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ i\ =\ j;}
+\DoxyCodeLine{00224\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00225\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00226\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ arr[i];}
+\DoxyCodeLine{00227\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ arr[last];}
+\DoxyCodeLine{00229\ \ \ \ \ \}}
+\DoxyCodeLine{00230\ \ \ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \ \ uint32\_t\ min\_hash()\ \{}
+\DoxyCodeLine{00233\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00234\ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ -\/\ 2;\ j\ >=\ 0;\ j-\/-\/)\ \{}
+\DoxyCodeLine{00236\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[i])\ \{}
+\DoxyCodeLine{00237\ \ \ \ \ \ \ \ \ \ \ i\ =\ j;}
+\DoxyCodeLine{00238\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00239\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \string~(uint32\_t)(arr[i]\ >>\ 32);}
+\DoxyCodeLine{00241\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \string~(uint32\_t)(arr[last]\ >>\ 32);}
+\DoxyCodeLine{00243\ \ \ \ \ \}}
+\DoxyCodeLine{00244\ \ \ \}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<uint32\_t>\ \&vec)\ \{}
+\DoxyCodeLine{00247\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00248\ \ \ \ \ \ \ uint\ j\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00249\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ l\ =\ k\ -\/\ 2;\ l\ >=\ 0;\ l-\/-\/)\ \{}
+\DoxyCodeLine{00250\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[l]\ >\ arr[j])\ \{}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \ \ j\ =\ l;}
+\DoxyCodeLine{00252\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00253\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00254\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00255\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ vec.emplace\_back(arr[i]);}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00258\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[last]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ \ \ vec.emplace\_back(arr[i]);}
+\DoxyCodeLine{00262\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00263\ \ \ \ \ \}}
+\DoxyCodeLine{00264\ \ \ \}}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<std::pair<uint32\_t,\ uint32\_t>>\ \&vec)\ \{}
+\DoxyCodeLine{00267\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00268\ \ \ \ \ \ \ uint\ j\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ l\ =\ k\ -\/\ 2;\ l\ >=\ 0;\ l-\/-\/)\ \{}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[l]\ >\ arr[j])\ \{}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ j\ =\ l;}
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00274\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00276\ \ \ \ \ \ \ \ \ vec.emplace\_back(arr[i],\ \string~(uint32\_t)(arr[j]\ >>\ 32));}
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00278\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[last]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ vec.emplace\_back(arr[i],\ \string~(uint32\_t)(arr[last]\ >>\ 32));}
+\DoxyCodeLine{00282\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00283\ \ \ \ \ \}}
+\DoxyCodeLine{00284\ \ \ \}}
+\DoxyCodeLine{00285\ \};}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive64}{Adaptive64}}\ \{}
+\DoxyCodeLine{00288\ \ \ uint32\_t\ k,\ i\ =\ 0,\ last\ =\ 0;}
+\DoxyCodeLine{00289\ \ \ std::vector<\_\_uint128\_t>\ arr;}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive64}{Adaptive64}}(uint32\_t\ k)\ :\ k(k),\ arr(k)\ \{\}}
+\DoxyCodeLine{00292\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive64}{Adaptive64}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive64}{Adaptive64}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00293\ \ \ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive64}{Adaptive64}}\ \&operator=(\textcolor{keyword}{const}\ \mbox{\hyperlink{structdigest_1_1ds_1_1Adaptive64}{Adaptive64}}\ \&other)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \ \ \textcolor{keywordtype}{void}\ naive(uint32\_t\ index,\ uint64\_t\ hash)\ \{}
+\DoxyCodeLine{00296\ \ \ \ \ arr[i]\ =\ (\_\_uint128\_t)\string~hash\ <<\ 32\ |\ index;}
+\DoxyCodeLine{00297\ \ \ \ \ \textcolor{keywordflow}{if}\ (++i\ ==\ k)}
+\DoxyCodeLine{00298\ \ \ \ \ \ \ i\ =\ 0;}
+\DoxyCodeLine{00299\ \ \ \}}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00301\ \ \ \textcolor{keywordtype}{void}\ naive2(uint32\_t\ index,\ uint64\_t\ hash)\ \{}
+\DoxyCodeLine{00302\ \ \ \ \ \textcolor{comment}{//\ flip\ the\ hash\ bits\ so\ we\ can\ take\ the\ maximum}}
+\DoxyCodeLine{00303\ \ \ \ \ arr[i]\ =\ (\_\_uint128\_t)\string~hash\ <<\ 32\ |\ index;}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[i]\ >\ arr[last])\ \{}
+\DoxyCodeLine{00306\ \ \ \ \ \ \ last\ =\ i;}
+\DoxyCodeLine{00307\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (last\ ==\ i)\ \{}
+\DoxyCodeLine{00308\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ -\/\ 1;\ j\ >=\ 0;\ j-\/-\/)\ \{}
+\DoxyCodeLine{00309\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[last])\ \{}
+\DoxyCodeLine{00310\ \ \ \ \ \ \ \ \ \ \ last\ =\ j;}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00312\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00313\ \ \ \ \ \}}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00315\ \ \ \ \ \textcolor{keywordflow}{if}\ (++i\ ==\ k)}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ i\ =\ 0;}
+\DoxyCodeLine{00317\ \ \ \}}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ \ \ \textcolor{keywordtype}{void}\ insert(uint32\_t\ index,\ uint64\_t\ hash)\ \{}
+\DoxyCodeLine{00320\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00321\ \ \ \ \ \ \ naive(index,\ hash);}
+\DoxyCodeLine{00322\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ naive2(index,\ hash);}
+\DoxyCodeLine{00324\ \ \ \ \ \}}
+\DoxyCodeLine{00325\ \ \ \}}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00327\ \ \ uint32\_t\ min()\ \{}
+\DoxyCodeLine{00328\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00329\ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00330\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ -\/\ 2;\ j\ >=\ 0;\ j-\/-\/)\ \{}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[i])\ \{}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ i\ =\ j;}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00334\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00335\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ arr[i];}
+\DoxyCodeLine{00336\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00337\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ arr[last];}
+\DoxyCodeLine{00338\ \ \ \ \ \}}
+\DoxyCodeLine{00339\ \ \ \}}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \ \ uint64\_t\ min\_hash()\ \{}
+\DoxyCodeLine{00342\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ i\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ k\ -\/\ 2;\ j\ >=\ 0;\ j-\/-\/)\ \{}
+\DoxyCodeLine{00345\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >\ arr[i])\ \{}
+\DoxyCodeLine{00346\ \ \ \ \ \ \ \ \ \ \ i\ =\ j;}
+\DoxyCodeLine{00347\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \string~(uint64\_t)(arr[i]\ >>\ 32);}
+\DoxyCodeLine{00350\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \string~(uint64\_t)(arr[last]\ >>\ 32);}
+\DoxyCodeLine{00352\ \ \ \ \ \}}
+\DoxyCodeLine{00353\ \ \ \}}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<uint32\_t>\ \&vec)\ \{}
+\DoxyCodeLine{00356\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00357\ \ \ \ \ \ \ uint\ j\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00358\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ l\ =\ k\ -\/\ 2;\ l\ >=\ 0;\ l-\/-\/)\ \{}
+\DoxyCodeLine{00359\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[l]\ >\ arr[j])\ \{}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \ \ j\ =\ l;}
+\DoxyCodeLine{00361\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00363\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00364\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ \ \ vec.emplace\_back(arr[i]);}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00367\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00368\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[last]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00369\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00370\ \ \ \ \ \ \ \ \ vec.emplace\_back(arr[i]);}
+\DoxyCodeLine{00371\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00372\ \ \ \ \ \}}
+\DoxyCodeLine{00373\ \ \ \}}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00375\ \ \ \textcolor{keywordtype}{void}\ min\_syncmer(std::vector<std::pair<uint32\_t,\ uint64\_t>>\ \&vec)\ \{}
+\DoxyCodeLine{00376\ \ \ \ \ \textcolor{keywordflow}{if}\ (k\ <\ 16)\ \{}
+\DoxyCodeLine{00377\ \ \ \ \ \ \ uint\ j\ =\ k\ -\/\ 1;}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ l\ =\ k\ -\/\ 2;\ l\ >=\ 0;\ l-\/-\/)\ \{}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[l]\ >\ arr[j])\ \{}
+\DoxyCodeLine{00380\ \ \ \ \ \ \ \ \ \ \ j\ =\ l;}
+\DoxyCodeLine{00381\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00382\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00383\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[j]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00385\ \ \ \ \ \ \ \ \ vec.emplace\_back(arr[i],\ \string~(uint64\_t)(arr[j]\ >>\ 32));}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00387\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00388\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (arr[last]\ >>\ 32\ ==\ std::max(uint32\_t(arr[i]\ >>\ 32),}
+\DoxyCodeLine{00389\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ uint32\_t(arr[i\ ?\ i\ -\/\ 1\ :\ k\ -\/\ 1]\ >>\ 32)))\ \{}
+\DoxyCodeLine{00390\ \ \ \ \ \ \ \ \ vec.emplace\_back(arr[i],\ \string~(uint64\_t)(arr[last]\ >>\ 32));}
+\DoxyCodeLine{00391\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00392\ \ \ \ \ \}}
+\DoxyCodeLine{00393\ \ \ \}}
+\DoxyCodeLine{00394\ \};}
+\DoxyCodeLine{00395\ \}\ \textcolor{comment}{//\ namespace\ digest::ds}}
+
+\end{DoxyCode}

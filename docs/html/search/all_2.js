@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['data_5fstructure_20tt_0',['Selecting the correct &lt;tt&gt;data_structure&lt;/tt&gt;',['../md_README.html#autotoc_md5',1,'']]],
-  ['digest_1',['Digest',['../md_README.html',1,'']]],
-  ['documentation_20is_20in_20the_20code_2',['Implementation (Most of the documentation is in the code)',['../md_README.html#autotoc_md1',1,'']]]
+  ['digester_0',['Digester',['../classdigest_1_1Digester.html',1,'digest::Digester&lt; P &gt;'],['../classdigest_1_1Digester.html#a506f39bd2ad543c5d112dc0f5ca00640',1,'digest::Digester::Digester(const char *seq, size_t len, unsigned k, size_t start=0, MinimizedHashType minimized_h=MinimizedHashType::CANON)'],['../classdigest_1_1Digester.html#a4b026b422b243ec36dfb70b1118dc683',1,'digest::Digester::Digester(const std::string &amp;seq, unsigned k, size_t start=0, MinimizedHashType minimized_h=MinimizedHashType::CANON)']]]
 ];
