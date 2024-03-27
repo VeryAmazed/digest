@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <utility>
 #include <vector>
+#include <array>
 
 // requirement on all data_structures
 // constructor which accepts uint32_t
