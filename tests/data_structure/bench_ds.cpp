@@ -152,13 +152,13 @@ template <int k, class T, int out> static void BM(benchmark::State &state) {
   BENCHMARK_TEMPLATE(BM, 512, name, out);                                      \
   BENCHMARK_TEMPLATE(BM, 1024, name, out);
 
-test(digest::ds::Naive, 0);
-test(digest::ds::Naive2, 1);
-test(digest::ds::MonoQueue, 2);
-test(digest::ds::SegmentTree, 3);
-test(digest::ds::Set, 4);
-test2(digest::ds::Adaptive, 5);
-test2(digest::ds::Adaptive64, 6);
+test(digest::ds::Naive, 0)
+test(digest::ds::Naive2, 1)
+test(digest::ds::MonoQueue, 2)
+test(digest::ds::SegmentTree, 3)
+test(digest::ds::Set, 4)
+test2(digest::ds::Adaptive, 5)
+test2(digest::ds::Adaptive64, 6)
 
 int main(int argc, char **argv) {
   setupInput();
