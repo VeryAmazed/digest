@@ -27,6 +27,7 @@ meson install -C build
 This will generate `include` and `lib` folders.
 
 # Usage
+[Documentation](https://veryamazed.github.io/digest/)
 * Headers at `#include <digest/___.hpp>`
 * Classes are in `digest` namespace
 * example compile: `g++ file.cpp -IPREFIX/include -LPREFIX/lib -ldigest`
@@ -66,3 +67,5 @@ meson setup build
 cd build && meson compile
 ```
 this will generate proper executables for benchmark/testing
+
+add to forked repo
