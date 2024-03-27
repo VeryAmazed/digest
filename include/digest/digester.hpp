@@ -326,3 +326,5 @@ protected:
 };
 
 } // namespace digest
+
+#include "digester.tpp"
