@@ -15,6 +15,8 @@ nthash = subproject('ntHash')
 nthash_dep = nthash.get_variable('lib_dep')
 include_dirs = [include_directories('include'), nthash.get_variable('include_dirs')]
 
+thread_dep = dependency('threads')
+
 digest_lib = static_library(
 	'digest',
 	include_directories: include_dirs,
@@ -55,7 +57,7 @@ if get_option('buildtype') != 'release'
   executable(
    'bench',
    'tests/bench/benchmark.cpp',
-   dependencies : [bench, digest_dep],
+   dependencies : [bench, digest_dep, thread_dep],
   )
 
   ### benchmark data structures ###
@@ -83,7 +85,7 @@ if get_option('buildtype') != 'release'
   executable(
    'test_thread',
    'tests/test/test_thread.cpp',
-   dependencies : [catch2, digest_dep],
+   dependencies : [catch2, digest_dep, thread_dep],
   )
 
   doxygen = find_program('doxygen', required: false)
