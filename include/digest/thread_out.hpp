@@ -8,6 +8,11 @@
 #include <thread>
 #include <vector>
 
+/**
+ * \defgroup thread_out Threading functions 
+ * @{
+ */
+
 /*
     Possible implementation for multi-threading the digestion of a single
    sequence. The key thing to note is basically by carefully telling where each
@@ -34,6 +39,7 @@ class BadThreadOutParams : public std::exception {
 };
 
 /**
+ * \ingroup thread_out
  * @param thread_count the number of threads to use
  * @param vec a vector of vectors in which the minimizers will be placed.
  *      Each vector corresponds to one thread. The minimizers within each vector
@@ -242,6 +248,6 @@ std::vector<std::pair<uint32_t, uint32_t>> thread_sync_roll2(
     digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
 } // namespace thread_out
-
+/**@}*/
 #include "thread_out.tpp"
 #endif
