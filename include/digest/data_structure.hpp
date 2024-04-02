@@ -25,6 +25,12 @@ namespace digest::ds {
 // https://codeforces.com/blog/entry/18051 (USACO.guide was probably heavily
 // inspired by this)
 /** A data structure that can answer point update & range minimum queries. */
+
+/**
+ * @brief Description of what it does and when to use.
+ * 
+ * @tparam k 
+ */
 template <int k> struct SegmentTree {
   int i = k;
   std::array<uint64_t, 2 * k> segtree = {};
@@ -69,6 +75,11 @@ template <int k> struct SegmentTree {
   }
 };
 
+/**
+ * @brief Description of what it does and when to use.
+ * 
+ * @tparam k 
+ */
 template <uint32_t k> struct Naive {
   std::array<uint64_t, k> arr;
   uint i = 0;
@@ -130,6 +141,11 @@ template <uint32_t k> struct Naive {
   }
 };
 
+/**
+ * @brief Description of what it does and when to use.
+ * 
+ * @tparam k 
+ */
 template <uint32_t k> struct Naive2 {
   uint i = 0;
   uint last = 0;
@@ -176,6 +192,10 @@ template <uint32_t k> struct Naive2 {
   }
 };
 
+/**
+ * @brief Description of what it does and when to use.
+ * 
+ */
 struct Adaptive {
   uint32_t k, i = 0, last = 0;
   std::vector<uint64_t> arr;
@@ -285,6 +305,10 @@ struct Adaptive {
   }
 };
 
+/**
+ * @brief Description of what it does and when to use.
+ * 
+ */
 struct Adaptive64 {
   uint32_t k, i = 0, last = 0;
   std::vector<__uint128_t> arr;

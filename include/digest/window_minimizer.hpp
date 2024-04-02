@@ -6,25 +6,35 @@
 
 namespace digest {
 
+/**
+ * @brief Exception thrown when initializing a Window Minimizer or Syncmer with a large window size of 0.  
+ * 
+ * 
+ */
 class BadWindowSizeException : public std::exception {
   const char *what() const throw() {
     return "Number of kmers in large window cannot be 0";
   }
 };
 
-// number of k-mers to be considered in the large window
+/**
+ * @brief Child class of Digester that defines a minimizer as a kmer whose hash is minimal among those in the large window. Parameters without a description
+ * are the same as the parameters in the Digester parent class. They are simply passed up to the parent constructor.
+ * 
+ * @tparam P 
+ * @tparam T The data structure to use for performing range minimum queries to find the minimal hash value. 
+ */
 template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 public:
   /**
    * @param seq
    * @param len
    * @param k
-   * @param large_window
+   * @param large_window the number of kmers in the large window, i.e. the number of kmers to be considered during the range minimum query. 
    * @param start
    * @param minimized_h
    *
-   * @throws BadWindowException Thrown when congruence is greater or equal to
-   * mod
+   * @throws BadWindowException thrown when large_window is passed in as 0
    */
   WindowMin(const char *seq, size_t len, unsigned k, unsigned large_window,
             size_t start = 0,
@@ -39,12 +49,11 @@ public:
   /**
    * @param seq
    * @param k
-   * @param large_window
+   * @param large_window the number of kmers in the large window, i.e. the number of kmers to be considered during the range minimum query. 
    * @param start
    * @param minimized_h
    *
-   * @throws BadWindowException Thrown when congruence is greater or equal to
-   * mod
+   * @throws BadWindowException thrown when large_window is passed in as 0
    */
   WindowMin(const std::string &seq, unsigned k, unsigned large_window,
             size_t start = 0,
@@ -53,9 +62,9 @@ public:
                         minimized_h) {}
 
   /**
-   * @brief adds up to amount of positions of minimizers into vec, here a k-mer
-   * is considered a minimizer if its hash is the smallest in the large window,
-   * using rightmost index wins in ties
+   * @brief adds up to amount of positions of minimizers into vec. Here a k-mer
+   * is considered a minimizer if its hash is the smallest in the large window.
+   * Rightmost index wins in ties
    *
    * @param amount
    * @param vec
@@ -64,9 +73,9 @@ public:
                               std::vector<uint32_t> &vec) override;
 
   /**
-   * @brief adds up to amount of positions and hashes of minimizers into vec,
-   * here a k-mer is considered a minimizer if its hash is the smallest in the
-   * large window, using rightmost index wins in ties
+   * @brief adds up to amount of positions and hashes of minimizers into vec.
+   * Here a k-mer is considered a minimizer if its hash is the smallest in the
+   * large window. Rightmost index wins in ties
    *
    * @param amount
    * @param vec
@@ -75,8 +84,13 @@ public:
   roll_minimizer(unsigned amount,
                  std::vector<std::pair<uint32_t, uint32_t>> &vec) override;
 
+  /**
+   * 
+   * @return unsigned, the value of large_window 
+   */
   unsigned get_large_wind_kmer_am() { return large_window; }
 
+  // function is mainly to help with tests
   size_t get_ds_size() { return ds_size; }
 
   // function is mainly to help with tests

@@ -7,15 +7,28 @@
 
 namespace digest {
 
+/**
+ * @brief Exception thrown when initializing a mod minimizer object where the target value after modding is greater than the mod value. 
+ * 
+ * 
+ */
 class BadModException : public std::exception {
   const char *what() const throw() {
     return "mod must be greater than congruence.";
   }
 };
+
+/**
+ * @brief Child class of Digester that defines a minimizer as a kmer whose hash is equal to some target value after being modded. Parameters without a description
+ * are the same as the parameters in the Digester parent class. They are simply passed up to the parent constructor.
+ * 
+ * @tparam P 
+ */
 template <BadCharPolicy P> class ModMin : public Digester<P> {
 public:
   /**
-   *
+   * @brief 
+   * 
    * @param seq
    * @param len
    * @param k
@@ -56,9 +69,9 @@ public:
                   minimized_h) {}
 
   /**
-   * @brief adds up to amount of positions of minimizers into vec, here a k-mer
+   * @brief adds up to amount of positions of minimizers into vec. Here a k-mer
    * is considered a minimizer if its hash is congruent to congruence in the mod
-   * space Time Complexity: O(1) per k-mer tested
+   * space.
    *
    * @param amount
    * @param vec
@@ -66,9 +79,9 @@ public:
   void roll_minimizer(unsigned amount, std::vector<uint32_t> &vec) override;
 
   /**
-   * @brief adds up to amount of positions and hashes of minimizers into vec,
-   * here a k-mer is considered a minimizer if its hash is congruent to
-   * congruence in the mod space Time Complexity: O(1) per k-mer tested
+   * @brief adds up to amount of positions and hashes of minimizers into vec.
+   * Here a k-mer is considered a minimizer if its hash is congruent to
+   * congruence in the mod space.
    *
    * @param amount
    * @param vec
