@@ -30,12 +30,19 @@ class NotRolledTillEndException : public std::exception {
 };
 
 /**
+ * \defgroup enums Enumerations
+ * @{
+ */
+
+/**
+ * \ingroup enums
  * @brief Specify whether or not the hash value we are minimizing is the canonical hash, forward hash, or reverse hash
  * 
  */
 enum class MinimizedHashType { CANON, FORWARD, REVERSE };
 
 /**
+ * \ingroup enums
  * @brief Digest does not not consider kmers with non-ACTG characters. Non-ACTG characters in the sequence can be handled in one of two ways.
  * The WRITEOVER policy specifies that any non-ACTG character is simply replaced with an A. The SKIPOVER policy skips over any kmers with a non-ACTG
  * character. For example, if you have k = 4 and your sequence is ACTGNNACTGAC, then the only kmers that would be considered would be the ACTG starting at
@@ -44,6 +51,7 @@ enum class MinimizedHashType { CANON, FORWARD, REVERSE };
  * 
  */
 enum class BadCharPolicy { WRITEOVER, SKIPOVER };
+/**@}*/
 
 /**
  * @brief an abstract class for Digester objects.  
@@ -53,6 +61,8 @@ enum class BadCharPolicy { WRITEOVER, SKIPOVER };
  */
 template <BadCharPolicy P> class Digester {
 public:
+  
+
   /**
    * @param seq const char pointer pointing to the c-string of DNA sequence to be hashed.
    * @param len length of seq.
@@ -265,12 +275,9 @@ public:
   const char *get_sequence() { return seq; }
 
 protected:
-  /**
-   * @internal
-   * 
-   * 0x41 = 'A', 0x43 = 'C', 0x47 = 'G' 0x54 = 'T'
-   * 0x61 = 'a', 0x63 = 'c', 0x67 = 'g' 0x74 = 't'
-   */
+  
+   // 0x41 = 'A', 0x43 = 'C', 0x47 = 'G' 0x54 = 'T'
+   // 0x61 = 'a', 0x63 = 'c', 0x67 = 'g' 0x74 = 't'
   std::array<bool, 256> actg{
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // NOLINT
