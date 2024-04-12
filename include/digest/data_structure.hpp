@@ -71,7 +71,7 @@ template <int k> struct SegmentTree {
 
 template <uint32_t k> struct Naive {
   std::array<uint64_t, k> arr;
-  uint i = 0;
+  unsigned int i = 0;
 
   Naive(uint32_t){};
   Naive(const Naive &other) = default;
@@ -104,8 +104,8 @@ template <uint32_t k> struct Naive {
   }
 
   void min_syncmer(std::vector<uint32_t> &vec) {
-    uint j = 0;
-    for (uint l = 1; l < k; l++) {
+    unsigned int j = 0;
+    for (unsigned int l = 1; l < k; l++) {
       if (arr[l] > arr[j]) {
         j = l;
       }
@@ -117,7 +117,7 @@ template <uint32_t k> struct Naive {
   }
 
   void min_syncmer(std::vector<std::pair<uint32_t, uint32_t>> &vec) {
-    uint j = k - 1;
+    unsigned int j = k - 1;
     for (int l = k - 2; l >= 0; l--) {
       if (arr[l] > arr[j]) {
         j = l;
@@ -131,8 +131,8 @@ template <uint32_t k> struct Naive {
 };
 
 template <uint32_t k> struct Naive2 {
-  uint i = 0;
-  uint last = 0;
+  unsigned int i = 0;
+  unsigned int last = 0;
   std::vector<uint64_t> arr = std::vector<uint64_t>(k);
 
   Naive2(uint32_t){};
@@ -246,7 +246,7 @@ struct Adaptive {
 
   void min_syncmer(std::vector<uint32_t> &vec) {
     if (k < 16) {
-      uint j = k - 1;
+      unsigned int j = k - 1;
       for (int l = k - 2; l >= 0; l--) {
         if (arr[l] > arr[j]) {
           j = l;
@@ -266,7 +266,7 @@ struct Adaptive {
 
   void min_syncmer(std::vector<std::pair<uint32_t, uint32_t>> &vec) {
     if (k < 16) {
-      uint j = k - 1;
+      unsigned int j = k - 1;
       for (int l = k - 2; l >= 0; l--) {
         if (arr[l] > arr[j]) {
           j = l;
@@ -355,7 +355,7 @@ struct Adaptive64 {
 
   void min_syncmer(std::vector<uint32_t> &vec) {
     if (k < 16) {
-      uint j = k - 1;
+      unsigned int j = k - 1;
       for (int l = k - 2; l >= 0; l--) {
         if (arr[l] > arr[j]) {
           j = l;
@@ -375,7 +375,7 @@ struct Adaptive64 {
 
   void min_syncmer(std::vector<std::pair<uint32_t, uint64_t>> &vec) {
     if (k < 16) {
-      uint j = k - 1;
+      unsigned int j = k - 1;
       for (int l = k - 2; l >= 0; l--) {
         if (arr[l] > arr[j]) {
           j = l;
