@@ -24,10 +24,6 @@ install_headers(
 	'include/digest/thread_out.hpp', 'include/digest/thread_out.tpp',
 	install_dir: 'include/digest'
 )
-install_headers(
-	'include/nthash/kmer.hpp', 'include/nthash/internal.hpp',
-	install_dir: 'include/nthash'
-)
 
 digest_dep = declare_dependency(
 	include_directories: include_dirs,
