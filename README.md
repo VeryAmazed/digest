@@ -68,4 +68,4 @@ cd build && meson compile
 ```
 this will generate proper executables for benchmark/testing
 
-add to forked repo
+string must be kept in memory unmodified.
