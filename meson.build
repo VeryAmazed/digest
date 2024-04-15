@@ -38,13 +38,15 @@ if get_option('buildtype') != 'release'
    'tests/test/test.cpp',
     dependencies : [catch2, digest_dep],
   )
+  
+  thread_dep = dependency('threads')
 
   ### benchmark ###
   bench = dependency('benchmark')
   executable(
    'bench',
    'tests/bench/benchmark.cpp',
-   dependencies : [bench, digest_dep],
+   dependencies : [bench, digest_dep, thread_dep],
   )
 
   ### benchmark data structures ###
@@ -72,7 +74,7 @@ if get_option('buildtype') != 'release'
   executable(
    'test_thread',
    'tests/test/test_thread.cpp',
-   dependencies : [catch2, digest_dep],
+   dependencies : [catch2, digest_dep, thread_dep],
   )
 
   doxygen = find_program('doxygen', required: false)
