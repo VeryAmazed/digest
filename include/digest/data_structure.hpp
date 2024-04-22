@@ -19,6 +19,13 @@
 // if you want to use them
 
 namespace digest::ds {
+
+/**
+ * Data structures for minimum hash queries on a window.
+ *
+ * /
+
+
 // Based on a template taken from USACO.guide and then modified by me (for
 // competitive programming), and now modified again (for this)
 // https://usaco.guide/gold/PURS?lang=cpp
@@ -27,9 +34,9 @@ namespace digest::ds {
 /** A data structure that can answer point update & range minimum queries. */
 
 /**
- * @brief Description of what it does and when to use.
+ * @brief Segment Tree data structure
  *
- * @tparam k
+ * @tparam k large window size
  */
 template <int k> struct SegmentTree {
 	int i = k;
@@ -78,7 +85,7 @@ template <int k> struct SegmentTree {
 /**
  * @brief Description of what it does and when to use.
  *
- * @tparam k
+ * @tparam k large window size
  */
 template <uint32_t k> struct Naive {
 	std::array<uint64_t, k> arr;
