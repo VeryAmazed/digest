@@ -33,7 +33,7 @@ namespace digest::ds {
  */
 template <int k> struct SegmentTree {
 	int i = k;
-	std::array<uint64_t, 2 * k> segtree = {};
+	std::array<uint64_t, 2 *k> segtree = {};
 
 	constexpr int log2() { return std::ceil(std::log2(k)); }
 

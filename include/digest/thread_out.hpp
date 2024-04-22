@@ -15,16 +15,16 @@
 
 /**
  * \ingroup thread_out
- * 
+ *
  * @brief Description:
  * Possible implementation for multi-threading the digestion of a single
  * sequence. The key thing to note is basically by carefully telling where each
  * digester should start digesting you can make it so each kmer is only
  * considered once.
- * For more details on a function, click on more and it will take you to the 
+ * For more details on a function, click on more and it will take you to the
  * description that is located in modules
- * 
- * @par IMPORTANT: 
+ *
+ * @par IMPORTANT:
  * This approach will not generate correct results for sequences
  * that contain non-ACTG characters. Take this example, seq = ACTGANACNACTGA, k
  * = 4, l_wind = 4, thread_count = 2, there is a total of 4 valid kmers in this
@@ -32,7 +32,7 @@
  * actually goes through the sequence, so it's going to try to partition the
  * sequence into ACTGANACNA, and ANACNACTGA and feed it into 2 digester objects
  * which now each have 0 valid large windows
-*/
+ */
 
 namespace thread_out {
 
@@ -74,10 +74,10 @@ void thread_mod(
 
 /**
  * \ingroup thread_out
- * 
- * @brief same as the other thread_mod, except it can take a C++ string, and does not need to be provided
- * the length of the string
- * 
+ *
+ * @brief same as the other thread_mod, except it can take a C++ string, and
+ * does not need to be provided the length of the string
+ *
  * @param seq C++ string of DNA sequence to be hashed.
  */
 template <digest::BadCharPolicy P>
@@ -89,10 +89,10 @@ void thread_mod(
 
 /**
  * \ingroup thread_out
- * 
- * @brief same as other thread_mod that takes a c-string, 
+ *
+ * @brief same as other thread_mod that takes a c-string,
  * except here vec is a vector of vectors of pairs of uint32_ts
- * 
+ *
  * @param vec vec will contain both the index and the hash of minimizers.
  * All other things previously stated about vec remain true
  */
@@ -106,10 +106,10 @@ void thread_mod(
 
 /**
  * \ingroup thread_out
- * 
+ *
  * @brief same as other thread_mod that takes a C++ string,
  * except here vec is a vector of vectors of pairs of uint32_ts
- * 
+ *
  * @param vec vec will contain both the index and the hash of minimizers.
  * All other things previously stated about vec remain true
  */
@@ -123,10 +123,11 @@ void thread_mod(
 
 /**
  * \ingroup thread_out
- * 
+ *
  * @tparam P policy for dealing with non-ACTG characters
- * @tparam T min query data structure to use, refer to docs of the classes in the ds namespace for more info
- * 
+ * @tparam T min query data structure to use, refer to docs of the classes in
+ * the ds namespace for more info
+ *
  * @param thread_count the number of threads to use
  * @param vec a vector of vectors in which the minimizers will be placed.
  *      Each vector corresponds to one thread. The minimizers within each vector
@@ -153,10 +154,10 @@ void thread_wind(
 
 /**
  * \ingroup thread_out
- * 
- * @brief same as the other thread_wind, except it can take a C++ string, and does not need to be provided
- * the length of the string
- * 
+ *
+ * @brief same as the other thread_wind, except it can take a C++ string, and
+ * does not need to be provided the length of the string
+ *
  * @param seq C++ string of DNA sequence to be hashed.
  */
 template <digest::BadCharPolicy P, class T>
@@ -168,10 +169,10 @@ void thread_wind(
 
 /**
  * \ingroup thread_out
- * 
- * @brief same as other thread_wind that takes a c-string, 
+ *
+ * @brief same as other thread_wind that takes a c-string,
  * except here vec is a vector of vectors of pairs of uint32_ts
- * 
+ *
  * @param vec vec will contain both the index and the hash of minimizers.
  * All other things previously stated about vec remain true
  */
@@ -185,10 +186,10 @@ void thread_wind(
 
 /**
  * \ingroup thread_out
- * 
+ *
  * @brief same as other thread_wind that takes a C++ string,
  * except here vec is a vector of vectors of pairs of uint32_ts
- * 
+ *
  * @param vec vec will contain both the index and the hash of minimizers.
  * All other things previously stated about vec remain true
  */
@@ -202,10 +203,11 @@ void thread_wind(
 
 /**
  * \ingroup thread_out
- *  
+ *
  * @tparam P policy for dealing with non-ACTG characters
- * @tparam T min query data structure to use, refer to docs of the classes in the ds namespace for more info
- * 
+ * @tparam T min query data structure to use, refer to docs of the classes in
+ * the ds namespace for more info
+ *
  * @param thread_count the number of threads to use
  * @param vec a vector of vectors in which the minimizers will be placed.
  *      Each vector corresponds to one thread. The minimizers within each vector
@@ -232,10 +234,10 @@ void thread_sync(
 
 /**
  * \ingroup thread_out
- * 
- * @brief same as the other thread_sync, except it can take a C++ string, and does not need to be provided
- * the length of the string
- * 
+ *
+ * @brief same as the other thread_sync, except it can take a C++ string, and
+ * does not need to be provided the length of the string
+ *
  * @param seq C++ string of DNA sequence to be hashed.
  */
 template <digest::BadCharPolicy P, class T>
@@ -247,10 +249,10 @@ void thread_sync(
 
 /**
  * \ingroup thread_out
- * 
- * @brief same as other thread_wind that takes a c-string, 
+ *
+ * @brief same as other thread_wind that takes a c-string,
  * except here vec is a vector of vectors of pairs of uint32_ts
- * 
+ *
  * @param vec vec will contain both the index and the hash of minimizers.
  * All other things previously stated about vec remain true
  */
@@ -264,10 +266,10 @@ void thread_sync(
 
 /**
  * \ingroup thread_out
- * 
+ *
  * @brief same as other thread_sync that takes a C++ string,
  * except here vec is a vector of vectors of pairs of uint32_ts
- * 
+ *
  * @param vec vec will contain both the index and the hash of minimizers.
  * All other things previously stated about vec remain true
  */
