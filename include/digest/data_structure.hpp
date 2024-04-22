@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -8,23 +9,24 @@
 #include <utility>
 #include <vector>
 
-// requirement on all data_structures
-// constructor which accepts uint32_t
-// void set(uint32_t index, (uint 32/64) hash)
-// uint32_t min() // returns minimum
-// pair<uint32_t, uint 32/64> min_hash() // returns index, hash
-// void min_syncmer(vector<uint 32/64> &vec) // appends minimum if syncmer
-// void min_syncmer(vector<pair<uint 32, uint 32>> &vec) // appends (left
-// syncmer index, right syncmer index) if syncmer assignment/copy constructors
-// if you want to use them
-
-namespace digest::ds {
-
 /**
  * Data structures for minimum hash queries on a window.
  *
- * /
+ * requirement on all data_structures  
+ * constructor which accepts uint32_t
+ * void set(uint32_t index, (uint 32/64) hash)
+ * uint32_t min() // returns minimum
+ * pair<uint32_t, uint 32/64> min_hash() // returns index, hash
+ * void min_syncmer(vector<uint 32/64> &vec) // appends minimum if syncmer
+ * void min_syncmer(vector<pair<uint 32, uint 32>> &vec) // appends (left
+ * syncmer index, right syncmer index) if syncmer assignment/copy constructors
+ * if you want to use them
+ */
 
+
+
+
+namespace digest::ds {
 
 // Based on a template taken from USACO.guide and then modified by me (for
 // competitive programming), and now modified again (for this)

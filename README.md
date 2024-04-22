@@ -1,7 +1,7 @@
 # Digest
 C++ library which supports various minimizer schemes for digestion of DNA sequences  
 
-# Implementation (Most of the documentation is in the code)
+# Implementation
 Supports Mod Minimizers, Window Minimizers, and Syncmers  
 
 Uses the cyclic or hash provided by [ntHash](https://github.com/bcgsc/ntHash). For now I just downloaded the essential files off their github and compiled it myself but I may change how I link in ntHash in the future.  
@@ -54,12 +54,8 @@ adaptive performs at worst about 10% slower than best
 adaptive64 performs at worst about 100% slower than best
 
 # Contributing
-run
-```bash
-ninja clang-format
-ninja clang-tidy
-ninja docs
-```
+Use clang format version 13. (sorry Arch users)
+run `ninja clang-format` before submitting a PR.
 
 # Benchmark / Tests
 ```bash
