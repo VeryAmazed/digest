@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -12,7 +11,7 @@
 /**
  * Data structures for minimum hash queries on a window.
  *
- * requirement on all data_structures  
+ * requirement on all data_structures
  * constructor which accepts uint32_t
  * void set(uint32_t index, (uint 32/64) hash)
  * uint32_t min() // returns minimum
@@ -22,9 +21,6 @@
  * syncmer index, right syncmer index) if syncmer assignment/copy constructors
  * if you want to use them
  */
-
-
-
 
 namespace digest::ds {
 
