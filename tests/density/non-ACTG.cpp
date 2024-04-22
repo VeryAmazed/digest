@@ -54,105 +54,109 @@ int dir2[] = {0, 1, 0, -1, 1, -1, 1, -1};
 
 int main() {
 
-  std::cout << std::fixed << std::setprecision(8);
-  // if you use ld, use the above and don't use string stream
+	std::cout << std::fixed << std::setprecision(8);
+	// if you use ld, use the above and don't use string stream
 
-  std::string str;
+	std::string str;
 
-  std::vector<std::string> strs;
-  freopen("../tests/density/non-ACTG.txt", "r", stdin);
-  for (int i = 0; i < 100; i++) {
-    std::cin >> str;
-    strs.pb(str);
-  }
+	std::vector<std::string> strs;
+	freopen("../tests/density/non-ACTG.txt", "r", stdin);
+	for (int i = 0; i < 100; i++) {
+		std::cin >> str;
+		strs.pb(str);
+	}
 
-  std::vector<std::vector<double>> mod_min_vec(4, std::vector<double>());
-  std::vector<std::vector<double>> wind_min_vec(4, std::vector<double>());
-  std::vector<std::vector<double>> sync_vec(4, std::vector<double>());
+	std::vector<std::vector<double>> mod_min_vec(4, std::vector<double>());
+	std::vector<std::vector<double>> wind_min_vec(4, std::vector<double>());
+	std::vector<std::vector<double>> sync_vec(4, std::vector<double>());
 
-  uint64_t mods[4] = {109, 128, 1009, 1024};
-  unsigned l_winds[4] = {7, 8, 17, 16};
+	uint64_t mods[4] = {109, 128, 1009, 1024};
+	unsigned l_winds[4] = {7, 8, 17, 16};
 
-  std::vector<int> kmers(100, 0);
+	std::vector<int> kmers(100, 0);
 
-  for (int i = 0; i < 100; i++) {
-    int start = 0;
-    while (start + 7 < 1e5) {
-      bool works = true;
-      for (int j = 0; j < 16; j++) {
-        if (strs[i][start + j] == 'N') {
-          works = false;
-          start = start + j;
-          break;
-        }
-      }
-      if (works) {
-        kmers[i]++;
-      }
-      start++;
-    }
-    // std::cout << kmers[i] << " ";
-  }
-  // std::cout << std::endl;
+	for (int i = 0; i < 100; i++) {
+		int start = 0;
+		while (start + 7 < 1e5) {
+			bool works = true;
+			for (int j = 0; j < 16; j++) {
+				if (strs[i][start + j] == 'N') {
+					works = false;
+					start = start + j;
+					break;
+				}
+			}
+			if (works) {
+				kmers[i]++;
+			}
+			start++;
+		}
+		// std::cout << kmers[i] << " ";
+	}
+	// std::cout << std::endl;
 
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 100; j++) {
-      digest::ModMin<digest::BadCharPolicy::SKIPOVER> mm(
-          strs[j], 16, mods[i], 0, 0, digest::MinimizedHashType::CANON);
-      std::vector<uint32_t> temp;
-      mm.roll_minimizer(100000, temp);
-      double am = temp.size();
-      am /= kmers[i];
-      mod_min_vec[i].pb(am);
-    }
-  }
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 100; j++) {
+			digest::ModMin<digest::BadCharPolicy::SKIPOVER> mm(
+				strs[j], 16, mods[i], 0, 0, digest::MinimizedHashType::CANON);
+			std::vector<uint32_t> temp;
+			mm.roll_minimizer(100000, temp);
+			double am = temp.size();
+			am /= kmers[i];
+			mod_min_vec[i].pb(am);
+		}
+	}
 
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 100; j++) {
-      digest::WindowMin<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive>
-          wm(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
-      std::vector<uint32_t> temp;
-      wm.roll_minimizer(100000, temp);
-      double am = temp.size();
-      am /= kmers[i];
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 100; j++) {
+			digest::WindowMin<digest::BadCharPolicy::SKIPOVER,
+							  digest::ds::Adaptive>
+				wm(strs[j], 16, l_winds[i], 0,
+				   digest::MinimizedHashType::CANON);
+			std::vector<uint32_t> temp;
+			wm.roll_minimizer(100000, temp);
+			double am = temp.size();
+			am /= kmers[i];
 
-      wind_min_vec[i].pb(am);
-    }
-  }
+			wind_min_vec[i].pb(am);
+		}
+	}
 
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 100; j++) {
-      digest::Syncmer<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive>
-          syn(strs[j], 16, l_winds[i], 0, digest::MinimizedHashType::CANON);
-      std::vector<uint32_t> temp;
-      syn.roll_minimizer(100000, temp);
-      double am = temp.size();
-      am /= kmers[i];
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 100; j++) {
+			digest::Syncmer<digest::BadCharPolicy::SKIPOVER,
+							digest::ds::Adaptive>
+				syn(strs[j], 16, l_winds[i], 0,
+					digest::MinimizedHashType::CANON);
+			std::vector<uint32_t> temp;
+			syn.roll_minimizer(100000, temp);
+			double am = temp.size();
+			am /= kmers[i];
 
-      sync_vec[i].pb(am);
-    }
-  }
-  freopen("../tests/density/out2.txt", "w", stdout);
-  for (int i = 0; i < 4; i++) {
-    for (size_t j = 0; j < 100; j++) {
-      std::cout << mod_min_vec[i][j] << " ";
-    }
-    std::cout << std::endl;
-  }
+			sync_vec[i].pb(am);
+		}
+	}
+	freopen("../tests/density/out2.txt", "w", stdout);
+	for (int i = 0; i < 4; i++) {
+		for (size_t j = 0; j < 100; j++) {
+			std::cout << mod_min_vec[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
 
-  for (int i = 0; i < 4; i++) {
-    for (size_t j = 0; j < 100; j++) {
-      std::cout << wind_min_vec[i][j] << " ";
-    }
-    std::cout << std::endl;
-  }
+	for (int i = 0; i < 4; i++) {
+		for (size_t j = 0; j < 100; j++) {
+			std::cout << wind_min_vec[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
 
-  for (int i = 0; i < 4; i++) {
-    for (size_t j = 0; j < 100; j++) {
-      std::cout << sync_vec[i][j] << " ";
-    }
-    std::cout << std::endl;
-  }
+	for (int i = 0; i < 4; i++) {
+		for (size_t j = 0; j < 100; j++) {
+			std::cout << sync_vec[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
 
-  return 0;
+	return 0;
 }

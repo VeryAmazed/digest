@@ -33,20 +33,20 @@ typedef long double ld;
 // safe_map; FIXED_RANDOM is static so it doesn not get redeclared between
 // function calls
 struct custom_hash {
-  static uint64_t splitmix64(uint64_t x) {
-    // http://xorshift.di.unimi.it/splitmix64.c
-    x += 0x9e3779b97f4a7c15;
-    x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
-    x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
-    return x ^ (x >> 31);
-  }
+	static uint64_t splitmix64(uint64_t x) {
+		// http://xorshift.di.unimi.it/splitmix64.c
+		x += 0x9e3779b97f4a7c15;
+		x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+		x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+		return x ^ (x >> 31);
+	}
 
-  size_t operator()(uint64_t x) const {
+	size_t operator()(uint64_t x) const {
 
-    static const uint64_t FIXED_RANDOM =
-        chrono::steady_clock::now().time_since_epoch().count();
-    return splitmix64(x + FIXED_RANDOM);
-  }
+		static const uint64_t FIXED_RANDOM =
+			chrono::steady_clock::now().time_since_epoch().count();
+		return splitmix64(x + FIXED_RANDOM);
+	}
 };
 
 #define INF 2001001001
@@ -72,38 +72,38 @@ int dir2[] = {0, 1, 0, -1, 1, -1, 1, -1};
 
 int main() {
 
-  // use this if you read in from a file
+	// use this if you read in from a file
 
-  // freopen("in.txt", "r", stdin);
-  freopen("ACTG.txt", "w", stdout);
+	// freopen("in.txt", "r", stdin);
+	freopen("ACTG.txt", "w", stdout);
 
-  char chars[4] = {'A', 'C', 'T', 'G'};
-  for (int i = 0; i < 1; i++) {
-    string temp;
-    for (int j = 0; j < 1e7; j++) {
-      int curr = rand() % 4;
-      temp.pb(chars[curr]);
-    }
-    cout << temp << endl;
-    cout << endl;
-  }
-  /*
-  freopen("non-ACTG.txt", "w", stdout);
-  char chars2[5] = {'A', 'C', 'T', 'G', 'N'};
-  for(int i =0; i < 100; i++){
-          string temp;
-          for(int j = 0; j < 1e5; j++){
-                  int curr = rand() % 33;
-                  if(curr == 32){
-                          temp.pb(chars2[4]);
-                  }else{
-                          curr %= 4;
-                          temp.pb(chars2[curr]);
-                  }
-          }
-          cout << temp << endl;
-          cout << endl;
-  }
-  */
-  return 0;
+	char chars[4] = {'A', 'C', 'T', 'G'};
+	for (int i = 0; i < 1; i++) {
+		string temp;
+		for (int j = 0; j < 1e7; j++) {
+			int curr = rand() % 4;
+			temp.pb(chars[curr]);
+		}
+		cout << temp << endl;
+		cout << endl;
+	}
+	/*
+	freopen("non-ACTG.txt", "w", stdout);
+	char chars2[5] = {'A', 'C', 'T', 'G', 'N'};
+	for(int i =0; i < 100; i++){
+			string temp;
+			for(int j = 0; j < 1e5; j++){
+					int curr = rand() % 33;
+					if(curr == 32){
+							temp.pb(chars2[4]);
+					}else{
+							curr %= 4;
+							temp.pb(chars2[curr]);
+					}
+			}
+			cout << temp << endl;
+			cout << endl;
+	}
+	*/
+	return 0;
 }
