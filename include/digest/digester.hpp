@@ -5,6 +5,14 @@
 #include <nthash/kmer.hpp>
 #include <nthash/nthash.hpp>
 
+/**
+ * @mainpage 
+ * 
+ * @brief You can navigate to everything by going to namespaces. There are also descriptions of some
+ * enumerations and the threading functions in modules
+ * 
+ */
+
 namespace digest {
 
 /**
