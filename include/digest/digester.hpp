@@ -6,13 +6,12 @@
 #include <nthash/nthash.hpp>
 
 /**
- * @mainpage
+ *
  *
  * @brief You can navigate to everything by going to namespaces. There are also
  * descriptions of some enumerations and the threading functions in modules
  *
  */
-
 namespace digest {
 
 /**
@@ -40,20 +39,20 @@ class NotRolledTillEndException : public std::exception {
 };
 
 /**
- * \defgroup enums Enumerations
- * @{
- */
-
-/**
- * \ingroup enums
- * @brief Specify whether or not the hash value we are minimizing is the
+ * @brief Enum values for the type of hash to minimize
+ * - * @brief Specify whether or not the hash value we are minimizing is the
  * canonical hash, forward hash, or reverse hash
- *
  */
-enum class MinimizedHashType { CANON, FORWARD, REVERSE };
+enum class MinimizedHashType {
+	/** minimize the canonical hash */
+	CANON,
+	/** minimize the forward hash */
+	FORWARD,
+	/** minimize the reverse hash */
+	REVERSE
+};
 
 /**
- * \ingroup enums
  * @brief Digest does not not consider kmers with non-ACTG characters. Non-ACTG
  * characters in the sequence can be handled in one of two ways. The WRITEOVER
  * policy specifies that any non-ACTG character is simply replaced with an A.
@@ -63,10 +62,13 @@ enum class MinimizedHashType { CANON, FORWARD, REVERSE };
  * ACTG starting at index 6, CTGA at index 7, and TGAC at index 8. Then if you
  * had a large window of 4 (kmers), then the smallest would be picked from one
  * of those 4.
- *
  */
-enum class BadCharPolicy { WRITEOVER, SKIPOVER };
-/**@}*/
+enum class BadCharPolicy {
+	/** something */
+	WRITEOVER,
+	/** something */
+	SKIPOVER
+};
 
 /**
  * @brief an abstract class for Digester objects.

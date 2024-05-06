@@ -11,6 +11,15 @@
 /**
  * Data structures for minimum hash queries on a window.
  *
+ * Selecting the correct `data_structure`
+ * our general guidelines:
+ * * for `large_window` < 12, use Naive
+ * * for 12 <= `large_window` <= 16 use SegmentTree
+ * * for `large_window` > 16 use Naive2
+ *
+ * Adaptive performs at worst about 10% slower than best
+ * Adaptive64 performs at worst about 100% slower than best
+ *
  * requirement on all data_structures
  * constructor which accepts uint32_t
  * void set(uint32_t index, (uint 32/64) hash)

@@ -30,8 +30,8 @@ This will generate `include` and `lib` folders.
 [Documentation](https://veryamazed.github.io/digest/)
 * Headers at `#include <digest/___.hpp>`
 * Classes are in `digest` namespace
-* example compile: `g++ file.cpp -IPREFIX/include -LPREFIX/lib -ldigest`
-* may need `std=c++17`
+* Digest objects require that the input string is kept in memory, unmodified.
+* requires `std=c++17`
 * ntHash does not support `large_window < 4`
 
 # Example
@@ -44,17 +44,8 @@ Example snippet to collect up to 100000 indices of minimizers.
 A vector must be passed in, which will be appended to.
 Each WindowMin / Syncmer object is templated by the algorithm / data structure to find minimizers.
 
-# Selecting the correct `data_structure`
-our general guidelines:
-* for `large_window` < 12, use Naive
-* for 12 <= `large_window` <= 16 use SegmentTree
-* for `large_window` > 16 use Naive2
-
-adaptive performs at worst about 10% slower than best  
-adaptive64 performs at worst about 100% slower than best
-
 # Contributing
-Use clang format version 13. (sorry Arch users)
+Use clang format version 17.  
 run `ninja clang-format` before submitting a PR.
 
 # Benchmark / Tests
@@ -63,5 +54,3 @@ meson setup build
 cd build && meson compile
 ```
 this will generate proper executables for benchmark/testing
-
-string must be kept in memory unmodified.
