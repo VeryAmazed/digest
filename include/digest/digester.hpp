@@ -6,11 +6,7 @@
 #include <nthash/nthash.hpp>
 
 /**
- *
- *
- * @brief You can navigate to everything by going to namespaces. There are also
- * descriptions of some enumerations and the threading functions in modules
- *
+ * @brief digest code.
  */
 namespace digest {
 
@@ -40,8 +36,6 @@ class NotRolledTillEndException : public std::exception {
 
 /**
  * @brief Enum values for the type of hash to minimize
- * - * @brief Specify whether or not the hash value we are minimizing is the
- * canonical hash, forward hash, or reverse hash
  */
 enum class MinimizedHashType {
 	/** minimize the canonical hash */
@@ -53,20 +47,20 @@ enum class MinimizedHashType {
 };
 
 /**
- * @brief Digest does not not consider kmers with non-ACTG characters. Non-ACTG
- * characters in the sequence can be handled in one of two ways. The WRITEOVER
- * policy specifies that any non-ACTG character is simply replaced with an A.
- * The SKIPOVER policy skips over any kmers with a non-ACTG character. For
- * example, if you have k = 4 and your sequence is ACTGNNACTGAC, then the only
- * kmers that would be considered would be the ACTG starting at index 0, the
- * ACTG starting at index 6, CTGA at index 7, and TGAC at index 8. Then if you
- * had a large window of 4 (kmers), then the smallest would be picked from one
- * of those 4.
+ * @brief Specifies behavior with non-ACTG characters.
  */
 enum class BadCharPolicy {
-	/** something */
+	/** The WRITEOVER policy specifies that any non-ACTG character is simply
+	   replaced with an A. */
 	WRITEOVER,
-	/** something */
+	/** The SKIPOVER policy skips over any kmers with a non-ACTG character.
+	 *
+	 * For example, if you have k = 4 and your sequence is ACTGNNACTGAC, then
+	 * the only kmers that would be considered would be the ACTG starting at
+	 * index 0, the ACTG starting at index 6, CTGA at index 7, and TGAC at
+	 * index 8. Then if you had a large window of 4 (kmers), then the smallest
+	 * would be picked from one of those 4.
+	 */
 	SKIPOVER
 };
 

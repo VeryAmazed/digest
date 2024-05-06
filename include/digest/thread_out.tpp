@@ -1,7 +1,7 @@
 #include "digest/thread_out.hpp"
 #include <future>
 
-namespace thread_out
+namespace digest::thread_out
 {
 template<digest::BadCharPolicy P>
 void thread_mod(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec, 
@@ -259,7 +259,8 @@ void thread_sync(unsigned thread_count, std::vector<std::vector<uint32_t>>& vec,
         }
         for(auto& t: thread_vector)
         {
-			vec.emplace_back(t.get());
+
+						vec.emplace_back(t.get());
         }
         
     }
@@ -332,6 +333,3 @@ std::vector<std::pair<uint32_t, uint32_t>> thread_sync_roll2(const char* seq,
 		return out;
     }
 }
-
-
-

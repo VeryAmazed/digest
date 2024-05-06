@@ -9,15 +9,8 @@
 #include <vector>
 
 /**
- * \defgroup thread_out Threading functions
- * @{
- */
-
-/**
- * \ingroup thread_out
  *
- * @brief Description:
- * Possible implementation for multi-threading the digestion of a single
+ * @brief Possible implementation for multi-threading the digestion of a single
  * sequence. The key thing to note is basically by carefully telling where each
  * digester should start digesting you can make it so each kmer is only
  * considered once.
@@ -33,8 +26,7 @@
  * sequence into ACTGANACNA, and ANACNACTGA and feed it into 2 digester objects
  * which now each have 0 valid large windows
  */
-
-namespace thread_out {
+namespace digest::thread_out {
 
 class BadThreadOutParams : public std::exception {
 	const char *what() const throw() {
@@ -320,7 +312,7 @@ std::vector<std::pair<uint32_t, uint32_t>> thread_sync_roll2(
 	const char *seq, size_t ind, unsigned k, uint32_t large_wind_kmer_am,
 	digest::MinimizedHashType minimized_h, unsigned assigned_lwind_am);
 
-} // namespace thread_out
-/**@}*/
+} // namespace digest::thread_out
+
 #include "thread_out.tpp"
 #endif

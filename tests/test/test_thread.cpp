@@ -46,7 +46,7 @@ void test_thread_mod(unsigned thread_count, std::string str, unsigned k,
 	digest::ModMin<digest::BadCharPolicy::SKIPOVER> dig(str, k, mod, congruence,
 														start, minimized_h);
 	dig.roll_minimizer(str.size(), single_thread);
-	thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
+	digest::thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
 		thread_count, vec, str, k, mod, congruence, start, minimized_h);
 	std::vector<uint32_t> multi_thread = multi_to_single_vec(vec);
 
@@ -64,8 +64,8 @@ void test_thread_wind(unsigned thread_count, std::string str, unsigned k,
 	digest::WindowMin<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive>
 		dig(str, k, large_wind_kmer_am, start, minimized_h);
 	dig.roll_minimizer(str.size(), single_thread);
-	thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER,
-							digest::ds::Adaptive>(
+	digest::thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER,
+									digest::ds::Adaptive>(
 		thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
 	std::vector<uint32_t> multi_thread = multi_to_single_vec(vec);
 
@@ -83,8 +83,8 @@ void test_thread_sync(unsigned thread_count, std::string str, unsigned k,
 	digest::Syncmer<digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive> dig(
 		str, k, large_wind_kmer_am, start, minimized_h);
 	dig.roll_minimizer(str.size(), single_thread);
-	thread_out::thread_sync<digest::BadCharPolicy::SKIPOVER,
-							digest::ds::Adaptive>(
+	digest::thread_out::thread_sync<digest::BadCharPolicy::SKIPOVER,
+									digest::ds::Adaptive>(
 		thread_count, vec, str, k, large_wind_kmer_am, start, minimized_h);
 	std::vector<uint32_t> multi_thread = multi_to_single_vec(vec);
 
@@ -109,30 +109,30 @@ TEST_CASE("thread_mod function testing") {
 		// k < 4
 		k = 3;
 		CHECK_THROWS_AS(
-			thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
+			digest::thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
 				thread_count, vec, str, k, mod, congruence, start, minimized_h),
-			thread_out::BadThreadOutParams);
+			digest::thread_out::BadThreadOutParams);
 		k = 4;
 		// start >= len
 		start = str.size();
 		CHECK_THROWS_AS(
-			thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
+			digest::thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
 				thread_count, vec, str, k, mod, congruence, start, minimized_h),
-			thread_out::BadThreadOutParams);
+			digest::thread_out::BadThreadOutParams);
 		start = 0;
 		// num_kmers is negative
 		start = 7;
 		CHECK_THROWS_AS(
-			thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
+			digest::thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
 				thread_count, vec, str, k, mod, congruence, start, minimized_h),
-			thread_out::BadThreadOutParams);
+			digest::thread_out::BadThreadOutParams);
 		start = 0;
 		// num_kmers < thread_count
 		thread_count = 6;
 		CHECK_THROWS_AS(
-			thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
+			digest::thread_out::thread_mod<digest::BadCharPolicy::SKIPOVER>(
 				thread_count, vec, str, k, mod, congruence, start, minimized_h),
-			thread_out::BadThreadOutParams);
+			digest::thread_out::BadThreadOutParams);
 		thread_count = 4;
 	}
 
@@ -216,21 +216,21 @@ TEST_CASE("thread_wind function testing") {
 		// num_lwinds is negative
 		start = 9;
 		CHECK_THROWS_AS(
-			(thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER,
-									 digest::ds::Adaptive>(
+			(digest::thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER,
+											 digest::ds::Adaptive>(
 				thread_count, vec, str, k, large_wind_kmer_am, start,
 				minimized_h)),
-			thread_out::BadThreadOutParams);
+			digest::thread_out::BadThreadOutParams);
 		start = 0;
 		// num_lwinds < thread_count
 		thread_count = 8;
 
 		CHECK_THROWS_AS(
-			(thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER,
-									 digest::ds::Adaptive>(
+			(digest::thread_out::thread_wind<digest::BadCharPolicy::SKIPOVER,
+											 digest::ds::Adaptive>(
 				thread_count, vec, str, k, large_wind_kmer_am, start,
 				minimized_h)),
-			thread_out::BadThreadOutParams);
+			digest::thread_out::BadThreadOutParams);
 		thread_count = 4;
 	}
 
