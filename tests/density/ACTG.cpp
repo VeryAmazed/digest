@@ -37,7 +37,7 @@ int main() {
   std::string str;
 
   std::vector<std::string> strs;
-  freopen("../tests/density/ACTG.txt", "r", stdin);
+  assert(freopen("../tests/density/ACTG.txt", "r", stdin));
   for (int i = 0; i < 100; i++) {
     std::cin >> str;
     strs.pb(str);
@@ -87,7 +87,7 @@ int main() {
       sync_vec[i].pb(am);
     }
   }
-  freopen("../tests/density/out1.txt", "w", stdout);
+  assert(freopen("../tests/density/out1.txt", "w", stdout));
   for (int i = 0; i < 4; i++) {
     for (size_t j = 0; j < 100; j++) {
       std::cout << mod_min_vec[i][j] << " ";
