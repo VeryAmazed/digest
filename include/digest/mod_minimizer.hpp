@@ -1,5 +1,5 @@
-#ifndef MOD_MINI_HPP
-#define MOD_MINI_HPP
+#ifndef MOD_MINIMIZER_HPP
+#define MOD_MINIMIZER_HPP
 
 #include "digest/digester.hpp"
 #include <cassert>
@@ -79,7 +79,34 @@ template <BadCharPolicy P> class ModMin : public Digester<P> {
 	 * @param amount
 	 * @param vec
 	 */
-	void roll_minimizer(unsigned amount, std::vector<uint32_t> &vec) override;
+    void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec){
+        if(!this->is_valid_hash) return;
+
+		if(this->get_minimized_h() == digest::MinimizedHashType::CANON) {
+			do {
+                if((uint32_t)this->chash % mod == congruence){
+                    vec.emplace_back(this->get_pos());
+                }
+			} while(this->roll_one() && vec.size() < amount);
+			return;
+		}
+
+        if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD) {
+			do {
+                if((uint32_t)this->fhash % mod == congruence){
+                    vec.emplace_back(this->get_pos());
+                }
+			} while(this->roll_one() && vec.size() < amount);
+			return;
+		}
+
+		// reverse
+		do {
+			if((uint32_t)this->rhash % mod == congruence){
+				vec.emplace_back(this->get_pos());
+			}
+        } while(this->roll_one() && vec.size() < amount);
+    }
 
 	/**
 	 * @brief adds up to amount of positions and hashes of minimizers into vec.
@@ -89,9 +116,34 @@ template <BadCharPolicy P> class ModMin : public Digester<P> {
 	 * @param amount
 	 * @param vec
 	 */
-	void
-	roll_minimizer(unsigned amount,
-				   std::vector<std::pair<uint32_t, uint32_t>> &vec) override;
+	void roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec){
+        if(!this->is_valid_hash) return;
+
+		if(this->get_minimized_h() == digest::MinimizedHashType::CANON) {
+			do {
+                if((uint32_t)this->chash % mod == congruence){
+                    vec.emplace_back(this->get_pos(), this->chash);
+                }
+			} while(this->roll_one() && vec.size() < amount);
+			return;
+		}
+
+        if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD) {
+			do {
+                if((uint32_t)this->fhash % mod == congruence){
+                    vec.emplace_back(this->get_pos(), this->fhash);
+                }
+			} while(this->roll_one() && vec.size() < amount);
+			return;
+		}
+
+		// reverse
+		do {
+			if((uint32_t)this->rhash % mod == congruence){
+				vec.emplace_back(this->get_pos(), this->rhash);
+			}
+        } while(this->roll_one() && vec.size() < amount);
+    }
 
 	/**
 	 * @return uint32_t, the mod space being used
@@ -110,5 +162,4 @@ template <BadCharPolicy P> class ModMin : public Digester<P> {
 
 } // namespace digest
 
-#include "mod_minimizer.tpp"
-#endif
+#endif // MOD_MINIMIZER_HPP

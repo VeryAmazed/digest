@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATA_STRUCTURE_HPP
+#define DATA_STRUCTURE_HPP
 
 #include <algorithm>
 #include <array>
@@ -442,3 +443,5 @@ struct Adaptive64 {
 	}
 };
 } // namespace digest::ds
+
+#endif // DATA_STRUCTURE_HPP
