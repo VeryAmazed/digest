@@ -107,7 +107,7 @@ template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 	 * @param amount
 	 * @param vec
 	 */
-	virtual void
+	void
 	roll_minimizer(unsigned amount,
 				   std::vector<std::pair<uint32_t, uint32_t>> &vec) override {
 		amount += vec.size();

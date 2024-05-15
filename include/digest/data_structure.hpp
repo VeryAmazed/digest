@@ -6,11 +6,13 @@
 #include <cmath>
 #include <cstdint>
 #include <stdint.h>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
 /**
  * Data structures for minimum hash queries on a window.
+ * ntHash does not support `large_window < 4`
  *
  * Selecting the correct `data_structure`
  * our general guidelines:
@@ -20,19 +22,31 @@
  *
  * Adaptive performs at worst about 10% slower than best
  * Adaptive64 performs at worst about 100% slower than best
- *
- * requirement on all data_structures
- * constructor which accepts uint32_t
- * void set(uint32_t index, (uint 32/64) hash)
- * uint32_t min() // returns minimum
- * pair<uint32_t, uint 32/64> min_hash() // returns index, hash
- * void min_syncmer(vector<uint 32/64> &vec) // appends minimum if syncmer
- * void min_syncmer(vector<pair<uint 32, uint 32>> &vec) // appends (left
- * syncmer index, right syncmer index) if syncmer assignment/copy constructors
- * if you want to use them
  */
 
 namespace digest::ds {
+
+/**
+ * All data_structures must follow this interface. Add the min_syncmer functions
+ * for syncmer support.
+ */
+template <typename T> struct Interface {
+	static_assert(std::is_same<T, uint32_t>() || std::is_same<T, uint64_t>(),
+				  "T must be either uint32_t or uint64_t");
+
+	/** constructor must accept uint32_t large_window */
+	Interface(uint32_t);
+
+	/** returns the index of the minimum hash */
+	virtual uint32_t min();
+	/** returns the minimum hash */
+	virtual T min_hash();
+
+	/** appends minimum if syncmer */
+	virtual void min_syncmer(std::vector<uint32_t> &vec);
+	/** appends (left syncmer index, right syncmer index) */
+	virtual void min_syncmer(std::vector<std::pair<uint32_t, T>> &vec);
+};
 
 // Based on a template taken from USACO.guide and then modified by me (for
 // competitive programming), and now modified again (for this)
@@ -42,7 +56,8 @@ namespace digest::ds {
 /** A data structure that can answer point update & range minimum queries. */
 
 /**
- * @brief Segment Tree data structure
+ * @brief Segment Tree data structure. Supports log(n) point updates and range
+ * minimum queries.
  *
  * @tparam k large window size
  */
@@ -91,7 +106,8 @@ template <int k> struct SegmentTree {
 };
 
 /**
- * @brief Description of what it does and when to use.
+ * @brief Naive data structure. Naively loops through the array to find the
+ * minimum.
  *
  * @tparam k large window size
  */
@@ -157,9 +173,10 @@ template <uint32_t k> struct Naive {
 };
 
 /**
- * @brief Description of what it does and when to use.
+ * @brief Naive2 data structure. Remembers the last minimum index and only loops
+ * through the array when this index leaves the window.
  *
- * @tparam k
+ * @tparam k large window size
  */
 template <uint32_t k> struct Naive2 {
 	unsigned int i = 0;
@@ -210,8 +227,8 @@ template <uint32_t k> struct Naive2 {
 };
 
 /**
- * @brief Description of what it does and when to use.
- *
+ * @brief Adaptive data structure. Selects between Naive and Naive2 based on the
+ * large window size.
  */
 struct Adaptive {
 	uint32_t k, i = 0, last = 0;
@@ -327,8 +344,7 @@ struct Adaptive {
 };
 
 /**
- * @brief Description of what it does and when to use.
- *
+ * @brief Same as Adaptive but uses 64-bit hashes.
  */
 struct Adaptive64 {
 	uint32_t k, i = 0, last = 0;

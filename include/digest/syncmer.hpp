@@ -62,7 +62,7 @@ template <BadCharPolicy P, class T> class Syncmer : public WindowMin<P, T> {
 	 * @param amount
 	 * @param vec
 	 */
-	void roll_minimizer(unsigned amount, std::vector<uint32_t> &vec) {
+	void roll_minimizer(unsigned amount, std::vector<uint32_t> &vec) override {
 		amount += vec.size();
 
 		while (this->ds_size + 1 < this->large_window and this->is_valid_hash) {
@@ -92,8 +92,9 @@ template <BadCharPolicy P, class T> class Syncmer : public WindowMin<P, T> {
 	 * @param amount
 	 * @param vec
 	 */
-	void roll_minimizer(unsigned amount,
-						std::vector<std::pair<uint32_t, uint32_t>> &vec) {
+	void
+	roll_minimizer(unsigned amount,
+				   std::vector<std::pair<uint32_t, uint32_t>> &vec) override {
 		amount += vec.size();
 
 		while (this->ds_size + 1 < this->large_window and this->is_valid_hash) {

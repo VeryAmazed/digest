@@ -28,11 +28,8 @@ This will generate `include` and `lib` folders.
 
 # Usage
 [Documentation](https://veryamazed.github.io/digest/)
-* Headers at `#include <digest/___.hpp>`
-* Classes are in `digest` namespace
 * Digest objects require that the input string is kept in memory, unmodified.
-* requires `std=c++17`
-* ntHash does not support `large_window < 4`
+* requires `c++17`
 
 # Example
 ```cpp
@@ -43,6 +40,8 @@ wm.roll_minimizer(100000, temp);
 Example snippet to collect up to 100000 indices of minimizers.
 A vector must be passed in, which will be appended to.
 Each WindowMin / Syncmer object is templated by the algorithm / data structure to find minimizers.
+
+A complete example and cli can be found [here](https://github.com/BenLangmead/gester/tree/main)
 
 # Contributing
 Use clang format version 17.  

@@ -29,6 +29,10 @@
  */
 namespace digest::thread_out {
 
+/**
+ * @brief Exception thrown when invalid parameters are passed to the thread
+ * functions
+ */
 class BadThreadOutParams : public std::exception {
 	const char *what() const throw() {
 		return "k must be greater than 3, start must be less than len, \
@@ -117,7 +121,6 @@ std::vector<std::pair<uint32_t, uint32_t>> thread_sync_roll2(
 }
 
 /**
- * \ingroup thread_out
  * @param thread_count the number of threads to use
  * @param vec a vector of vectors in which the minimizers will be placed.
  *      Each vector corresponds to one thread. The minimizers within each vector
@@ -175,8 +178,6 @@ void thread_mod(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as the other thread_mod, except it can take a C++ string, and
  * does not need to be provided the length of the string
  *
@@ -193,8 +194,6 @@ void thread_mod(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as other thread_mod that takes a c-string,
  * except here vec is a vector of vectors of pairs of uint32_ts
  *
@@ -241,8 +240,6 @@ void thread_mod(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as other thread_mod that takes a C++ string,
  * except here vec is a vector of vectors of pairs of uint32_ts
  *
@@ -261,8 +258,6 @@ void thread_mod(
 }
 
 /**
- * \ingroup thread_out
- *
  * @tparam P policy for dealing with non-ACTG characters
  * @tparam T min query data structure to use, refer to docs of the classes in
  * the ds namespace for more info
@@ -333,8 +328,6 @@ void thread_wind(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as the other thread_wind, except it can take a C++ string, and
  * does not need to be provided the length of the string
  *
@@ -351,8 +344,6 @@ void thread_wind(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as other thread_wind that takes a c-string,
  * except here vec is a vector of vectors of pairs of uint32_ts
  *
@@ -409,8 +400,6 @@ void thread_wind(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as other thread_wind that takes a C++ string,
  * except here vec is a vector of vectors of pairs of uint32_ts
  *
@@ -429,8 +418,6 @@ void thread_wind(
 }
 
 /**
- * \ingroup thread_out
- *
  * @tparam P policy for dealing with non-ACTG characters
  * @tparam T min query data structure to use, refer to docs of the classes in
  * the ds namespace for more info
@@ -491,8 +478,6 @@ void thread_sync(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as the other thread_sync, except it can take a C++ string, and
  * does not need to be provided the length of the string
  *
@@ -509,8 +494,6 @@ void thread_sync(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as other thread_wind that takes a c-string,
  * except here vec is a vector of vectors of pairs of uint32_ts
  *
@@ -557,8 +540,6 @@ void thread_sync(
 }
 
 /**
- * \ingroup thread_out
- *
  * @brief same as other thread_sync that takes a C++ string,
  * except here vec is a vector of vectors of pairs of uint32_ts
  *

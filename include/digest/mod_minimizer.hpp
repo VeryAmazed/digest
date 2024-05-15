@@ -79,7 +79,7 @@ template <BadCharPolicy P> class ModMin : public Digester<P> {
 	 * @param amount
 	 * @param vec
 	 */
-	void roll_minimizer(unsigned amount, std::vector<uint32_t> &vec) {
+	void roll_minimizer(unsigned amount, std::vector<uint32_t> &vec) override {
 		if (!this->is_valid_hash)
 			return;
 
@@ -117,8 +117,9 @@ template <BadCharPolicy P> class ModMin : public Digester<P> {
 	 * @param amount
 	 * @param vec
 	 */
-	void roll_minimizer(unsigned amount,
-						std::vector<std::pair<uint32_t, uint32_t>> &vec) {
+	void
+	roll_minimizer(unsigned amount,
+				   std::vector<std::pair<uint32_t, uint32_t>> &vec) override {
 		if (!this->is_valid_hash)
 			return;
 
