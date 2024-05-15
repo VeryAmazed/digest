@@ -77,26 +77,27 @@ template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 	 * @param amount
 	 * @param vec
 	 */
-    void roll_minimizer(unsigned amount, std::vector<uint32_t>& vec) override {
+	void roll_minimizer(unsigned amount, std::vector<uint32_t> &vec) override {
 		amount += vec.size();
 
 		while (ds_size + 1 < large_window and this->is_valid_hash) {
-			if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
+			if (this->get_minimized_h() == digest::MinimizedHashType::CANON) {
 				ds.insert(this->get_pos(), this->chash);
-			}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
+			} else if (this->get_minimized_h() ==
+					   digest::MinimizedHashType::FORWARD) {
 				ds.insert(this->get_pos(), this->fhash);
-			}else{
+			} else {
 				ds.insert(this->get_pos(), this->rhash);
 			}
-			
+
 			this->roll_one();
 			ds_size++;
 		}
 
-        while (this->is_valid_hash and vec.size() < amount){
-            roll_ds_wind(vec);
-        }
-    }
+		while (this->is_valid_hash and vec.size() < amount) {
+			roll_ds_wind(vec);
+		}
+	}
 
 	/**
 	 * @brief adds up to amount of positions and hashes of minimizers into vec.
@@ -106,28 +107,29 @@ template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 	 * @param amount
 	 * @param vec
 	 */
-	virtual void roll_minimizer(unsigned amount, std::vector<std::pair<uint32_t, uint32_t>>& vec) override {
+	virtual void
+	roll_minimizer(unsigned amount,
+				   std::vector<std::pair<uint32_t, uint32_t>> &vec) override {
 		amount += vec.size();
 
 		while (ds_size + 1 < large_window and this->is_valid_hash) {
-			if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
+			if (this->get_minimized_h() == digest::MinimizedHashType::CANON) {
 				ds.insert(this->get_pos(), this->chash);
-			}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
+			} else if (this->get_minimized_h() ==
+					   digest::MinimizedHashType::FORWARD) {
 				ds.insert(this->get_pos(), this->fhash);
-			}else{
+			} else {
 				ds.insert(this->get_pos(), this->rhash);
 			}
-			
+
 			this->roll_one();
 			ds_size++;
 		}
 
-        while (this->is_valid_hash and vec.size() < amount){
-            roll_ds_wind(vec);
-        }
-    }
-
-
+		while (this->is_valid_hash and vec.size() < amount) {
+			roll_ds_wind(vec);
+		}
+	}
 
 	/**
 	 *
@@ -166,37 +168,38 @@ template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 	 * structure
 	 *
 	 */
-    void roll_ds_wind(std::vector<uint32_t>& vec){
-		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
+	void roll_ds_wind(std::vector<uint32_t> &vec) {
+		if (this->get_minimized_h() == digest::MinimizedHashType::CANON) {
 			ds.insert(this->get_pos(), this->chash);
-		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
+		} else if (this->get_minimized_h() ==
+				   digest::MinimizedHashType::FORWARD) {
 			ds.insert(this->get_pos(), this->fhash);
-		}else{
+		} else {
 			ds.insert(this->get_pos(), this->rhash);
 		}
 		check(vec);
-		
+
 		this->roll_one();
-    }
+	}
 
 	/**
 	 * @brief helper function which handles adding the next hash into the data
 	 * structure
 	 *
 	 */
-    void roll_ds_wind(std::vector<std::pair<uint32_t, uint32_t>>& vec){
-		if(this->get_minimized_h() == digest::MinimizedHashType::CANON){
+	void roll_ds_wind(std::vector<std::pair<uint32_t, uint32_t>> &vec) {
+		if (this->get_minimized_h() == digest::MinimizedHashType::CANON) {
 			ds.insert(this->get_pos(), this->chash);
-		}else if(this->get_minimized_h() == digest::MinimizedHashType::FORWARD){
+		} else if (this->get_minimized_h() ==
+				   digest::MinimizedHashType::FORWARD) {
 			ds.insert(this->get_pos(), this->fhash);
-		}else{
+		} else {
 			ds.insert(this->get_pos(), this->rhash);
 		}
 		check(vec);
-		
+
 		this->roll_one();
-    }
-
+	}
 
 	/**
 	 * @brief helper function that checks to see if the current minimizer is a
@@ -204,19 +207,18 @@ template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 	 *
 	 * @param vec
 	 */
-    void check(std::vector<uint32_t>& vec){
-        if(is_minimized){
-            if(ds.min() != prev_mini){
-                prev_mini =	ds.min();
-                vec.emplace_back(prev_mini);
-            }
-        }else{
-            is_minimized = true;
-            prev_mini = ds.min();
+	void check(std::vector<uint32_t> &vec) {
+		if (is_minimized) {
+			if (ds.min() != prev_mini) {
+				prev_mini = ds.min();
+				vec.emplace_back(prev_mini);
+			}
+		} else {
+			is_minimized = true;
+			prev_mini = ds.min();
 			vec.emplace_back(prev_mini);
-        }
-    }
-
+		}
+	}
 
 	/**
 	 * @brief helper function that checks to see if the current minimizer is a
@@ -224,18 +226,18 @@ template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 	 *
 	 * @param vec
 	 */
-    void check(std::vector<std::pair<uint32_t, uint32_t>>& vec){
-        if(is_minimized){
-            if(ds.min() != prev_mini){
-                prev_mini =	ds.min();
-                vec.emplace_back(prev_mini, ds.min_hash());
-            }
-        }else{
-            is_minimized = true;
-            prev_mini = ds.min();
+	void check(std::vector<std::pair<uint32_t, uint32_t>> &vec) {
+		if (is_minimized) {
+			if (ds.min() != prev_mini) {
+				prev_mini = ds.min();
+				vec.emplace_back(prev_mini, ds.min_hash());
+			}
+		} else {
+			is_minimized = true;
+			prev_mini = ds.min();
 			vec.emplace_back(prev_mini, ds.min_hash());
-        }
-    }
+		}
+	}
 };
 
 } // namespace digest

@@ -18,7 +18,7 @@ include_dirs = [include_directories('include'), nthash.get_variable('include_dir
 install_headers(
 	'include/digest/digester.hpp', 'include/digest/mod_minimizer.hpp',
 	'include/digest/syncmer.hpp', 'include/digest/window_minimizer.hpp',
-    'include/digest/thread_out.hpp'
+    'include/digest/thread_out.hpp',
 	'include/digest/data_structure.hpp',
 	install_dir: 'include/digest'
 )
