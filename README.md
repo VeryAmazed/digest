@@ -1,7 +1,7 @@
 # Digest
 C++ library which supports various minimizer schemes for digestion of DNA sequences  
 
-# Implementation (Most of the documentation is in the code)
+# Implementation
 Supports Mod Minimizers, Window Minimizers, and Syncmers  
 
 Uses the cyclic or hash provided by [ntHash](https://github.com/bcgsc/ntHash). For now I just downloaded the essential files off their github and compiled it myself but I may change how I link in ntHash in the future.  
@@ -28,11 +28,8 @@ This will generate `include` and `lib` folders.
 
 # Usage
 [Documentation](https://veryamazed.github.io/digest/)
-* Headers at `#include <digest/___.hpp>`
-* Classes are in `digest` namespace
-* example compile: `g++ file.cpp -IPREFIX/include -LPREFIX/lib -ldigest`
-* may need `std=c++17`
-* ntHash does not support `large_window < 4`
+* Digest objects require that the input string is kept in memory, unmodified.
+* requires `c++17`
 
 # Example
 ```cpp
@@ -44,22 +41,11 @@ Example snippet to collect up to 100000 indices of minimizers.
 A vector must be passed in, which will be appended to.
 Each WindowMin / Syncmer object is templated by the algorithm / data structure to find minimizers.
 
-# Selecting the correct `data_structure`
-our general guidelines:
-* for `large_window` < 12, use Naive
-* for 12 <= `large_window` <= 16 use SegmentTree
-* for `large_window` > 16 use Naive2
-
-adaptive performs at worst about 10% slower than best  
-adaptive64 performs at worst about 100% slower than best
+A complete example and cli can be found [here](https://github.com/BenLangmead/gester/tree/main)
 
 # Contributing
-run
-```bash
-ninja clang-format
-ninja clang-tidy
-ninja docs
-```
+Use clang format version 17.  
+run `ninja clang-format` before submitting a PR.
 
 # Benchmark / Tests
 ```bash
@@ -67,5 +53,3 @@ meson setup build
 cd build && meson compile
 ```
 this will generate proper executables for benchmark/testing
-
-add to forked repo
