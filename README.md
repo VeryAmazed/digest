@@ -30,6 +30,7 @@ This will generate `include` and `lib` folders.
 [Documentation](https://veryamazed.github.io/digest/)
 * Digest objects require that the input string is kept in memory, unmodified.
 * requires `c++17`
+
 **Note: Do not use the new_seq functions, just create new objects. They currently don't work correctly.**
 
 # Example
