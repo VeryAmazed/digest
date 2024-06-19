@@ -1,13 +1,15 @@
 # ✂️ Digest: fast, multi-use $k$-mer sub-sampling library
 
 <p align="left">
-  <img width="900" alt="image1" src="https://github.com/oma219/digest/assets/32006908/a2c3cc7c-3f53-473e-bacd-5787b654101d">
+  <img width="900" alt="image1" src="https://github.com/oma219/digest/assets/32006908/09523db6-fd0b-49de-8e57-0d2cedef2a26">
   <br>
   <em>Visualization of different minimizer schemes supported in Digest and code example using library </em>
 </p>
 
+
 ## What is the Digest library?
-- a `C++` library that supports various sub-sampling schemes for $k$-mers in DNA sequences.   
+- a `C++` library that supports various sub-sampling schemes for $k$-mers in DNA sequences.
+    - `Digest` library utilizes the rolling hash-function from [ntHash](https://github.com/bcgsc/ntHash) to order the $k$-mers in a window.
 
 ## How to install and build into your project?
 <img width="600" alt="image2" src="https://github.com/oma219/digest/assets/32006908/7cea427e-c22a-4271-a234-a2aafeb45413">
@@ -44,7 +46,7 @@ g++ -std=c++17  -o main main.cpp -I install/include/ -L install/lib -lnthash
 There are three types of minimizer schemes that can be used:
 
 1. Windowed Minimizer
-2. Mod-Minimizer
+2. Modimizer
 3. Syncmer
 
 The general steps to use Digest is as follows: (1) include the relevant header files, (2) declare the Digest object and (3) find the positions where the minimizers are present in the sequence.
