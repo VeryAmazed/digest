@@ -18,6 +18,7 @@
 
 After cloning from GitHub, we use the [Meson](https://mesonbuild.com) build-system to install the library. 
 - `PREFIX` is an absolute path to library files will be install (`*.h` and `*.a` files)
+    - **IMPORTANT**: `PREFIX` should not be the root directory of the `Digest/` repo to avoid any issues with installation.
 - These commands generate an `include` and `lib` folders in `PREFIX` folder
 
 ```bash
