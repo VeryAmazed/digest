@@ -79,12 +79,13 @@ digester.roll_minimizer(100, output);
 
 ## Python binding support
 
-Included in the library are function bindings for each sub-sampling scheme for use in Python. To install the Python module, use `pip`:
-
+Included in the library are function bindings for each sub-sampling scheme for use in Python. To install the Python module, first install the library with `meson` (see above for detailed instructions), and install with `pip`. For this setup, the `meson` prefix must be set to `--prefix=/$DIGEST_REPO/build`:
 ```
-### in the Digest repo
+meson setup --prefix=$(pwd)/build --buildtype=release build
+meson install -C build
 pip install .
 ```
+
 We recommend using a conda or python virtual environment.
 Once installed, you can import and use the Digest library in Python:
 ```
