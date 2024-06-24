@@ -29,11 +29,13 @@ digest = Pybind11Extension(
     "Digest",
     sources = ['pybind/bindings.cpp'],
     include_dirs = [
-            'include',
+            'build/include',
             'pybind',
         get_pybind_include()
     ],
-    define_macros = [("PYBIND", None)]
+    library_dirs=['build/lib'],
+    define_macros = [("PYBIND", None)],
+    extra_compile_args=['-std=c++17', '-fPIC']
 )
 
 setup(
