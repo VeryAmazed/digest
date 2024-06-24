@@ -82,5 +82,5 @@ setup(
     packages=find_packages(),
     ext_modules = [digest],
     include_package_data=True,
-    cmdclass={'build_ext': MesonBuildExt},
+    # cmdclass={'build_ext': MesonBuildExt},
 )
