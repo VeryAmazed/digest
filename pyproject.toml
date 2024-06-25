@@ -1,9 +1,3 @@
 [build-system]
 requires = ["setuptools", "pybind11", "ninja", "meson"]
 build-backend = "setuptools.build_meta"
-[project]
-dependencies = [
-    "ninja",
-    "meson",
-    "pybind11"
-]

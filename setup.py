@@ -38,40 +38,37 @@ digest = Pybind11Extension(
     extra_compile_args=['-std=c++17', '-fPIC']
 )
 
-class MesonBuildExt(build_ext):
-    def run(self):
-        # Check for Meson and Ninja installation
-        try:
-            subprocess.check_output(['meson', '--version'])
-        except FileNotFoundError:
-            raise RuntimeError("Meson must be installed to build the extensions")
+# class MesonBuildExt(build_ext):
+#     def run(self):
+#         # Check for Meson and Ninja installation
+#         try:
+#             subprocess.check_output(['meson', '--version'])
+#         except FileNotFoundError:
+#             raise RuntimeError("Meson must be installed to build the extensions")
         
-        try:
-            subprocess.check_output(['ninja', '--version'])
-        except FileNotFoundError:
-            raise RuntimeError("Ninja must be installed to build the extensions")
+#         try:
+#             subprocess.check_output(['ninja', '--version'])
+#         except FileNotFoundError:
+#             raise RuntimeError("Ninja must be installed to build the extensions")
 
-        for ext in self.extensions:
-            self.build_extension(ext)
+#     def build_extension(self):
+#         build_temp = os.path.abspath(self.build_temp)
+#         # ext_fullpath = self.get_ext_fullpath(ext.name)
+#         # ext_dir = os.path.abspath(os.path.dirname(ext_fullpath))
+#         ext_dir = os.path.abspath(os.path.join(ROOT_DIR, 'build'))
+#         meson_build_dir = os.path.join(build_temp, 'meson_build')
 
-    def build_extension(self, ext):
-        build_temp = os.path.abspath(self.build_temp)
-        # ext_fullpath = self.get_ext_fullpath(ext.name)
-        # ext_dir = os.path.abspath(os.path.dirname(ext_fullpath))
-        ext_dir = os.path.abspath(os.path.join(ROOT_DIR, 'build'))
-        meson_build_dir = os.path.join(build_temp, 'meson_build')
+#         # Create build directory if it doesn't exist
+#         if not os.path.exists(meson_build_dir):
+#             os.makedirs(meson_build_dir)
 
-        # Create build directory if it doesn't exist
-        if not os.path.exists(meson_build_dir):
-            os.makedirs(meson_build_dir)
+#         meson_args = [
+#             'meson', 'setup', '--prefix', ext_dir,
+#             '--buildtype=release', meson_build_dir
+#         ]
 
-        meson_args = [
-            'meson', 'setup', '--prefix', ext_dir,
-            '--buildtype=release', meson_build_dir
-        ]
-
-        subprocess.check_call(meson_args)
-        subprocess.check_call(['meson', 'install', '-C', meson_build_dir])
+#         subprocess.check_call(meson_args)
+#         subprocess.check_call(['meson', 'install', '-C', meson_build_dir])
 
 setup(
     name = 'Digest',
