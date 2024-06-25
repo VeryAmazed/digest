@@ -77,7 +77,7 @@ setup(
     name = 'Digest',
     version = '0.2',
     python_requires=">=3.8",
-    setup_requires=['setuptools', 'pybind11>=2.6.0', 'meson'],
+    setup_requires=['setuptools', 'pybind11>=2.6.0', 'meson','ninja'],
     install_requires=['pybind11>=2.6.0'],
     packages=find_packages(),
     ext_modules = [digest],
