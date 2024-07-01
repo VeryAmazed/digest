@@ -85,6 +85,7 @@ meson setup --prefix=$(pwd)/build --buildtype=release build
 meson install -C build
 pip install .
 ```
+Alternatively, copy the `lib` and `include` directories from the earlier meson installation to a directory in the repo called `build`.
 
 We recommend using a conda or python virtual environment.
 Once installed, you can import and use the Digest library in Python:
