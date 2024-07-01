@@ -198,6 +198,7 @@ template <BadCharPolicy P> class Digester {
 	/**
 	 * @brief replaces the current sequence with the new one. It's like starting
 	 * over with a completely new seqeunce
+	 * <b> Currently is bugged. Don't use </b>
 	 *
 	 * @param seq const char pointer to new sequence to be hashed
 	 * @param len length of the new sequence
@@ -222,6 +223,7 @@ template <BadCharPolicy P> class Digester {
 	/**
 	 * @brief replaces the current sequence with the new one. It's like starting
 	 * over with a completely new sequence
+	 * <b> Currently is bugged. Don't use </b>
 	 *
 	 * @param seq const std string reference to the new sequence to be hashed
 	 * @param start position in new sequence to start from

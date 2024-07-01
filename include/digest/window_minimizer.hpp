@@ -138,9 +138,19 @@ template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 	unsigned get_large_wind_kmer_am() { return large_window; }
 
 	// function is mainly to help with tests
+	/**
+	 * @brief gets the size of the internal rmq data structure being used. Mainly used to help with tests (so you probably shouldn't use it).
+	 * 
+	 * @return size_t, the size of the internal rmq data structure object
+	 */
 	size_t get_ds_size() { return ds_size; }
 
 	// function is mainly to help with tests
+	/**
+	 * @brief checks if we have generated the first minimizer. Mainly used to help with tests (so you probably shouldn't use it).
+	 * 
+	 * @return bool, if we have already obtained a minimizer
+	 */
 	bool get_is_minimized() { return is_minimized; }
 
   protected:
