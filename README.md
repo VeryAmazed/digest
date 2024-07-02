@@ -10,7 +10,8 @@
 ## What is the Digest library?
 - a `C++` library that supports various sub-sampling schemes for $k$-mers in DNA sequences.
     - `Digest` library utilizes the rolling hash-function from [ntHash](https://github.com/bcgsc/ntHash) to order the $k$-mers in a window.
-
+- a set of Python bindings that allow the user to run functions from the C++ library in Python.
+  
 ## How to install and build into your project?
 <img width="600" alt="image2" src="https://github.com/oma219/digest/assets/32006908/7cea427e-c22a-4271-a234-a2aafeb45413">
 
@@ -18,7 +19,8 @@
 
 After cloning from GitHub, we use the [Meson](https://mesonbuild.com) build-system to install the library. 
 - `PREFIX` is an absolute path to library files will be install (`*.h` and `*.a` files)
-    - **IMPORTANT**: `PREFIX` should not be the root directory of the `Digest/` repo to avoid any issues with installation.
+    - **IMPORTANT**: `PREFIX` should not be the root directory of the `digest/` repo to avoid any issues with installation.
+    - We suggest using `--prefix=$(pwd)/build` from within the root directory of the `digest/` repo.
 - These commands generate an `include` and `lib` folders in `PREFIX` folder
 
 ```bash
@@ -36,10 +38,10 @@ If your coding project uses `Meson` to build the executable(s), you can include 
 
 #### (b) Using `g++`:
 
-To use Digest in your C++ project, you just need to include the header files (`*.h`) and library file (`*.a`) that were installed in the first step. Assuming that `install/` is the directory you installed them in, here is how you can compile.
+To use Digest in your C++ project, you just need to include the header files (`*.h`) and library file (`*.a`) that were installed in the first step. Assuming that `build/` is the directory you installed them in, here is how you can compile.
 
 ```bash
-g++ -std=c++17  -o main main.cpp -I install/include/ -L install/lib -lnthash
+g++ -std=c++17  -o main main.cpp -I build/include/ -L build/lib -lnthash
 ```
 
 ## Detailed Look at Example Usage (2 ways):
@@ -75,6 +77,32 @@ std::vector<std::pair<size_t, size_t>> output;
 digester.roll_minimizer(100, output);
 ```
 
+## Python binding support
+
+Included in the library are function bindings for each sub-sampling scheme for use in Python. To install the Python module, first install the library with `meson` (see above for detailed instructions), and install with `pip`. For this setup, the `meson` prefix must be set to `--prefix=/$DIGEST_REPO/build`:
+```
+meson setup --prefix=$(pwd)/build --buildtype=release build
+meson install -C build
+pip install .
+```
+Alternatively, copy the `lib` and `include` directories from the earlier meson installation to a directory in the repo called `build`, and run `pip install .`
+
+We recommend using a conda or python virtual environment.
+Once installed, you can import and use the Digest library in Python:
+```
+>>> from Digest import window_minimizer, syncmer, modimizer
+>>> window_minimizer('ACGTACGTAGCTAGCTAGCTAGCTGATTACATACTGTATGCAAGCTAGCTGATCGATCGTAGCTAGTGATGCTAGCTAC', k=5, w=11)
+[4, 5, 16, 19, 21, 26, 27, 35, 39, 49, 57, 63, 68]
+>>> modimizer('ACGTACGTAGCTAGCTAGCTAGCTGATTACATACTGTATGCAAGCTAGCTGATCGATCGTAGCTAGTGATGCTAGCTAC', k=5, mod=5)
+[23, 34, 38, 40, 62, 67]
+>>> syncmer('ACGTACGTAGCTAGCTAGCTAGCTGATTACATACTGTATGCAAGCTAGCTGATCGATCGTAGCTAGTGATGCTAGCTAC', k=5, w=15)
+[0, 3, 4, 5, 7, 12, 13, 27, 35, 49]
+>>> modimizer('ATCGTGCATCA', k=4, mod=2, include_hash=True)
+[(0, 1122099596), (2, 249346952), (4, 227670418), (7, 123749036)]
+>>> seq = 'ACGTACGTAGCTAGCTAGCTAGCTGATTACATACTGTATGCAAGCTAGCTGATCGATCGTAGCTAGTGATGCTAGCTAC'
+>>> [seq[p:p+5] for p in window_minimizer(seq, k=5, w=11)]
+['ACGTA', 'CGTAG', 'AGCTA', 'TAGCT', 'GCTGA', 'TTACA', 'TACAT', 'GTATG', 'GCAAG', 'TGATC', 'CGTAG', 'TAGTG', 'ATGCT']
+```
 
 <!---
 # Implementation
