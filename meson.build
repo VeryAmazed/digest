@@ -7,6 +7,7 @@ project(
 		'optimization=3',
         'werror=true',
         'warning_level=3',
+        'buildtype=release'
         # 'b_sanitize=thread',
 	],
 )
