@@ -48,9 +48,9 @@ g++ -std=c++17  -o main main.cpp -I build/include/ -L build/lib -lnthash
 
 There are three types of minimizer schemes that can be used:
 
-1. Windowed Minimizer
-2. Modimizer
-3. Syncmer
+1. **Windowed Minimizer**: classifies a kmer as a minimizer if it is the smallest in the user specifed large window, using rightmost kmer to break ties.
+2. **Modimizer**: classifies a kmer as a minimizer if the hash of the kmer is congruent to the user specified value in the user specified mod-space.
+3. **Syncmer**: classifies a large window as a minimizer if its smallest value is equal to the value of the hashes of the leftmost or rightmost kmer in the window (doesn't care if the smallest hash value is not unique). Note that because of how the large window is defined if you are using the SKIPOVER policy and your sequence has non-ACTG characters, it is possible for this large window to have varying lengths in terms of number of characters.
 
 The general steps to use Digest is as follows: (1) include the relevant header files, (2) declare the Digest object and (3) find the positions where the minimizers are present in the sequence.
 
@@ -69,6 +69,7 @@ digester.roll_minimizer(100, output);
     - `digest::BadCharPolicy::SKIPOVER` will skip any $k$-mers with non-`ACTG` characters
 - `digest::ds::Adaptive` is our recommended data-structure for finding the minimum value in a window (see wiki for other options)
 
+
 ### 2. Find both positions and hash values of minimizers
 If you would like to obtain both the positions and hash values for each minimizer, you can pass a vector of paired integers to do so.
 
@@ -76,6 +77,9 @@ If you would like to obtain both the positions and hash values for each minimize
 std::vector<std::pair<size_t, size_t>> output;
 digester.roll_minimizer(100, output);
 ```
+
+### Documentation:
+Documentation generated with Doxygen can be found [here](https://veryamazed.github.io/digest/)
 
 ## Python binding support
 
