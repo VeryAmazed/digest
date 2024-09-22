@@ -1246,7 +1246,7 @@ TEST_CASE("ModMin Testing") {
 	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 32) }           \
 	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 33) }           \
 	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 63) }           \
-	{F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 64)}
+	{ F(digest::BadCharPolicy::SKIPOVER, digest::ds::Adaptive, 64) }
 
 TEST_CASE("WindowMin Testing") {
 	SECTION("Constructor Testing") {
