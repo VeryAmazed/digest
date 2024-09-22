@@ -115,7 +115,7 @@ template <uint32_t k> struct Naive {
 	std::array<uint64_t, k> arr;
 	unsigned int i = 0;
 
-	Naive(uint32_t) {};
+	Naive(uint32_t){};
 	Naive(const Naive &other) = default;
 	Naive &operator=(const Naive &other) = default;
 
@@ -183,7 +183,7 @@ template <uint32_t k> struct Naive2 {
 	unsigned int last = 0;
 	std::vector<uint64_t> arr = std::vector<uint64_t>(k);
 
-	Naive2(uint32_t) {};
+	Naive2(uint32_t){};
 	Naive2(const Naive2 &other) = default;
 	Naive2 &operator=(const Naive2 &other) = default;
 
