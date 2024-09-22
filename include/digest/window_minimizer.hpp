@@ -131,6 +131,16 @@ template <BadCharPolicy P, class T> class WindowMin : public Digester<P> {
 		}
 	}
 
+	void new_seq(const char *seq, size_t len, size_t start) override {
+		ds = T(large_window);
+		Digester<P>::new_seq(seq, len, start);
+	}
+
+	void new_seq(const std::string &seq, size_t pos) override {
+		ds = T(large_window);
+		Digester<P>::new_seq(seq.c_str(), seq.size(), pos);
+	}
+
 	/**
 	 *
 	 * @return unsigned, the value of large_window

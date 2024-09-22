@@ -207,7 +207,7 @@ template <BadCharPolicy P> class Digester {
 	 * @throws BadConstructionException thrown if the starting position is
 	 * greater than the length of the string
 	 */
-	void new_seq(const char *seq, size_t len, size_t start) {
+	virtual void new_seq(const char *seq, size_t len, size_t start) {
 		this->seq = seq;
 		this->len = len;
 		this->offset = 0;
@@ -231,7 +231,7 @@ template <BadCharPolicy P> class Digester {
 	 * @throws BadConstructionException thrown if the starting position is
 	 * greater than the length of the string
 	 */
-	void new_seq(const std::string &seq, size_t pos) {
+	virtual void new_seq(const std::string &seq, size_t pos) {
 		new_seq(seq.c_str(), seq.size(), pos);
 	}
 
