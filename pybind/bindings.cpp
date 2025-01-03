@@ -4,8 +4,8 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(Digest, m) {
-	m.doc() = "bindings for Digest";
+PYBIND11_MODULE(digest, m) {
+	m.doc() = "bindings for digest";
 	m.def("window_minimizer", &window_minimizer,
 		  "A function that runs window minimizer digestion", py::arg("seq"),
 		  py::arg("k") = 31, py::arg("w") = 11,
