@@ -15,8 +15,13 @@
 ## How to install and build into your project?
 <img width="600" alt="image2" src="https://github.com/oma219/digest/assets/32006908/7cea427e-c22a-4271-a234-a2aafeb45413">
 
-### Step 1: Install library
+### Option 1: conda installation
+Digest is available on bioconda. This installs both the C++ library and python library. The `include` and `lib` directories are in the conda environment dir (you can find it using `conda env list`).
+```bash
+conda install -c bioconda digest
+```
 
+### Option 2: Install from source
 After cloning from GitHub, we use the [Meson](https://mesonbuild.com) build-system to install the library. 
 - `PREFIX` is an absolute path to library files will be install (`*.h` and `*.a` files)
     - **IMPORTANT**: `PREFIX` should not be the root directory of the `digest/` repo to avoid any issues with installation.
@@ -83,7 +88,7 @@ Documentation generated with Doxygen can be found [here](https://veryamazed.gith
 
 ## Python binding support
 
-Included in the library are function bindings for each sub-sampling scheme for use in Python. To install the Python module, first install the library with `meson` (see above for detailed instructions), and install with `pip`. For this setup, the `meson` prefix must be set to `--prefix=/$DIGEST_REPO/build`:
+Included in the library are function bindings for each sub-sampling scheme for use in Python. The simplest way to install the python module is through conda (`conda install bioconda::digest`). To install the Python module from source, first install the library with `meson` (see above for detailed instructions), and install with `pip`. For this setup, the `meson` prefix must be set to `--prefix=/$DIGEST_REPO/build`:
 ```
 meson setup --prefix=$(pwd)/build --buildtype=release build
 meson install -C build
