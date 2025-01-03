@@ -94,7 +94,7 @@ Alternatively, copy the `lib` and `include` directories from the earlier meson i
 We recommend using a conda or python virtual environment.
 Once installed, you can import and use the Digest library in Python:
 ```
->>> from Digest import window_minimizer, syncmer, modimizer
+>>> from digest import window_minimizer, syncmer, modimizer
 >>> window_minimizer('ACGTACGTAGCTAGCTAGCTAGCTGATTACATACTGTATGCAAGCTAGCTGATCGATCGTAGCTAGTGATGCTAGCTAC', k=5, w=11)
 [4, 5, 16, 19, 21, 26, 27, 35, 39, 49, 57, 63, 68]
 >>> modimizer('ACGTACGTAGCTAGCTAGCTAGCTGATTACATACTGTATGCAAGCTAGCTGATCGATCGTAGCTAGTGATGCTAGCTAC', k=5, mod=5)
