@@ -26,7 +26,7 @@ class get_pybind_include(object):
         return pybind11.get_include()
 
 digest = Pybind11Extension(
-    "Digest",
+    "digest",
     sources = ['pybind/bindings.cpp'],
     include_dirs = [
             'build/include',
@@ -38,40 +38,8 @@ digest = Pybind11Extension(
     extra_compile_args=['-std=c++17', '-fPIC']
 )
 
-# class MesonBuildExt(build_ext):
-#     def run(self):
-#         # Check for Meson and Ninja installation
-#         try:
-#             subprocess.check_output(['meson', '--version'])
-#         except FileNotFoundError:
-#             raise RuntimeError("Meson must be installed to build the extensions")
-        
-#         try:
-#             subprocess.check_output(['ninja', '--version'])
-#         except FileNotFoundError:
-#             raise RuntimeError("Ninja must be installed to build the extensions")
-
-#     def build_extension(self):
-#         build_temp = os.path.abspath(self.build_temp)
-#         # ext_fullpath = self.get_ext_fullpath(ext.name)
-#         # ext_dir = os.path.abspath(os.path.dirname(ext_fullpath))
-#         ext_dir = os.path.abspath(os.path.join(ROOT_DIR, 'build'))
-#         meson_build_dir = os.path.join(build_temp, 'meson_build')
-
-#         # Create build directory if it doesn't exist
-#         if not os.path.exists(meson_build_dir):
-#             os.makedirs(meson_build_dir)
-
-#         meson_args = [
-#             'meson', 'setup', '--prefix', ext_dir,
-#             '--buildtype=release', meson_build_dir
-#         ]
-
-#         subprocess.check_call(meson_args)
-#         subprocess.check_call(['meson', 'install', '-C', meson_build_dir])
-
 setup(
-    name = 'Digest',
+    name = 'digest',
     version = '0.2',
     python_requires=">=3.8",
     setup_requires=['setuptools', 'pybind11>=2.6.0', 'meson','ninja'],
@@ -79,5 +47,4 @@ setup(
     packages=find_packages(),
     ext_modules = [digest],
     include_package_data=True,
-    # cmdclass={'build_ext': MesonBuildExt},
 )
