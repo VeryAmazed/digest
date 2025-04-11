@@ -20,6 +20,7 @@ window_minimizer(const std::string &seq, unsigned k, unsigned large_window,
 			return output;
 		}
 	}
+	// return {};
 	else {
 		if (include_hash) {
 			std::vector<std::vector<std::pair<uint32_t, uint32_t>>> output;
