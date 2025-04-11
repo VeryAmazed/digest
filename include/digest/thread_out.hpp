@@ -365,7 +365,7 @@ void thread_wind(
 	unsigned lwinds_per_thread = num_lwinds / thread_count;
 	unsigned extras = num_lwinds % thread_count;
 	vec.reserve(thread_count);
-	std::vector<std::future<std::pair<uint32_t, uint32_t>>> thread_vector;
+	std::vector<std::future<std::vector<std::pair<uint32_t, uint32_t>>>> thread_vector;
 
 	size_t ind = start;
 	for (unsigned i = 0; i < thread_count; i++) {
