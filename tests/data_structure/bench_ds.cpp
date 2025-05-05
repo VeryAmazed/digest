@@ -11,6 +11,84 @@
 
 namespace digest::ds {
 
+// sshash implementation of monoqueue (ours is better)
+//template <typename T>
+//struct fixed_size_deque {
+//	fixed_size_deque(uint32_t size) : m_begin(0), m_end(0), m_size(0), m_buffer(size) {
+//	}
+//
+//	bool empty() const { return m_size == 0; }
+//
+//	void push_back(T const& val) {
+//		m_buffer[m_end] = val;
+//		if (++m_end == m_buffer.size()) m_end = 0;
+//		++m_size;
+//	}
+//
+//	void pop_front() {
+//		if (++m_begin == m_buffer.size()) m_begin = 0;
+//		--m_size;
+//	}
+//
+//	void pop_back() {
+//		if (m_end == 0) m_end = m_buffer.size();
+//		--m_end;
+//		--m_size;
+//	}
+//
+//	T const& front() const { return m_buffer[m_begin]; }
+//
+//	T const& back() const {
+//		if (m_end == 0) return m_buffer.back();
+//		return m_buffer[m_end - 1];
+//	}
+//
+//private:
+//	uint32_t m_begin;
+//	uint32_t m_end;
+//	uint32_t m_size;
+//	std::vector<T> m_buffer;
+//};
+//
+//struct minimizer_enumerator {
+//
+//	minimizer_enumerator(uint32_t k)
+//		: m_k(k)
+//		, m_position(0)
+//		, m_q(k)
+//	{}
+//
+//	uint32_t min() { return m_q.front().value; }
+//
+//	void insert(uint32_t pos, uint32_t hash) {
+//		/* Removes from front elements which are no longer in the window */
+//		while (!m_q.empty() and m_position >= m_k and
+//			   m_q.front().position <= m_position  - m_k) {
+//			m_q.pop_front();
+//		}
+//		/* Removes from back elements which are no longer useful */
+//		while (!m_q.empty() and hash < m_q.back().hash) m_q.pop_back();
+//
+//		m_q.push_back({hash, m_position, pos});
+//		m_position += 1;
+//	}
+//
+//private:
+//	uint32_t m_k;
+//	uint32_t m_position;
+//
+//	struct mmer_t {
+//		mmer_t() {}
+//		mmer_t(uint32_t hash, uint32_t position, uint32_t value)
+//			: hash(hash), position(position), value(value) {}
+//		uint32_t hash, position, value;
+//	};
+//
+//	/* NOTE: we could use a std::deque<mmer_t> here,
+//			 but std::deque is terribly space-inefficient. */
+//	fixed_size_deque<mmer_t> m_q;
+//};
+
 template <uint32_t k> struct MonoQueue {
 	int head = 0, tail = 0;
 	// one extra slot so empty() works when full
@@ -157,7 +235,6 @@ test(digest::ds::Naive, 0) test(digest::ds::Naive2, 1)
 	test(digest::ds::MonoQueue, 2) test(digest::ds::SegmentTree, 3)
 		test(digest::ds::Set, 4) test2(digest::ds::Adaptive, 5)
 			test2(digest::ds::Adaptive64, 6)
-
 				int main(int argc, char **argv) {
 	setupInput();
 	benchmark::Initialize(&argc, argv);
