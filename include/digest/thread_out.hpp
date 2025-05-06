@@ -173,7 +173,7 @@ void thread_mod(
 		ind += assigned_kmer_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 }
 
@@ -235,7 +235,7 @@ void thread_mod(
 		ind += assigned_kmer_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 }
 
@@ -312,7 +312,7 @@ void thread_wind(
 		ind += assigned_lwind_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 
 	// handle duplicates
@@ -384,7 +384,7 @@ void thread_wind(
 		ind += assigned_lwind_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 
 	// handle duplicates
@@ -473,7 +473,7 @@ void thread_sync(
 	}
 	for (auto &t : thread_vector) {
 
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 }
 
@@ -535,7 +535,7 @@ void thread_sync(
 		ind += assigned_lwind_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 }
 
