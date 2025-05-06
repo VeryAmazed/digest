@@ -305,7 +305,7 @@ void thread_wind(
 			extras--;
 		}
 
-		thread_vector.emplace_back(std::async(thread_wind_roll1<P, T>, seq, ind,
+		thread_vector.push_back(std::async(thread_wind_roll1<P, T>, seq, ind,
 											  k, large_wind_kmer_am,
 											  minimized_h, assigned_lwind_am));
 
@@ -377,7 +377,7 @@ void thread_wind(
 			extras--;
 		}
 
-		thread_vector.emplace_back(std::async(thread_wind_roll2<P, T>, seq, ind,
+		thread_vector.push_back(std::async(thread_wind_roll2<P, T>, seq, ind,
 											  k, large_wind_kmer_am,
 											  minimized_h, assigned_lwind_am));
 

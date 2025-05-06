@@ -49,7 +49,7 @@ window_minimizer(const std::string &seq, unsigned k, unsigned large_window,
 			
 			std::vector<uint32_t> concatenated;
 			concatenated.reserve(total_size);
-			for (const auto& vec : output) {
+		for (const auto& vec : output) {
 				concatenated.insert(concatenated.end(), vec.begin(), vec.end());
 			}
 			return concatenated;
