@@ -112,21 +112,6 @@ Once installed, you can import and use the Digest library in Python:
 >>> [seq[p:p+5] for p in window_minimizer(seq, k=5, w=11)]
 ['ACGTA', 'CGTAG', 'AGCTA', 'TAGCT', 'GCTGA', 'TTACA', 'TACAT', 'GTATG', 'GCAAG', 'TGATC', 'CGTAG', 'TAGTG', 'ATGCT']
 ```
-## CLI
-A basic cli can be found [here](https://github.com/BenLangmead/gester/tree/main)
-
-## Benchmark / Tests
-```bash
-cd build
-meson configure -Dbuildtype=debug
-meson compile
-```
-This will set the build flage from release to debug allowing you to generate proper executables for benchmark/testing. The executables will be located in the build folder and can be run directly from there. You can look at the meson.build file for more details.
-
-## Contributing
-Use clang format version 17.  
-run `ninja clang-format` before submitting a PR.
-
 We have also implemented parallel execution in the python library:
 ```
 >>> import timeit
