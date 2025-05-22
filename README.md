@@ -113,6 +113,19 @@ Once installed, you can import and use the Digest library in Python:
 ['ACGTA', 'CGTAG', 'AGCTA', 'TAGCT', 'GCTGA', 'TTACA', 'TACAT', 'GTATG', 'GCAAG', 'TGATC', 'CGTAG', 'TAGTG', 'ATGCT']
 ```
 
+We have also implemented parallel execution in the python library:
+```
+>>> import timeit
+>>> timeit.timeit('window_minimizer(seq, k=5, w=11)', 
+...     setup='from digest import window_minimizer; seq = open("tests/bench/chrY.fa", "rb").read()',
+...     number=10)
+19.85955114942044
+>>> timeit.timeit('window_minimizer(seq, k=5, w=11, num_threads=4)',
+...     setup='from digest import window_minimizer; seq = open("tests/bench/chrY.fa", "rb").read()',
+...     number=10)
+10.327348310500383
+```
+
 <!---
 # Implementation
 Supports Mod Minimizers, Window Minimizers, and Syncmers  

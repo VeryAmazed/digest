@@ -167,6 +167,7 @@ syncmer_wrapper(const char *seq, size_t len, unsigned k, unsigned large_window,
 
 pybind11::array window_minimizer_numpy(py::bytes seq, unsigned k, unsigned large_window,
                                        unsigned threads, bool include_hash = false) {
+	py::gil_scoped_acquire gil;									
     py::buffer_info info(py::buffer(seq).request());
     const char* data = static_cast<const char*>(info.ptr);
     size_t len = static_cast<size_t>(info.size);
@@ -193,6 +194,7 @@ pybind11::array window_minimizer_numpy(py::bytes seq, unsigned k, unsigned large
 
 pybind11::array modimizer_numpy(py::bytes seq, unsigned k, uint32_t mod,
                                 unsigned threads, bool include_hash = false) {
+	py::gil_scoped_acquire gil;
     py::buffer_info info(py::buffer(seq).request());
     const char* data = static_cast<const char*>(info.ptr);
     size_t len = static_cast<size_t>(info.size);
@@ -219,6 +221,7 @@ pybind11::array modimizer_numpy(py::bytes seq, unsigned k, uint32_t mod,
 
 pybind11::array syncmer_numpy(py::bytes seq, unsigned k, unsigned large_window,
                               unsigned threads, bool include_hash = false) {
+	py::gil_scoped_acquire gil;							
     py::buffer_info info(py::buffer(seq).request());
     const char* data = static_cast<const char*>(info.ptr);
     size_t len = static_cast<size_t>(info.size);
@@ -246,26 +249,38 @@ pybind11::array syncmer_numpy(py::bytes seq, unsigned k, unsigned large_window,
 std::variant<std::vector<uint32_t>, std::vector<std::pair<uint32_t, uint32_t>>>
 window_minimizer(py::bytes seq, unsigned k, unsigned large_window,
                     unsigned threads, bool include_hash = false) {
+    py::gil_scoped_acquire gil;
     py::buffer_info info(py::buffer(seq).request());
     const char* data = static_cast<const char*>(info.ptr);
     size_t len = static_cast<size_t>(info.size);
-    return window_minimizer_wrapper(data, len, k, large_window, threads, include_hash);
+    {
+        py::gil_scoped_release release;
+        return window_minimizer_wrapper(data, len, k, large_window, threads, include_hash);
+    }
 }
 
 std::variant<std::vector<uint32_t>, std::vector<std::pair<uint32_t, uint32_t>>>
 modimizer(py::bytes seq, unsigned k, uint32_t mod,
              unsigned threads, bool include_hash = false) {
+    py::gil_scoped_acquire gil;
     py::buffer_info info(py::buffer(seq).request());
     const char* data = static_cast<const char*>(info.ptr);
     size_t len = static_cast<size_t>(info.size);
-    return modimizer_wrapper(data, len, k, mod, threads, include_hash);
+    {
+        py::gil_scoped_release release;
+        return modimizer_wrapper(data, len, k, mod, threads, include_hash);
+    }
 }
 
 std::variant<std::vector<uint32_t>, std::vector<std::pair<uint32_t, uint32_t>>>
 syncmer(py::bytes seq, unsigned k, unsigned large_window,
            unsigned threads, bool include_hash = false) {
+    py::gil_scoped_acquire gil;
     py::buffer_info info(py::buffer(seq).request());
     const char* data = static_cast<const char*>(info.ptr);
     size_t len = static_cast<size_t>(info.size);
-    return syncmer_wrapper(data, len, k, large_window, threads, include_hash);
+    {
+        py::gil_scoped_release release;
+        return syncmer_wrapper(data, len, k, large_window, threads, include_hash);
+    }
 }
