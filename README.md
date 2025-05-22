@@ -147,6 +147,21 @@ Functions can also return numpy arrays with the `*_np` function variant:
 array([ 4,  5, 16, 19, 21, 26, 27, 35, 39, 49, 57, 63, 68], dtype=uint32)
 ```
 
+## CLI
+A basic cli can be found [here](https://github.com/BenLangmead/gester/tree/main)
+
+## Benchmark / Tests
+```bash
+cd build
+meson configure -Dbuildtype=debug
+meson compile
+```
+This will set the build flage from release to debug allowing you to generate proper executables for benchmark/testing. The executables will be located in the build folder and can be run directly from there. You can look at the meson.build file for more details.
+
+## Contributing
+Use clang format version 17.  
+run `ninja clang-format` before submitting a PR.
+
 <!---
 # Implementation
 Supports Mod Minimizers, Window Minimizers, and Syncmers  
