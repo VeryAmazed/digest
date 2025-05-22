@@ -126,6 +126,13 @@ We have also implemented parallel execution in the python library:
 10.327348310500383
 ```
 
+Functions can also return numpy arrays with the `*_np` function variant:
+```
+>>> from digest import window_minimizer_np
+>>> window_minimizer_np(b'ACGTACGTAGCTAGCTAGCTAGCTGATTACATACTGTATGCAAGCTAGCTGATCGATCGTAGCTAGTGATGCTAGCTAC', k=5, w=11)
+array([ 4,  5, 16, 19, 21, 26, 27, 35, 39, 49, 57, 63, 68], dtype=uint32)
+```
+
 <!---
 # Implementation
 Supports Mod Minimizers, Window Minimizers, and Syncmers  
