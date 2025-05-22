@@ -173,7 +173,7 @@ void thread_mod(
 		ind += assigned_kmer_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 }
 
@@ -235,7 +235,7 @@ void thread_mod(
 		ind += assigned_kmer_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 }
 
@@ -305,14 +305,14 @@ void thread_wind(
 			extras--;
 		}
 
-		thread_vector.emplace_back(std::async(thread_wind_roll1<P, T>, seq, ind,
+		thread_vector.push_back(std::async(thread_wind_roll1<P, T>, seq, ind,
 											  k, large_wind_kmer_am,
 											  minimized_h, assigned_lwind_am));
 
 		ind += assigned_lwind_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 
 	// handle duplicates
@@ -365,7 +365,7 @@ void thread_wind(
 	unsigned lwinds_per_thread = num_lwinds / thread_count;
 	unsigned extras = num_lwinds % thread_count;
 	vec.reserve(thread_count);
-	std::vector<std::future<std::pair<uint32_t, uint32_t>>> thread_vector;
+	std::vector<std::future<std::vector<std::pair<uint32_t, uint32_t>>>> thread_vector;
 
 	size_t ind = start;
 	for (unsigned i = 0; i < thread_count; i++) {
@@ -377,14 +377,14 @@ void thread_wind(
 			extras--;
 		}
 
-		thread_vector.emplace_back(std::async(thread_wind_roll2<P, T>, seq, ind,
+		thread_vector.push_back(std::async(thread_wind_roll2<P, T>, seq, ind,
 											  k, large_wind_kmer_am,
 											  minimized_h, assigned_lwind_am));
 
 		ind += assigned_lwind_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 
 	// handle duplicates
@@ -473,7 +473,7 @@ void thread_sync(
 	}
 	for (auto &t : thread_vector) {
 
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 }
 
@@ -535,7 +535,7 @@ void thread_sync(
 		ind += assigned_lwind_am;
 	}
 	for (auto &t : thread_vector) {
-		vec.emplace_back(t.get());
+		vec.emplace_back(std::move(t.get()));
 	}
 }
 

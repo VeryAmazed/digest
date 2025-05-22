@@ -127,6 +127,26 @@ This will set the build flage from release to debug allowing you to generate pro
 Use clang format version 17.  
 run `ninja clang-format` before submitting a PR.
 
+We have also implemented parallel execution in the python library:
+```
+>>> import timeit
+>>> timeit.timeit('window_minimizer(seq, k=5, w=11)', 
+...     setup='from digest import window_minimizer; seq = open("tests/bench/chrY.fa", "rb").read()',
+...     number=10)
+19.85955114942044
+>>> timeit.timeit('window_minimizer(seq, k=5, w=11, num_threads=4)',
+...     setup='from digest import window_minimizer; seq = open("tests/bench/chrY.fa", "rb").read()',
+...     number=10)
+10.327348310500383
+```
+
+Functions can also return numpy arrays with the `*_np` function variant:
+```
+>>> from digest import window_minimizer_np
+>>> window_minimizer_np(b'ACGTACGTAGCTAGCTAGCTAGCTGATTACATACTGTATGCAAGCTAGCTGATCGATCGTAGCTAGTGATGCTAGCTAC', k=5, w=11)
+array([ 4,  5, 16, 19, 21, 26, 27, 35, 39, 49, 57, 63, 68], dtype=uint32)
+```
+
 <!---
 # Implementation
 Supports Mod Minimizers, Window Minimizers, and Syncmers  
