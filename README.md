@@ -153,6 +153,8 @@ We include Rust bindings for the digest library. To use the Rust bindings, add t
 digest-rs = "0.1.0"
 ```
 
+When compiling any package that uses `digest-seq`, set the env variable DIGEST_DIR to the build directory after building with meson (or, alternatively, install with Conda).
+
 ### Example Usage
 
 ```rust
