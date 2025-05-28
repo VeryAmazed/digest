@@ -112,6 +112,7 @@ Once installed, you can import and use the Digest library in Python:
 >>> [seq[p:p+5] for p in window_minimizer(seq, k=5, w=11)]
 ['ACGTA', 'CGTAG', 'AGCTA', 'TAGCT', 'GCTGA', 'TTACA', 'TACAT', 'GTATG', 'GCAAG', 'TGATC', 'CGTAG', 'TAGTG', 'ATGCT']
 ```
+
 We have also implemented parallel execution in the python library:
 ```
 >>> import timeit
@@ -142,6 +143,44 @@ meson configure -Dbuildtype=debug
 meson compile
 ```
 This will set the build flage from release to debug allowing you to generate proper executables for benchmark/testing. The executables will be located in the build folder and can be run directly from there. You can look at the meson.build file for more details.
+
+## Rust Bindings
+
+We include Rust bindings for the digest library. To use the Rust bindings, add the following to your `Cargo.toml`:
+
+```toml
+[dependencies]
+digest-rs = "0.1.0"
+```
+
+When compiling any package that uses `digest-seq`, set the env variable DIGEST_DIR to the build directory after building with meson (or, alternatively, install with Conda).
+
+### Example Usage
+
+```rust
+use digest_rs;
+
+// Window minimizer example
+let sequence = "ACGTACGT";
+let k = 4;
+let window = 2;
+let minimizers = digest_rs::window_minimizer_rs(sequence, k, window)?;
+
+// Modimizer example
+let mod_val = 3;
+let modimizers = digest_rs::modimizer_rs(sequence, k, mod_val)?;
+
+// Syncmer example
+let syncmers = digest_rs::syncmer_rs(sequence, k, window)?;
+```
+
+The three primary functions are available as bindings to the C++ library (similar to the python bindings). All functions return a `Result<Vec<u32>, DigestError>` containing the positions of the minimizers in the sequence.
+
+> [!NOTE]
+> These are only Rust bindings of the C++ implementation, not a full Rust implementation. As such, they contain unsafe code blocks.
+
+
+
 
 ## Contributing
 Use clang format version 17.  
